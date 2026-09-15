@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   AlertTriangle,
   ArrowRight,
@@ -550,15 +550,8 @@ function ScenariosView({ initialScenario = null }: { initialScenario?: string | 
   const [visits, setVisits] = useState(8);
   const [highConfidence, setHighConfidence] = useState(true);
   const [diversify, setDiversify] = useState(true);
-  const [selectedScenario, setSelectedScenario] = useState<string | null>(initialScenario);
+  const selectedScenario = initialScenario;
   const [assigned, setAssigned] = useState(false);
-
-  useEffect(() => {
-    setSelectedScenario(initialScenario);
-    if (initialScenario) {
-      window.setTimeout(() => document.getElementById("scenario-verification")?.scrollIntoView({ block: "start" }), 50);
-    }
-  }, [initialScenario]);
 
   const liveScenario = useMemo<Scenario>(() => {
     const feasible = 87 + visits * 1.15 + (highConfidence ? 0 : 2) - (diversify ? 1 : 0);
@@ -678,13 +671,8 @@ function ScenariosView({ initialScenario = null }: { initialScenario?: string | 
 }
 
 function PlanView({ initialStage = "active" }: { initialStage?: "active" | "disruption" | "recovered" }) {
-  const [laterState, setLaterState] = useState(initialStage !== "active");
-  const [restored, setRestored] = useState(initialStage === "recovered");
-
-  useEffect(() => {
-    setLaterState(initialStage !== "active");
-    setRestored(initialStage === "recovered");
-  }, [initialStage]);
+  const laterState = initialStage !== "active";
+  const restored = initialStage === "recovered";
   const coverage = restored ? 96 : laterState ? 86 : 96;
   return (
     <AppShell view="plan">
