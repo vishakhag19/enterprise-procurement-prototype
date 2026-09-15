@@ -678,9 +678,9 @@ function PlanView({ initialStage = "active" }: { initialStage?: "active" | "disr
     <AppShell view="plan">
       <div className="mb-5 flex items-center gap-2 text-xs text-muted-foreground"><Link href="/scenarios">Scenario planning</Link><ChevronRight className="size-3" /><span>Procurement plan</span></div>
       <PageHeader
-        eyebrow={laterState ? "Tuesday, 17 September · Plan change detected" : "Approved plan · Week 3"}
-        title={laterState ? "Week 3 coverage needs attention" : "Week 3 procurement plan is on target"}
-        description={laterState ? "Kaveri North Block’s expected supply fell by 400 tons after a field update. Coverage moved from 96% to 86%." : "The Confidence first scenario is active. Seven farms are committed; three selective verifications are linked to Ravi’s route."}
+        eyebrow={restored ? "Tuesday, 17 September · Plan adjusted" : laterState ? "Tuesday, 17 September · Plan change detected" : "Approved plan · Week 3"}
+        title={restored ? "Week 3 coverage is back on target" : laterState ? "Week 3 coverage needs attention" : "Week 3 procurement plan is on target"}
+        description={restored ? "The Regional resilience scenario replaced the affected volume across two regions. Coverage recovered from 86% to 96%." : laterState ? "Kaveri North Block’s expected supply fell by 400 tons after a field update. Coverage moved from 96% to 86%." : "The Confidence first scenario is active. Seven farms are committed; three selective verifications are linked to Ravi’s route."}
         actions={!laterState ? (
           <Link
             href="/plan/disruption"
