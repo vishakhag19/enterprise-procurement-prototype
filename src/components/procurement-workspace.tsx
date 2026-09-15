@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle,
   ArrowRight,
@@ -545,13 +545,20 @@ function ScenarioMetrics({ scenario }: { scenario: Scenario }) {
   );
 }
 
-function ScenariosView() {
+function ScenariosView({ initialScenario = null }: { initialScenario?: string | null }) {
   const [target, setTarget] = useState(95);
   const [visits, setVisits] = useState(8);
   const [highConfidence, setHighConfidence] = useState(true);
   const [diversify, setDiversify] = useState(true);
-  const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
+  const [selectedScenario, setSelectedScenario] = useState<string | null>(initialScenario);
   const [assigned, setAssigned] = useState(false);
+
+  useEffect(() => {
+    setSelectedScenario(initialScenario);
+    if (initialScenario) {
+      window.setTimeout(() => document.getElementById("scenario-verification")?.scrollIntoView({ block: "start" }), 50);
+    }
+  }, [initialScenario]);
 
   const liveScenario = useMemo<Scenario>(() => {
     const feasible = 87 + visits * 1.15 + (highConfidence ? 0 : 2) - (diversify ? 1 : 0);
@@ -621,22 +628,17 @@ function ScenariosView() {
                       <div className="flex items-center gap-2"><h3 className="font-semibold">{scenario.name}</h3>{index === 0 && <Badge className="bg-sky-100 text-sky-800">Live result</Badge>}{scenario.name === "Confidence first" && <Badge className="bg-emerald-100 text-emerald-800">Recommended</Badge>}</div>
                       <p className="mt-1 text-xs text-muted-foreground">{scenario.farms} farms · {Math.round((scenario.coverage / 100) * 1000).toLocaleString()} t committed · {Math.max(0, Math.round((scenario.coverage / 100) * 1000 - 1000))} t buffer</p>
                     </div>
-                    <button
-                      type="button"
+                    <Link
+                      href={`/scenarios/${scenario.name.toLowerCase().replaceAll(" ", "-")}#scenario-verification`}
                       className={cn(
                         "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-lg border px-3 text-xs font-medium transition-colors",
                         selected
                           ? "border-[#2f6f49] bg-[#2f6f49] text-white"
                           : "border-slate-200 bg-white hover:bg-slate-100"
                       )}
-                      onClick={() => {
-                        setSelectedScenario(scenario.name);
-                        setAssigned(false);
-                        window.setTimeout(() => document.getElementById("scenario-verification")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
-                      }}
                     >
                       {selected ? <><Check className="size-4" />Selected</> : "Select scenario"}
-                    </button>
+                    </Link>
                   </div>
                   <ScenarioMetrics scenario={scenario} />
                   <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100"><div className={cn("h-full rounded-full", scenario.coverage >= 95 ? "bg-[#3d7e55]" : "bg-amber-500")} style={{ width: `${Math.min(scenario.coverage, 100)}%` }} /></div>
@@ -675,9 +677,14 @@ function ScenariosView() {
   );
 }
 
-function PlanView() {
-  const [laterState, setLaterState] = useState(false);
-  const [restored, setRestored] = useState(false);
+function PlanView({ initialStage = "active" }: { initialStage?: "active" | "disruption" | "recovered" }) {
+  const [laterState, setLaterState] = useState(initialStage !== "active");
+  const [restored, setRestored] = useState(initialStage === "recovered");
+
+  useEffect(() => {
+    setLaterState(initialStage !== "active");
+    setRestored(initialStage === "recovered");
+  }, [initialStage]);
   const coverage = restored ? 96 : laterState ? 86 : 96;
   return (
     <AppShell view="plan">
@@ -687,17 +694,12 @@ function PlanView() {
         title={laterState ? "Week 3 coverage needs attention" : "Week 3 procurement plan is on target"}
         description={laterState ? "Kaveri North Block’s expected supply fell by 400 tons after a field update. Coverage moved from 96% to 86%." : "The Confidence first scenario is active. Seven farms are committed; three selective verifications are linked to Ravi’s route."}
         actions={!laterState ? (
-          <button
-            type="button"
+          <Link
+            href="/plan/disruption"
             className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium transition-colors hover:bg-slate-100"
-            onClick={() => {
-              setLaterState(true);
-              setRestored(false);
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
           >
             <Clock3 className="size-4" />Simulate later update
-          </button>
+          </Link>
         ) : undefined}
       />
       <Card className={cn("mb-6 shadow-none", laterState && !restored ? "border-red-200 bg-red-50/40" : "border-emerald-200 bg-emerald-50/30")}>
@@ -775,7 +777,11 @@ function PlanView() {
                   <div><p className="text-muted-foreground">Visits</p><p className="mt-1 font-semibold">+1</p></div>
                   <div><p className="text-muted-foreground">Largest region</p><p className="mt-1 font-semibold">34%</p></div>
                 </div>
-                <Button className="mt-4 w-full" onClick={() => setRestored(true)} disabled={restored}>{restored ? <><Check className="size-4" />Plan adjusted</> : <><RefreshCw className="size-4" />Reopen and adjust plan</>}</Button>
+                {restored ? (
+                  <Button className="mt-4 w-full" disabled><Check className="size-4" />Plan adjusted</Button>
+                ) : (
+                  <Button className="mt-4 w-full" render={<Link href="/plan/recovered" />}><RefreshCw className="size-4" />Reopen and adjust plan</Button>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -788,10 +794,18 @@ function PlanView() {
   );
 }
 
-export function ProcurementWorkspace({ view }: { view: View }) {
+export function ProcurementWorkspace({
+  view,
+  selectedScenario,
+  planStage,
+}: {
+  view: View;
+  selectedScenario?: string | null;
+  planStage?: "active" | "disruption" | "recovered";
+}) {
   if (view === "workspace") return <WorkspaceView />;
   if (view === "recommendations") return <RecommendationsView />;
   if (view === "comparison") return <ComparisonView />;
-  if (view === "scenarios") return <ScenariosView />;
-  return <PlanView />;
+  if (view === "scenarios") return <ScenariosView initialScenario={selectedScenario} />;
+  return <PlanView initialStage={planStage} />;
 }
