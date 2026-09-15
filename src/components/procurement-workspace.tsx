@@ -435,8 +435,8 @@ function DecisionQueue() {
   );
 }
 
-function WorkspaceView() {
-  const [period, setPeriod] = useState<"current" | "next">("current");
+function WorkspaceView({ initialPeriod = "current" }: { initialPeriod?: "current" | "next" }) {
+  const period = initialPeriod;
   const [selectedFarm, setSelectedFarm] = useState("f1");
   const mappedFarm = farms.find((farm) => farm.id === selectedFarm) ?? farms[0];
 
@@ -445,8 +445,8 @@ function WorkspaceView() {
       <PageHeader
         eyebrow="Monday, 9 September"
         title="Good morning, Shrikant"
-        description="Your Eucalyptus strategy is 83% covered. Week 3 is the only material gap and needs a sourcing decision this week."
-        actions={<button type="button" onClick={() => setPeriod((value) => value === "current" ? "next" : "current")} className="inline-flex h-10 items-center gap-2 rounded-lg border bg-white px-4 text-sm font-medium hover:bg-slate-50"><CalendarDays className="size-4" /><span aria-live="polite">{period === "current" ? "Sep 9 – Oct 6" : "Sep 16 – Oct 13"}</span></button>}
+        description={period === "current" ? "Your Eucalyptus strategy is 83% covered. Week 3 is the only material gap and needs a sourcing decision this week." : "Forward view: two Week 4 commitments roll into the next period, leaving 540 tons to source for the week of 7 October."}
+        actions={<Link href={period === "current" ? "/workspace/next-period" : "/"} className="inline-flex h-10 items-center gap-2 rounded-lg border bg-white px-4 text-sm font-medium hover:bg-slate-50"><CalendarDays className="size-4" />{period === "current" ? "Sep 9 – Oct 6" : "Sep 16 – Oct 13"}<RefreshCw className="size-3.5 text-muted-foreground" /></Link>}
       />
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <MetricCard label="Target" value="4,000 t" detail="Eucalyptus · four weeks" />
@@ -1165,6 +1165,7 @@ export function ProcurementWorkspace({
   decision,
   farmId,
   operations,
+  initialPeriod,
 }: {
   view: View;
   selectedScenario?: string | null;
@@ -1172,6 +1173,7 @@ export function ProcurementWorkspace({
   decision?: DecisionType;
   farmId?: string;
   operations?: "verification" | "schedule";
+  initialPeriod?: "current" | "next";
 }) {
   if (farmId) return <FarmEvidenceView farmId={farmId} />;
   if (operations === "verification") return <VerificationView />;
@@ -1179,7 +1181,7 @@ export function ProcurementWorkspace({
   if (decision === "commitments") return <CommitmentsDecisionView />;
   if (decision === "changes") return <WeeklyChangesDecisionView />;
   if (decision === "evidence") return <MissingEvidenceDecisionView />;
-  if (view === "workspace") return <WorkspaceView />;
+  if (view === "workspace") return <WorkspaceView initialPeriod={initialPeriod} />;
   if (view === "recommendations") return <RecommendationsView />;
   if (view === "comparison") return <ComparisonView />;
   if (view === "scenarios") return <ScenariosView initialScenario={selectedScenario} />;
