@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import {
   AlertTriangle,
@@ -39,6 +38,7 @@ import {
   UploadCloud,
   UserRoundCheck,
   UsersRound,
+  X,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -48,14 +48,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
-
-const FarmMap = dynamic(() => import("@/components/farm-map").then((module) => module.FarmMap), {
-  ssr: false,
-  loading: () => <div className="grid h-[320px] place-items-center rounded-md border bg-slate-100 text-sm text-muted-foreground">Loading farm map…</div>,
-});
+import { FarmMap } from "@/components/farm-map";
 
 type View = "workspace" | "recommendations" | "comparison" | "scenarios" | "plan";
 
@@ -288,28 +282,34 @@ function Sidebar({ view }: { view: View }) {
 }
 
 function MobileHeader({ view }: { view: View }) {
+  const [open, setOpen] = useState(false);
   return (
-    <div className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-white/95 px-4 backdrop-blur md:hidden">
-      <Logo />
-      <Sheet>
-        <SheetTrigger render={<Button variant="outline" size="icon" aria-label="Open navigation" />}>
-          <Menu className="size-4" />
-        </SheetTrigger>
-        <SheetContent side="right" className="w-[85%] p-5">
-          <SheetTitle className="text-left">Procurement flow</SheetTitle>
-          <nav className="mt-6 space-y-2">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link key={item.view} href={item.href} className={cn("flex items-center gap-3 rounded-md p-3 text-sm", item.view === view && "bg-[#e7f0e9] font-medium text-[#184f31]")}>
-                  <Icon className="size-4" />{item.label}
-                </Link>
-              );
-            })}
-          </nav>
-        </SheetContent>
-      </Sheet>
-    </div>
+    <>
+      <div className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-white/95 px-4 backdrop-blur md:hidden">
+        <Logo />
+        <button type="button" aria-label="Open navigation" aria-expanded={open} onClick={() => setOpen(true)} className="grid size-10 place-items-center rounded-lg border bg-white">
+          <Menu className="size-5" />
+        </button>
+      </div>
+      {open && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <button type="button" aria-label="Close navigation" className="absolute inset-0 bg-black/30" onClick={() => setOpen(false)} />
+          <aside className="absolute inset-y-0 right-0 w-[85%] max-w-sm border-l bg-white p-5 shadow-xl">
+            <div className="flex items-center justify-between"><p className="font-semibold">Procurement flow</p><button type="button" aria-label="Close navigation" onClick={() => setOpen(false)} className="grid size-9 place-items-center rounded-lg hover:bg-slate-100"><X className="size-5" /></button></div>
+            <nav className="mt-6 space-y-2">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link key={item.view} href={item.href} onClick={() => setOpen(false)} className={cn("flex items-center gap-3 rounded-md p-3 text-sm", item.view === view && "bg-[#e7f0e9] font-medium text-[#184f31]")}>
+                    <Icon className="size-4" />{item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          </aside>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -446,7 +446,7 @@ function WorkspaceView() {
         eyebrow="Monday, 9 September"
         title="Good morning, Shrikant"
         description="Your Eucalyptus strategy is 83% covered. Week 3 is the only material gap and needs a sourcing decision this week."
-        actions={<Button variant="outline" onClick={() => setPeriod((value) => value === "current" ? "next" : "current")}><CalendarDays className="size-4" />{period === "current" ? "Sep 9 – Oct 6" : "Sep 16 – Oct 13"}</Button>}
+        actions={<button type="button" onClick={() => setPeriod((value) => value === "current" ? "next" : "current")} className="inline-flex h-10 items-center gap-2 rounded-lg border bg-white px-4 text-sm font-medium hover:bg-slate-50"><CalendarDays className="size-4" /><span aria-live="polite">{period === "current" ? "Sep 9 – Oct 6" : "Sep 16 – Oct 13"}</span></button>}
       />
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <MetricCard label="Target" value="4,000 t" detail="Eucalyptus · four weeks" />
@@ -574,7 +574,7 @@ function RecommendationsView() {
         eyebrow="Decision · Week 3"
         title="Cover the 620-ton supply gap"
         description="Four farms can contribute up to 860 tons during the required harvest window. Recommendations combine current field evidence, satellite maturity, historical yield, and commitment reliability."
-        actions={<><Button variant="outline" onClick={() => setFilterOpen((value) => !value)}><Filter className="size-4" />{filterOpen ? "Hide filters" : "Filter farms"}</Button>{selected.length >= 2 ? <Button render={<Link href="/compare" />}>Compare {selected.length} farms<ArrowRight className="size-4" /></Button> : <Badge variant="outline">Select at least 2 farms</Badge>}</>}
+        actions={<><button type="button" onClick={() => setFilterOpen((value) => !value)} className="inline-flex h-10 items-center gap-2 rounded-lg border bg-white px-4 text-sm font-medium hover:bg-slate-50"><Filter className="size-4" />{filterOpen ? "Hide filters" : "Filter farms"}</button>{selected.length >= 2 ? <Button render={<Link href="/compare" />}>Compare {selected.length} farms<ArrowRight className="size-4" /></Button> : <Badge variant="outline">Select at least 2 farms</Badge>}</>}
       />
       {filterOpen && (
         <Card className="mb-5 shadow-none">
@@ -633,9 +633,9 @@ function ComparisonView() {
       />
       <div className="mb-4 flex flex-wrap gap-2">
         {farms.map((farm) => (
-          <Button key={farm.id} size="sm" variant={visible.includes(farm.id) ? "secondary" : "outline"} onClick={() => setVisible((current) => current.includes(farm.id) ? current.filter((id) => id !== farm.id) : [...current, farm.id])}>
+          <button key={farm.id} type="button" className={cn("inline-flex h-9 items-center gap-1.5 rounded-lg border px-3 text-xs font-medium", visible.includes(farm.id) ? "border-slate-200 bg-slate-100" : "border-slate-200 bg-white")} onClick={() => setVisible((current) => current.includes(farm.id) ? current.filter((id) => id !== farm.id) : [...current, farm.id])}>
             {visible.includes(farm.id) ? <Check className="size-3.5" /> : <Minus className="size-3.5" />}{farm.name}
-          </Button>
+          </button>
         ))}
       </div>
       {compared.length === 0 ? (
@@ -718,13 +718,13 @@ function ScenariosView({ initialScenario = null }: { initialScenario?: string | 
           <CardContent className="space-y-6">
             <div>
               <div className="mb-3 flex justify-between text-sm"><span>Minimum Week 3 demand</span><span className="font-semibold">{target}%</span></div>
-              <Slider value={[target]} min={90} max={100} step={1} onValueChange={(value) => setTarget(typeof value === "number" ? value : value[0])} />
+              <input aria-label="Minimum Week 3 demand" type="range" value={target} min={90} max={100} step={1} onChange={(event) => setTarget(Number(event.target.value))} className="h-6 w-full cursor-pointer accent-[#2f6f49]" />
               <p className="mt-2 text-xs text-muted-foreground">Target coverage after commitments</p>
             </div>
             <Separator />
             <div>
               <div className="mb-3 flex justify-between text-sm"><span>Maximum field visits</span><span className="font-semibold">{visits}</span></div>
-              <Slider value={[visits]} min={2} max={10} step={1} onValueChange={(value) => setVisits(typeof value === "number" ? value : value[0])} />
+              <input aria-label="Maximum field visits" type="range" value={visits} min={2} max={10} step={1} onChange={(event) => setVisits(Number(event.target.value))} className="h-6 w-full cursor-pointer accent-[#2f6f49]" />
               <p className="mt-2 text-xs text-muted-foreground">Ravi’s available capacity this week</p>
             </div>
             <Separator />
@@ -969,7 +969,7 @@ function CommitmentsDecisionView() {
               {requested.includes(selected.id) ? (
                 <Button variant="outline" render={<Link href="/verification" />}><Check className="size-4" />Open Ravi’s visit brief</Button>
               ) : (
-                <Button onClick={() => setRequested((items) => [...items, selected.id])}><UserRoundCheck className="size-4" />Request field confirmation</Button>
+                <button type="button" onClick={() => setRequested((items) => [...items, selected.id])} className="inline-flex h-9 items-center gap-2 rounded-lg bg-[#2f6f49] px-3 text-sm font-medium text-white hover:bg-[#285e3f]"><UserRoundCheck className="size-4" />Request field confirmation</button>
               )}
               <Button variant="outline" render={<Link href={`/farms/${selected.id}`} />}>Review evidence</Button>
               <Button variant="outline" render={<Link href="/decisions/week-3-gap" />}>Find replacement supply</Button>
@@ -1122,8 +1122,8 @@ function VerificationView() {
             <label className="block"><span className="text-sm font-medium">Supply observation</span><select value={observation} onChange={(event) => { setObservation(event.target.value); setSaved(false); }} className="mt-2 h-10 w-full rounded-md border bg-white px-3 text-sm"><option>Supply estimate unchanged</option><option>Increase expected supply</option><option>Reduce expected supply</option><option>Hold recommendation</option></select></label>
             <label className="block"><span className="text-sm font-medium">Field notes</span><textarea value={notes} onChange={(event) => { setNotes(event.target.value); setSaved(false); }} placeholder="Record access, crop condition, owner confirmation, or collection constraints…" className="mt-2 min-h-28 w-full rounded-md border p-3 text-sm" /></label>
             <label className="block cursor-pointer rounded-md border border-dashed p-4 text-center"><Camera className="mx-auto size-5 text-muted-foreground" /><span className="mt-2 block text-sm font-medium">Add field photos</span><span className="mt-1 block text-xs text-muted-foreground">{photos.length ? photos.join(", ") : "JPG or PNG · linked to this farm’s evidence"}</span><input type="file" multiple accept="image/*" className="sr-only" onChange={(event) => { setPhotos(Array.from(event.target.files ?? []).map((file) => file.name)); setSaved(false); }} /></label>
-            <Button className="w-full" onClick={() => { setSaved(true); setStatus("Completed"); }}><Save className="size-4" />Save findings to recommendation</Button>
-            {saved && <div className="rounded-md border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900"><p className="font-medium">Findings connected</p><p className="mt-1 text-xs leading-5">The {observation.toLowerCase()} observation, {photos.length} photo(s), and Ravi’s notes now appear in {farm.name}’s evidence record.</p><div className="mt-3 flex gap-2"><Button size="sm" variant="outline" render={<Link href={`/farms/${farm.id}`} />}>View farm evidence</Button><Button size="sm" render={<Link href="/decisions/week-3-gap" />}>Return to recommendations</Button></div></div>}
+            <button type="button" className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-[#2f6f49] px-4 text-sm font-medium text-white hover:bg-[#285e3f]" onClick={() => { setSaved(true); setStatus("Completed"); window.setTimeout(() => document.getElementById("findings-connected")?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50); }}><Save className="size-4" />Save findings to recommendation</button>
+            {saved && <div id="findings-connected" aria-live="polite" className="rounded-md border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900"><p className="font-medium">Findings connected</p><p className="mt-1 text-xs leading-5">The {observation.toLowerCase()} observation, {photos.length} photo(s), and Ravi’s notes now appear in {farm.name}’s evidence record.</p><div className="mt-3 flex gap-2"><Button size="sm" variant="outline" render={<Link href={`/farms/${farm.id}`} />}>View farm evidence</Button><Button size="sm" render={<Link href="/decisions/week-3-gap" />}>Return to recommendations</Button></div></div>}
           </CardContent>
         </Card>
       </div>
@@ -1145,7 +1145,7 @@ function CollectionScheduleView() {
   return (
     <AppShell view="plan">
       <div className="mb-5 flex items-center gap-2 text-xs text-muted-foreground"><Link href="/plan">Procurement plan</Link><ChevronRight className="size-3" /><span>Collection schedule</span></div>
-      <PageHeader eyebrow="Collection operations" title="Schedule collections from harvest readiness" description="Pickup windows are derived from expected harvest dates, field access, and the active procurement plan." actions={<Button variant="outline" onClick={() => setMapMode((value) => !value)}>{mapMode ? <><CalendarDays className="size-4" />List view</> : <><MapPinned className="size-4" />Map view</>}</Button>} />
+      <PageHeader eyebrow="Collection operations" title="Schedule collections from harvest readiness" description="Pickup windows are derived from expected harvest dates, field access, and the active procurement plan." actions={<button type="button" onClick={() => setMapMode((value) => !value)} className="inline-flex h-10 items-center gap-2 rounded-lg border bg-white px-4 text-sm font-medium hover:bg-slate-50">{mapMode ? <><CalendarDays className="size-4" />List view</> : <><MapPinned className="size-4" />Map view</>}</button>} />
       <div className="mb-4 flex flex-wrap gap-2">{["All", ...Array.from(new Set(pickups.map((pickup) => pickup.date)))].map((item) => <Button key={item} size="sm" variant={date === item ? "default" : "outline"} onClick={() => setDate(item)}>{item}</Button>)}</div>
       {mapMode ? <Card className="shadow-none"><CardContent className="p-4"><FarmMap farms={visible.map((pickup) => farms.find((farm) => farm.id === pickup.id)!)} height={520} /></CardContent></Card> : (
         <Card className="shadow-none"><CardContent className="divide-y p-0">{visible.map((pickup) => {
