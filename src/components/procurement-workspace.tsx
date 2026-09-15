@@ -34,7 +34,6 @@ import {
   UploadCloud,
   UserRoundCheck,
   UsersRound,
-  X,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -46,7 +45,6 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 type View = "workspace" | "recommendations" | "comparison" | "scenarios" | "plan";
@@ -587,13 +585,13 @@ function ScenariosView() {
           <CardContent className="space-y-6">
             <div>
               <div className="mb-3 flex justify-between text-sm"><span>Minimum Week 3 demand</span><span className="font-semibold">{target}%</span></div>
-              <Slider value={[target]} min={90} max={100} step={1} onValueChange={(value) => setTarget(value[0])} />
+              <Slider value={[target]} min={90} max={100} step={1} onValueChange={(value) => setTarget(typeof value === "number" ? value : value[0])} />
               <p className="mt-2 text-xs text-muted-foreground">Target coverage after commitments</p>
             </div>
             <Separator />
             <div>
               <div className="mb-3 flex justify-between text-sm"><span>Maximum field visits</span><span className="font-semibold">{visits}</span></div>
-              <Slider value={[visits]} min={2} max={10} step={1} onValueChange={(value) => setVisits(value[0])} />
+              <Slider value={[visits]} min={2} max={10} step={1} onValueChange={(value) => setVisits(typeof value === "number" ? value : value[0])} />
               <p className="mt-2 text-xs text-muted-foreground">Ravi’s available capacity this week</p>
             </div>
             <Separator />
