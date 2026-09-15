@@ -37,8 +37,11 @@ export function FarmMap({
   const farmsKey = farms.map((farm) => `${farm.id}:${farm.lat}:${farm.lng}`).join("|");
   const farmsRef = useRef(farms);
   const selectRef = useRef(onSelectFarm);
-  farmsRef.current = farms;
-  selectRef.current = onSelectFarm;
+
+  useEffect(() => {
+    farmsRef.current = farms;
+    selectRef.current = onSelectFarm;
+  }, [farms, onSelectFarm]);
 
   useEffect(() => {
     let disposed = false;
