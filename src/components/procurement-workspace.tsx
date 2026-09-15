@@ -621,9 +621,22 @@ function ScenariosView() {
                       <div className="flex items-center gap-2"><h3 className="font-semibold">{scenario.name}</h3>{index === 0 && <Badge className="bg-sky-100 text-sky-800">Live result</Badge>}{scenario.name === "Confidence first" && <Badge className="bg-emerald-100 text-emerald-800">Recommended</Badge>}</div>
                       <p className="mt-1 text-xs text-muted-foreground">{scenario.farms} farms · {Math.round((scenario.coverage / 100) * 1000).toLocaleString()} t committed · {Math.max(0, Math.round((scenario.coverage / 100) * 1000 - 1000))} t buffer</p>
                     </div>
-                    <Button size="sm" variant={selected ? "default" : "outline"} onClick={() => { setSelectedScenario(scenario.name); setAssigned(false); }}>
+                    <button
+                      type="button"
+                      className={cn(
+                        "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-lg border px-3 text-xs font-medium transition-colors",
+                        selected
+                          ? "border-[#2f6f49] bg-[#2f6f49] text-white"
+                          : "border-slate-200 bg-white hover:bg-slate-100"
+                      )}
+                      onClick={() => {
+                        setSelectedScenario(scenario.name);
+                        setAssigned(false);
+                        window.setTimeout(() => document.getElementById("scenario-verification")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+                      }}
+                    >
                       {selected ? <><Check className="size-4" />Selected</> : "Select scenario"}
-                    </Button>
+                    </button>
                   </div>
                   <ScenarioMetrics scenario={scenario} />
                   <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100"><div className={cn("h-full rounded-full", scenario.coverage >= 95 ? "bg-[#3d7e55]" : "bg-amber-500")} style={{ width: `${Math.min(scenario.coverage, 100)}%` }} /></div>
@@ -632,7 +645,7 @@ function ScenariosView() {
             );
           })}
           {selectedScenario && (
-            <Card className="border-[#bcd3c2] bg-[#f7fbf8] shadow-none">
+            <Card id="scenario-verification" className="scroll-mt-6 border-[#bcd3c2] bg-[#f7fbf8] shadow-none">
               <CardHeader>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div><CardTitle className="text-base">Selective verification for “{selectedScenario}”</CardTitle><p className="mt-1 text-xs text-muted-foreground">Most farms can move forward. Only unresolved evidence is assigned to Ravi.</p></div>
@@ -673,7 +686,19 @@ function PlanView() {
         eyebrow={laterState ? "Tuesday, 17 September · Plan change detected" : "Approved plan · Week 3"}
         title={laterState ? "Week 3 coverage needs attention" : "Week 3 procurement plan is on target"}
         description={laterState ? "Kaveri North Block’s expected supply fell by 400 tons after a field update. Coverage moved from 96% to 86%." : "The Confidence first scenario is active. Seven farms are committed; three selective verifications are linked to Ravi’s route."}
-        actions={!laterState ? <Button variant="outline" onClick={() => setLaterState(true)}><Clock3 className="size-4" />Simulate later update</Button> : undefined}
+        actions={!laterState ? (
+          <button
+            type="button"
+            className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium transition-colors hover:bg-slate-100"
+            onClick={() => {
+              setLaterState(true);
+              setRestored(false);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          >
+            <Clock3 className="size-4" />Simulate later update
+          </button>
+        ) : undefined}
       />
       <Card className={cn("mb-6 shadow-none", laterState && !restored ? "border-red-200 bg-red-50/40" : "border-emerald-200 bg-emerald-50/30")}>
         <CardContent className="p-5">
