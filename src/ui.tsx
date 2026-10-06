@@ -7,7 +7,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { STATUS_META, StatusKind, semantic, space, INK, INK_MUTED, PAPER, RULE, ACCENT, m3 } from './designSystem'
+import { STATUS_META, StatusKind, space, INK, ACCENT, m3 } from './designSystem'
 
 export function StatusChip({ kind }: { kind: StatusKind }) {
   const meta = STATUS_META[kind]
