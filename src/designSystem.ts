@@ -1,50 +1,104 @@
 /**
- * Teal-led procurement intelligence palette.
- * Anchor: #0BAFAF. Cool slate surfaces, deep teal ink, coral alert, amber caution.
+ * Material Design 3 (Material You) tokens seeded from #0BAFAF.
+ * Color roles follow Google’s M3 system: primary/container, surface tiers, outline.
  */
 
 export const ACCENT = '#0BAFAF'
-export const ACCENT_DARK = '#089090'
-export const ACCENT_SOFT = '#E0F7F7'
-export const SIDEBAR_BG = '#061418'
 
-/** Cool slate canvas — clean, not muddy sage */
-export const SURFACE = '#EEF2F3'
-export const PAPER = '#FFFFFF'
-export const INK = '#0A1A1F'
-export const INK_MUTED = '#5B6B72'
-export const RULE = 'rgba(10, 26, 31, 0.09)'
+/** M3 tonal palette from accent seed */
+export const m3 = {
+  primary: '#006A6A',
+  onPrimary: '#FFFFFF',
+  primaryContainer: '#9EF2F1',
+  onPrimaryContainer: '#002020',
+  /** Brand accent kept for CTAs that should read as #0BAFAF */
+  primaryBrand: ACCENT,
+  primaryBrandDark: '#089090',
 
-export const space = {
-  tight: 1, // 8
-  related: 2, // 16
-  section: 3, // 24
-  gutter: 4, // 32
+  secondary: '#4A6363',
+  onSecondary: '#FFFFFF',
+  secondaryContainer: '#CCE8E7',
+  onSecondaryContainer: '#051F1F',
+
+  tertiary: '#4B607C',
+  onTertiary: '#FFFFFF',
+  tertiaryContainer: '#D2E4FF',
+  onTertiaryContainer: '#041C35',
+
+  error: '#BA1A1A',
+  onError: '#FFFFFF',
+  errorContainer: '#FFDAD6',
+  onErrorContainer: '#410002',
+
+  warning: '#7D5700',
+  onWarning: '#FFFFFF',
+  warningContainer: '#FFDEAD',
+  onWarningContainer: '#271900',
+
+  success: '#006B5F',
+  onSuccess: '#FFFFFF',
+  successContainer: '#9EF2E3',
+  onSuccessContainer: '#00201C',
+
+  surface: '#F4FBFA',
+  surfaceDim: '#D5DBDA',
+  surfaceBright: '#F4FBFA',
+  surfaceContainerLowest: '#FFFFFF',
+  surfaceContainerLow: '#EFF5F4',
+  surfaceContainer: '#E9EFEE',
+  surfaceContainerHigh: '#E3E9E8',
+  surfaceContainerHighest: '#DEE4E3',
+  onSurface: '#161D1D',
+  onSurfaceVariant: '#3F4948',
+
+  outline: '#6F7978',
+  outlineVariant: '#BEC9C8',
+  scrim: '#000000',
+  shadow: '#000000',
+  inverseSurface: '#2B3231',
+  inverseOnSurface: '#ECF2F1',
+  inversePrimary: '#80D5D4',
 } as const
 
-/** Semantic supply / evidence / risk — keyed off the teal accent family */
+// Fix typo above - I accidentally broke tertiaryContainer
+export const SIDEBAR_BG = m3.surfaceContainerLow
+export const SURFACE = m3.surface
+export const PAPER = m3.surfaceContainerLowest
+export const INK = m3.onSurface
+export const INK_MUTED = m3.onSurfaceVariant
+export const RULE = m3.outlineVariant
+export const ACCENT_SOFT = m3.primaryContainer
+export const ACCENT_DARK = m3.primaryBrandDark
+
+export const space = {
+  tight: 1,
+  related: 2,
+  section: 3,
+  gutter: 4,
+} as const
+
+/** Domain semantics mapped onto M3 roles */
 export const semantic = {
-  firm: '#0D5C5C',
-  atRisk: '#C4872A',
-  gap: '#B8C0C4',
-  canopyHigh: '#0D7A6F',
-  canopyMed: '#C4872A',
-  canopyLow: '#D1433A',
-  evidenceFresh: '#0D7A6F',
-  evidenceAging: '#C4872A',
-  evidenceMissing: '#D1433A',
+  firm: m3.primary,
+  atRisk: m3.warning,
+  gap: m3.outlineVariant,
+  canopyHigh: m3.success,
+  canopyMed: m3.warning,
+  canopyLow: m3.error,
+  evidenceFresh: m3.success,
+  evidenceAging: m3.warning,
+  evidenceMissing: m3.error,
   signal: ACCENT,
-  alert: '#D1433A',
-  alertSoft: '#FDECEA',
-  okSoft: '#E6F5F3',
-  warnSoft: '#FFF6E5',
-  accentSoft: ACCENT_SOFT,
+  alert: m3.error,
+  alertSoft: m3.errorContainer,
+  okSoft: m3.successContainer,
+  warnSoft: m3.warningContainer,
+  accentSoft: m3.primaryContainer,
   mapWater: '#7BA8B0',
   mapParcel: '#4A6B62',
   mapParcelSel: ACCENT,
 } as const
 
-/** Label taxonomy — one chip language across the product */
 export type StatusKind =
   | 'confidence-high'
   | 'confidence-medium'
@@ -65,30 +119,30 @@ export const STATUS_META: Record<
   StatusKind,
   { label: string; fg: string; bg: string; border: string }
 > = {
-  'confidence-high': { label: 'HIGH', fg: semantic.canopyHigh, bg: semantic.okSoft, border: 'transparent' },
-  'confidence-medium': { label: 'MEDIUM', fg: '#9A6410', bg: semantic.warnSoft, border: 'transparent' },
-  'confidence-low': { label: 'LOW', fg: semantic.alert, bg: semantic.alertSoft, border: 'transparent' },
-  'evidence-current': { label: 'Evidence current', fg: semantic.canopyHigh, bg: 'transparent', border: semantic.canopyHigh },
-  'evidence-aging': { label: 'Evidence aging', fg: '#9A6410', bg: 'transparent', border: semantic.canopyMed },
-  'evidence-missing': { label: 'Evidence missing', fg: semantic.alert, bg: 'transparent', border: semantic.alert },
-  'candidate-strong': { label: 'Strong candidate', fg: ACCENT_DARK, bg: ACCENT_SOFT, border: 'transparent' },
-  'visit-required': { label: 'Field visit required', fg: '#1F5A7A', bg: '#E5F1F7', border: 'transparent' },
-  'concentration-risk': { label: 'Concentration risk', fg: semantic.alert, bg: semantic.alertSoft, border: 'transparent' },
-  'outside-harvest': { label: 'Outside harvest window', fg: INK_MUTED, bg: 'rgba(10,26,31,0.06)', border: 'transparent' },
-  verified: { label: 'Verified', fg: semantic.canopyHigh, bg: semantic.okSoft, border: 'transparent' },
-  'primary-issue': { label: 'Primary issue', fg: '#FFFFFF', bg: semantic.alert, border: 'transparent' },
-  'constraint-pass': { label: 'Pass', fg: semantic.canopyHigh, bg: semantic.okSoft, border: 'transparent' },
-  'constraint-fail': { label: 'Fails constraint', fg: semantic.alert, bg: semantic.alertSoft, border: 'transparent' },
+  'confidence-high': { label: 'HIGH', fg: m3.onSuccessContainer, bg: m3.successContainer, border: 'transparent' },
+  'confidence-medium': { label: 'MEDIUM', fg: m3.onWarningContainer, bg: m3.warningContainer, border: 'transparent' },
+  'confidence-low': { label: 'LOW', fg: m3.onErrorContainer, bg: m3.errorContainer, border: 'transparent' },
+  'evidence-current': { label: 'Evidence current', fg: m3.success, bg: 'transparent', border: m3.success },
+  'evidence-aging': { label: 'Evidence aging', fg: m3.warning, bg: 'transparent', border: m3.warning },
+  'evidence-missing': { label: 'Evidence missing', fg: m3.error, bg: 'transparent', border: m3.error },
+  'candidate-strong': { label: 'Strong candidate', fg: m3.onPrimaryContainer, bg: m3.primaryContainer, border: 'transparent' },
+  'visit-required': { label: 'Field visit required', fg: m3.onTertiaryContainer, bg: m3.tertiaryContainer, border: 'transparent' },
+  'concentration-risk': { label: 'Concentration risk', fg: m3.onErrorContainer, bg: m3.errorContainer, border: 'transparent' },
+  'outside-harvest': { label: 'Outside harvest window', fg: m3.onSurfaceVariant, bg: m3.surfaceContainerHigh, border: 'transparent' },
+  verified: { label: 'Verified', fg: m3.onSuccessContainer, bg: m3.successContainer, border: 'transparent' },
+  'primary-issue': { label: 'Primary issue', fg: m3.onError, bg: m3.error, border: 'transparent' },
+  'constraint-pass': { label: 'Pass', fg: m3.onSuccessContainer, bg: m3.successContainer, border: 'transparent' },
+  'constraint-fail': { label: 'Fails constraint', fg: m3.onErrorContainer, bg: m3.errorContainer, border: 'transparent' },
 }
 
 export const typographyScale = {
   display: { size: '2.75rem', weight: 700, tracking: '-0.03em', line: 1.05 },
   title: { size: '1.375rem', weight: 700, tracking: '-0.02em', line: 1.2 },
   subtitle: { size: '0.9375rem', weight: 650, tracking: '-0.01em', line: 1.35 },
-  body: { size: '0.8125rem', weight: 500, tracking: '0', line: 1.5 },
-  meta: { size: '0.6875rem', weight: 500, tracking: '0.01em', line: 1.4 },
-  overline: { size: '0.625rem', weight: 700, tracking: '0.14em', line: 1.3 },
+  body: { size: '0.875rem', weight: 500, tracking: '0', line: 1.5 },
+  meta: { size: '0.75rem', weight: 500, tracking: '0.01em', line: 1.4 },
+  overline: { size: '0.6875rem', weight: 700, tracking: '0.08em', line: 1.3 },
   dataLg: { size: '2rem', weight: 700, tracking: '-0.02em', line: 1 },
   dataMd: { size: '1.25rem', weight: 700, tracking: '-0.01em', line: 1 },
-  dataSm: { size: '0.8125rem', weight: 700, tracking: '0', line: 1.2 },
+  dataSm: { size: '0.875rem', weight: 700, tracking: '0', line: 1.2 },
 } as const

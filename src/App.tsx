@@ -36,7 +36,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import OpenInFullIcon from '@mui/icons-material/OpenInFull'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
-import { ACCENT, SIDEBAR_BG, space, semantic } from './theme'
+import { ACCENT, space, semantic, m3 } from './theme'
 import {
   DashPaper,
   SectionLabel,
@@ -492,7 +492,7 @@ function FarmDecisionPanel({
 
 function SatelliteThumbnail({ degraded = false }: { degraded?: boolean }) {
   return (
-    <svg viewBox="0 0 180 96" style={{ width: '100%', height: 96, borderRadius: 4, border: '1px solid rgba(12,21,32,0.12)' }} role="img" aria-label={degraded ? 'Current satellite field condition' : 'Previous satellite field condition'}>
+    <svg viewBox="0 0 180 96" style={{ width: '100%', height: 96, borderRadius: '16px', border: '1px solid rgba(12,21,32,0.12)' }} role="img" aria-label={degraded ? 'Current satellite field condition' : 'Previous satellite field condition'}>
       <rect width="180" height="96" fill="#d8d7c7" />
       <path d="M0 0 H70 L61 43 L0 37 Z" fill={degraded ? '#a9a77e' : '#718b55'} />
       <path d="M73 0 H132 L126 42 L64 42 Z" fill={degraded ? '#b3ad75' : '#809a5c'} />
@@ -616,8 +616,8 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             sx={{
               mb: space.section,
               p: space.section,
-              bgcolor: PAPER,
-              borderRadius: 1,
+              bgcolor: m3.surfaceContainerLowest,
+              borderRadius: '16px',
               backgroundImage: `linear-gradient(135deg, rgba(209,67,58,0.08) 0%, ${PAPER} 42%)`,
             }}
           >
@@ -669,7 +669,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Weekly rail — one composition with map relationship */}
           <Box sx={{ mb: space.section }}>
             <SectionLabel>Weekly position · linked to Week 3 geography</SectionLabel>
-            <Box sx={{ bgcolor: PAPER, borderRadius: 1, overflow: 'hidden' }}>
+            <Box sx={{ bgcolor: m3.surfaceContainerLowest, borderRadius: '16px', overflow: 'hidden' }}>
               <WeekRail weeks={weeks} />
             </Box>
           </Box>
@@ -677,7 +677,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Decision queue — primary elevated, rest as strips */}
           <Box>
             <SectionLabel>Needs a decision</SectionLabel>
-            <Stack spacing={0} sx={{ bgcolor: PAPER, borderRadius: 1, overflow: 'hidden' }}>
+            <Stack spacing={0} sx={{ bgcolor: m3.surfaceContainerLowest, borderRadius: '16px', overflow: 'hidden' }}>
               <Box sx={{ p: space.related, bgcolor: 'rgba(11,175,175,0.10)' }}>
                 <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 2, alignItems: 'flex-start' }}>
                   <Box>
@@ -733,11 +733,11 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <MapLegend items={DEFAULT_LEGEND} />
           </Box>
         </Box>
-        <Box sx={{ p: space.related, borderTop: `1px solid ${RULE}`, bgcolor: INK, color: '#fff' }}>
-          <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.65)', display: 'block', mb: 1 }}>
+        <Box sx={{ p: space.related, borderTop: `1px solid ${RULE}`, bgcolor: m3.inverseSurface, color: m3.inverseOnSurface }}>
+          <Typography variant="caption" sx={{ color: m3.inversePrimary, display: 'block', mb: 1 }}>
             Map · Week 3 geography
           </Typography>
-          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.85)', mb: 1.5 }}>
+          <Typography variant="body2" sx={{ color: m3.inverseOnSurface, mb: 1.5, opacity: 0.85 }}>
             620 t gap · candidates highlighted for investigation
           </Typography>
           <PrimaryBtn fullWidth onClick={() => onNavigate('farms')}>
@@ -1797,7 +1797,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <DashPaper sx={{ width: '100%', maxWidth: 410, overflow: 'hidden', boxShadow: 1, p: 0 }}>
         <Box sx={{ bgcolor: 'background.paper', overflow: 'hidden' }}>
           {/* Dark top bar */}
-          <Box sx={{ color: '#fff', px: 2, pt: 2, pb: 2 }} style={{ background: SIDEBAR_BG, borderTop: `3px solid ${ACCENT}` }}>
+          <Box sx={{ color: '#fff', px: 2, pt: 2, pb: 2 }} style={{ background: m3.inverseSurface, borderTop: `3px solid ${ACCENT}` }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box>
               <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 0.5 }}>
@@ -2570,26 +2570,32 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
     <Drawer
       variant="permanent"
       sx={{
-        width: 176,
+        width: 220,
         flexShrink: 0,
         [`& .MuiDrawer-paper`]: {
-          width: 176,
+          width: 220,
           boxSizing: 'border-box',
-          bgcolor: SIDEBAR_BG,
-          color: '#fff',
+          bgcolor: m3.surfaceContainerLow,
+          color: m3.onSurface,
           borderRight: 'none',
           display: 'flex',
           flexDirection: 'column',
         },
       }}
     >
-      <Box sx={{ px: space.related, pt: space.section, pb: space.related, borderBottom: '1px solid rgba(11,175,175,0.22)' }}>
-        <Typography variant="overline" sx={{ color: ACCENT, display: 'block', mb: 0.5 }}>ITC Procurement</Typography>
-        <Typography variant="subtitle2" sx={{ color: '#fff', lineHeight: 1.3 }}>Decision Support</Typography>
-        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.55)', display: 'block', mt: 0.5 }}>Eucalyptus · 4,000 t</Typography>
+      <Box sx={{ px: 3, pt: 3, pb: 2 }}>
+        <Typography variant="overline" sx={{ color: ACCENT, display: 'block', mb: 0.5 }}>
+          ITC Procurement
+        </Typography>
+        <Typography variant="h6" sx={{ color: m3.onSurface, lineHeight: 1.25, fontSize: '1.05rem' }}>
+          Decision Support
+        </Typography>
+        <Typography variant="body2" sx={{ color: m3.onSurfaceVariant, display: 'block', mt: 0.5 }}>
+          Eucalyptus · 4,000 t
+        </Typography>
       </Box>
 
-      <List sx={{ flex: 1, overflowY: 'auto', py: space.related, px: 0, scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      <List sx={{ flex: 1, overflowY: 'auto', py: 1, px: 0, scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         {NAV_ITEMS.map(({ screen, num, label, sub }) => {
           const itemIdx = FLOW_ORDER.indexOf(screen)
           const isActive = current === screen
@@ -2603,58 +2609,61 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
               disabled={!isAccessible}
               onClick={() => isAccessible && onNavigate(screen)}
               sx={{
-                alignItems: 'flex-start',
-                py: space.related,
-                px: 2,
-                position: 'relative',
-                opacity: isAccessible ? 1 : 0.4,
-                '&.Mui-selected': { bgcolor: 'rgba(11,175,175,0.16)' },
-                '&.Mui-selected::before': {
-                  content: '""',
-                  position: 'absolute',
-                  left: 0,
-                  top: 8,
-                  bottom: 8,
-                  width: 3,
-                  borderRadius: '0 2px 2px 0',
-                  bgcolor: ACCENT,
-                },
+                alignItems: 'center',
+                opacity: isAccessible ? 1 : 0.38,
               }}
             >
-              <ListItemIcon sx={{ minWidth: 28, mt: 0.25 }}>
+              <ListItemIcon sx={{ minWidth: 36 }}>
                 <Avatar
                   sx={{
-                    width: 20,
-                    height: 20,
-                    fontSize: 10,
+                    width: 28,
+                    height: 28,
+                    fontSize: 12,
                     fontWeight: 700,
-                    bgcolor: isActive ? ACCENT : isComplete ? '#0F9F6E' : 'transparent',
-                    color: isActive || isComplete ? '#fff' : 'rgba(255,255,255,0.45)',
-                    border: isActive || isComplete ? 'none' : '1px solid rgba(255,255,255,0.28)',
+                    bgcolor: isActive
+                      ? m3.primaryContainer
+                      : isComplete
+                        ? m3.successContainer
+                        : m3.surfaceContainerHighest,
+                    color: isActive
+                      ? m3.onPrimaryContainer
+                      : isComplete
+                        ? m3.onSuccessContainer
+                        : m3.onSurfaceVariant,
                   }}
                 >
-                  {screen === 'alert' ? <WarningAmberIcon sx={{ fontSize: 12 }} /> : isComplete ? <CheckIcon sx={{ fontSize: 12 }} /> : num}
+                  {screen === 'alert' ? <WarningAmberIcon sx={{ fontSize: 14 }} /> : isComplete ? <CheckIcon sx={{ fontSize: 14 }} /> : num}
                 </Avatar>
               </ListItemIcon>
               <ListItemText
                 primary={label}
                 secondary={sub}
                 slotProps={{
-                  primary: { variant: 'body2', sx: { fontWeight: 650, color: isActive ? '#fff' : 'rgba(255,255,255,0.75)', lineHeight: 1.2 } },
-                  secondary: { variant: 'caption', sx: { color: isActive ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.35)', mt: 0.25 } },
+                  primary: {
+                    variant: 'body2',
+                    sx: {
+                      fontWeight: isActive ? 700 : 650,
+                      color: isActive ? m3.onSecondaryContainer : m3.onSurface,
+                      lineHeight: 1.2,
+                    },
+                  },
+                  secondary: {
+                    variant: 'caption',
+                    sx: { color: m3.onSurfaceVariant, mt: 0.25 },
+                  },
                 }}
               />
               {screen === 'alert' && (
-                <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'error.main', mt: 1, ml: 0.5, flexShrink: 0 }} />
+                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m3.error, flexShrink: 0 }} />
               )}
             </ListItemButton>
           )
         })}
       </List>
 
-      <Box sx={{ px: space.related, py: space.related, borderTop: '1px solid rgba(11,175,175,0.22)' }}>
-        <Typography variant="body2" sx={{ fontWeight: 650, color: 'rgba(255,255,255,0.8)' }}>Shrikant · Procurement Mgr</Typography>
-        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.4)', display: 'block', mt: 0.5 }}>AP Region · ITC Agri</Typography>
+      <Box sx={{ mx: 1.5, mb: 2, p: 2, borderRadius: '16px', bgcolor: m3.surfaceContainerLowest }}>
+        <Typography variant="body2" sx={{ fontWeight: 700, color: m3.onSurface }}>Shrikant</Typography>
+        <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block' }}>Procurement Mgr · AP Region</Typography>
       </Box>
     </Drawer>
   )
@@ -2686,14 +2695,24 @@ function TopBar({ screen }: { screen: Screen }) {
   }
 
   return (
-    <AppBar position="static" color="inherit">
-      <Toolbar variant="dense" sx={{ minHeight: 48, px: space.section, gap: space.related }}>
-        <Typography variant="subtitle2" sx={{ mr: space.tight }}>{BREADCRUMB_TITLE[screen]}</Typography>
-        {ctxParts.map((p, i) => (
-          <Stack key={p} direction="row" spacing={space.related} sx={{ alignItems: 'center' }}>
-            {i > 0 && <Divider orientation="vertical" flexItem sx={{ borderColor: 'divider' }} />}
-            <Typography variant="caption">{p}</Typography>
-          </Stack>
+    <AppBar position="static" color="inherit" sx={{ bgcolor: m3.surface }}>
+      <Toolbar variant="dense" sx={{ minHeight: 64, px: 3, gap: 2 }}>
+        <Typography variant="h6" component="h1" sx={{ mr: 1, fontWeight: 700, fontSize: '1.05rem', color: m3.onSurface }}>
+          {BREADCRUMB_TITLE[screen]}
+        </Typography>
+        <Box sx={{ flex: 1 }} />
+        {ctxParts.map(p => (
+          <Chip
+            key={p}
+            size="small"
+            label={p}
+            sx={{
+              bgcolor: m3.surfaceContainerHigh,
+              color: m3.onSurfaceVariant,
+              fontWeight: 600,
+              borderRadius: 2,
+            }}
+          />
         ))}
       </Toolbar>
     </AppBar>

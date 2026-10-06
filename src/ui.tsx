@@ -7,24 +7,24 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { STATUS_META, StatusKind, semantic, space, INK, INK_MUTED, PAPER, RULE, ACCENT } from './designSystem'
+import { STATUS_META, StatusKind, semantic, space, INK, INK_MUTED, PAPER, RULE, ACCENT, m3 } from './designSystem'
 
 export function StatusChip({ kind }: { kind: StatusKind }) {
-  const m = STATUS_META[kind]
+  const meta = STATUS_META[kind]
   return (
     <Chip
       size="small"
-      label={m.label}
+      label={meta.label}
       sx={{
-        height: 22,
-        fontSize: 10,
-        fontWeight: 700,
-        letterSpacing: '0.06em',
-        textTransform: 'uppercase',
-        color: m.fg,
-        bgcolor: m.bg,
-        border: m.border === 'transparent' ? 'none' : `1px solid ${m.border}`,
-        '& .MuiChip-label': { px: 1 },
+        height: 24,
+        fontSize: 11,
+        fontWeight: 650,
+        letterSpacing: '0.02em',
+        textTransform: kind === 'primary-issue' || kind.startsWith('confidence') ? 'uppercase' : 'none',
+        color: meta.fg,
+        bgcolor: meta.bg === 'transparent' ? 'transparent' : meta.bg,
+        border: meta.border === 'transparent' ? 'none' : `1px solid ${meta.border}`,
+        '& .MuiChip-label': { px: 1.25 },
       }}
     />
   )
@@ -34,7 +34,12 @@ export function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <Typography
       variant="overline"
-      sx={{ display: 'block', mb: space.tight, color: INK_MUTED, letterSpacing: '0.14em' }}
+      component="p"
+      sx={{
+        display: 'block',
+        mb: space.tight,
+        color: m3.onSurfaceVariant,
+      }}
     >
       {children}
     </Typography>
@@ -61,10 +66,11 @@ export function DashPaper({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       sx={{
-        p: space.related,
-        bgcolor: PAPER,
-        borderRadius: 1,
+        p: space.section,
+        bgcolor: m3.surfaceContainerLowest,
+        borderRadius: '16px',
         border: 'none',
+        boxShadow: 'none',
         ...sx,
       }}
     >
@@ -73,13 +79,14 @@ export function DashPaper({
   )
 }
 
-/** Open data strip — no card chrome; for operational density */
+/** Open data strip — surface-container tonal band */
 export function DataStrip({ children, sx }: { children: React.ReactNode; sx?: object }) {
   return (
     <Box
       sx={{
         py: space.related,
-        borderBottom: `1px solid ${RULE}`,
+        px: space.section,
+        borderBottom: `1px solid ${m3.outlineVariant}`,
         ...sx,
       }}
     >
@@ -97,10 +104,23 @@ export function PrimaryBtn(props: React.ComponentProps<typeof Button> & { fullWi
   )
 }
 
+/** MD3 filled-tonal style */
 export function SecondaryBtn(props: React.ComponentProps<typeof Button> & { fullWidth?: boolean }) {
   const { children, fullWidth, sx, ...rest } = props
   return (
-    <Button variant="outlined" color="inherit" fullWidth={fullWidth} sx={{ flexShrink: 0, ...sx }} {...rest}>
+    <Button
+      variant="contained"
+      color="secondary"
+      fullWidth={fullWidth}
+      sx={{
+        flexShrink: 0,
+        bgcolor: m3.secondaryContainer,
+        color: m3.onSecondaryContainer,
+        '&:hover': { bgcolor: m3.secondaryContainer, filter: 'brightness(0.96)' },
+        ...sx,
+      }}
+      {...rest}
+    >
       {children}
     </Button>
   )
@@ -109,13 +129,12 @@ export function SecondaryBtn(props: React.ComponentProps<typeof Button> & { full
 export function GhostBtn(props: React.ComponentProps<typeof Button>) {
   const { children, sx, ...rest } = props
   return (
-    <Button variant="text" color="primary" sx={{ flexShrink: 0, minWidth: 0, px: 1, ...sx }} {...rest}>
+    <Button variant="text" color="primary" sx={{ flexShrink: 0, minWidth: 0, px: 1.5, ...sx }} {...rest}>
       {children}
     </Button>
   )
 }
 
-/** Horizontal supply composition — firm / at-risk / gap */
 export function SupplyBar({
   firm,
   atRisk,
@@ -126,14 +145,13 @@ export function SupplyBar({
   total: number
 }) {
   return (
-    <Box sx={{ display: 'flex', height: 10, borderRadius: 1, overflow: 'hidden', bgcolor: 'rgba(10,26,31,0.06)' }}>
-      <Box sx={{ width: `${(firm / total) * 100}%`, bgcolor: semantic.firm }} />
-      <Box sx={{ width: `${(atRisk / total) * 100}%`, bgcolor: semantic.atRisk }} />
+    <Box sx={{ display: 'flex', height: 12, borderRadius: 2, overflow: 'hidden', bgcolor: m3.surfaceContainerHighest }}>
+      <Box sx={{ width: `${(firm / total) * 100}%`, bgcolor: ACCENT }} />
+      <Box sx={{ width: `${(atRisk / total) * 100}%`, bgcolor: m3.warning }} />
     </Box>
   )
 }
 
-/** Week position as one continuous rail (not separate cards) */
 export function WeekRail({
   weeks,
 }: {
@@ -150,11 +168,11 @@ export function WeekRail({
           <Box
             key={w.n}
             sx={{
-              py: 1.5,
+              py: 2,
               px: space.section,
-              borderBottom: isLast ? 'none' : `1px solid ${RULE}`,
-              bgcolor: w.issue ? 'rgba(209,67,58,0.10)' : 'transparent',
-              boxShadow: w.issue ? `inset 3px 0 0 ${semantic.alert}` : 'none',
+              borderBottom: isLast ? 'none' : `1px solid ${m3.outlineVariant}`,
+              bgcolor: w.issue ? m3.errorContainer : 'transparent',
+              boxShadow: w.issue ? `inset 4px 0 0 ${m3.error}` : 'none',
               width: '100%',
               boxSizing: 'border-box',
             }}
@@ -175,13 +193,17 @@ export function WeekRail({
                 </Typography>
                 <Typography
                   variant="caption"
-                  sx={{ color: w.delta >= 0 ? semantic.canopyHigh : semantic.alert, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}
+                  sx={{
+                    color: w.delta >= 0 ? m3.success : m3.error,
+                    fontWeight: 700,
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
                 >
                   {w.delta > 0 ? `+${w.delta}` : w.delta} t
                 </Typography>
               </Stack>
             </Stack>
-            <Box sx={{ position: 'relative', height: 6, bgcolor: 'rgba(10,26,31,0.06)', borderRadius: 1 }}>
+            <Box sx={{ position: 'relative', height: 8, bgcolor: m3.surfaceContainerHighest, borderRadius: 2 }}>
               <Box
                 sx={{
                   position: 'absolute',
@@ -189,8 +211,8 @@ export function WeekRail({
                   top: 0,
                   height: '100%',
                   width: `${Math.min(pct, 100)}%`,
-                  bgcolor: w.issue ? semantic.alert : w.delta >= 0 ? semantic.firm : semantic.gap,
-                  borderRadius: 1,
+                  bgcolor: w.issue ? m3.error : w.delta >= 0 ? ACCENT : m3.outline,
+                  borderRadius: 2,
                 }}
               />
               <Box
@@ -201,7 +223,7 @@ export function WeekRail({
                   left: `${Math.min(tPct, 100)}%`,
                   width: 2,
                   bgcolor: INK,
-                  opacity: 0.55,
+                  opacity: 0.45,
                 }}
               />
             </Box>
@@ -212,7 +234,6 @@ export function WeekRail({
   )
 }
 
-/** Constraint threshold control — enterprise planning feel */
 export function ThresholdControl({
   label,
   value,
@@ -236,9 +257,8 @@ export function ThresholdControl({
     <Box
       sx={{
         p: space.related,
-        bgcolor: modified ? semantic.warnSoft : 'rgba(10,26,31,0.03)',
-        borderRadius: 1,
-        borderLeft: modified ? `3px solid ${semantic.canopyMed}` : `3px solid transparent`,
+        bgcolor: modified ? m3.warningContainer : m3.surfaceContainerLow,
+        borderRadius: 3,
       }}
     >
       <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
@@ -247,7 +267,7 @@ export function ThresholdControl({
         </Typography>
         <Typography
           variant="subtitle2"
-          sx={{ color: modified ? semantic.canopyMed : INK, fontVariantNumeric: 'tabular-nums' }}
+          sx={{ color: modified ? m3.warning : INK, fontVariantNumeric: 'tabular-nums' }}
         >
           {display}
         </Typography>
@@ -261,7 +281,6 @@ export function ThresholdControl({
   )
 }
 
-/** Tradeoff spark — coverage vs verification visits */
 export function TradeoffBars({
   coverage,
   visits,
@@ -276,28 +295,28 @@ export function TradeoffBars({
       <Box>
         <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
           <Typography variant="caption">Week 3 coverage</Typography>
-          <Typography variant="caption" sx={{ fontWeight: 700, color: INK }}>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: INK, fontVariantNumeric: 'tabular-nums' }}>
             {coverage}%
           </Typography>
         </Stack>
-        <Box sx={{ height: 4, bgcolor: 'rgba(10,26,31,0.08)', borderRadius: 1 }}>
-          <Box sx={{ width: `${coverage}%`, height: '100%', bgcolor: ACCENT, borderRadius: 1 }} />
+        <Box sx={{ height: 6, bgcolor: m3.surfaceContainerHighest, borderRadius: 2 }}>
+          <Box sx={{ width: `${coverage}%`, height: '100%', bgcolor: ACCENT, borderRadius: 2 }} />
         </Box>
       </Box>
       <Box>
         <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
           <Typography variant="caption">Verification load</Typography>
-          <Typography variant="caption" sx={{ fontWeight: 700, color: INK }}>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: INK, fontVariantNumeric: 'tabular-nums' }}>
             {visits} visit{visits === 1 ? '' : 's'}
           </Typography>
         </Stack>
-        <Box sx={{ height: 4, bgcolor: 'rgba(10,26,31,0.08)', borderRadius: 1 }}>
+        <Box sx={{ height: 6, bgcolor: m3.surfaceContainerHighest, borderRadius: 2 }}>
           <Box
             sx={{
               width: `${(visits / maxVisits) * 100}%`,
               height: '100%',
-              bgcolor: semantic.atRisk,
-              borderRadius: 1,
+              bgcolor: m3.warning,
+              borderRadius: 2,
             }}
           />
         </Box>
