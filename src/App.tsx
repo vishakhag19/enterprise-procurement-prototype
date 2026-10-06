@@ -720,7 +720,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <SectionLabel>Needs a Decision</SectionLabel>
             <div className="space-y-3">
               {/* Week 3 primary */}
-              <DashPaper sx={{ p: 2, boxShadow: `inset 3px 0 0 ${ACCENT}` }}>
+              <DashPaper sx={{ p: 2 }}>
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-sm font-bold text-gray-900 mb-1">Week 3 supply gap: 620 t</p>
