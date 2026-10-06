@@ -142,32 +142,23 @@ export function WeekRail({
   const maxBar = Math.max(...weeks.map(w => w.target))
   return (
     <Stack spacing={0}>
-      {weeks.map(w => {
+      {weeks.map((w, i) => {
         const pct = (w.committed / maxBar) * 100
         const tPct = (w.target / maxBar) * 100
+        const isLast = i === weeks.length - 1
         return (
           <Box
             key={w.n}
             sx={{
               py: 1.5,
-              px: 0,
-              borderBottom: `1px solid ${RULE}`,
-              bgcolor: w.issue ? 'rgba(168,72,50,0.06)' : 'transparent',
-              position: 'relative',
+              px: space.section,
+              borderBottom: isLast ? 'none' : `1px solid ${RULE}`,
+              bgcolor: w.issue ? 'rgba(168,72,50,0.12)' : 'transparent',
+              boxShadow: w.issue ? `inset 3px 0 0 ${semantic.alert}` : 'none',
+              width: '100%',
+              boxSizing: 'border-box',
             }}
           >
-            {w.issue && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  left: -24,
-                  top: 0,
-                  bottom: 0,
-                  width: 3,
-                  bgcolor: semantic.alert,
-                }}
-              />
-            )}
             <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
               <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                 <Typography variant="subtitle2" sx={{ color: INK }}>

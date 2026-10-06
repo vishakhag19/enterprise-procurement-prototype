@@ -662,7 +662,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Weekly rail — one composition with map relationship */}
           <Box sx={{ mb: space.section }}>
             <SectionLabel>Weekly position · linked to Week 3 geography</SectionLabel>
-            <Box sx={{ bgcolor: PAPER, borderRadius: 1, px: space.section, py: 0.5 }}>
+            <Box sx={{ bgcolor: PAPER, borderRadius: 1, overflow: 'hidden' }}>
               <WeekRail weeks={weeks} />
             </Box>
           </Box>
