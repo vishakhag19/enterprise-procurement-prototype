@@ -35,7 +35,7 @@ import {
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
-import { ACCENT, SIDEBAR_BG } from './theme'
+import { ACCENT, SIDEBAR_BG, space } from './theme'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 'field' | 'findings' | 'plan' | 'alert'
@@ -68,7 +68,7 @@ function DashPaper({
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 2.5, border: 'none', ...sx }}
+      sx={{ p: space.related, bgcolor: 'background.paper', borderRadius: 1, border: 'none', ...sx }}
     >
       {children}
     </Paper>
@@ -99,7 +99,7 @@ function SignalBadge({ type }: { type: SignalType }) {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <Typography variant="overline" color="text.secondary" sx={{ display: 'block', mb: 1, lineHeight: 1.4 }}>
+    <Typography variant="overline" color="text.secondary" sx={{ display: 'block', mb: space.tight, lineHeight: 1.4 }}>
       {children}
     </Typography>
   )
@@ -114,7 +114,7 @@ function PrimaryBtn({ children, onClick, disabled = false, className = '', fullW
       disabled={disabled}
       fullWidth={fullWidth}
       className={className}
-      sx={{ flexShrink: 0, py: 1.25 }}
+      sx={{ flexShrink: 0 }}
     >
       {children}
     </Button>
@@ -130,7 +130,7 @@ function SecondaryBtn({ children, onClick, disabled = false, className = '', ful
       disabled={disabled}
       fullWidth={fullWidth}
       className={className}
-      sx={{ flexShrink: 0, borderColor: 'rgba(11,175,175,0.45)', color: 'text.primary', py: 1.25 }}
+      sx={{ flexShrink: 0, borderColor: 'rgba(11,175,175,0.45)', color: 'text.primary' }}
     >
       {children}
     </Button>
@@ -381,9 +381,9 @@ const DOT_CLASS: Record<FarmRole, string> = {
 
 function MapLegend({ items }: { items: LegendItem[] }) {
   return (
-    <Stack spacing={0.75}>
+    <Stack spacing={space.tight}>
       {items.map(({ role, label }) => (
-        <Stack key={label} direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+        <Stack key={label} direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
           <Box className={DOT_CLASS[role]} sx={{ width: 10, height: 10, flexShrink: 0 }} />
           <Typography variant="caption">{label}</Typography>
         </Stack>
@@ -429,7 +429,7 @@ function ExpandedMap({
 }) {
   return (
     <Dialog open onClose={onClose} maxWidth="lg" fullWidth slotProps={{ paper: { sx: { height: '78vh', display: 'flex', flexDirection: 'column' } } }}>
-      <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2, py: 2 }}>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: space.related, py: space.related }}>
         <Box>
           <Typography variant="subtitle1">{title}</Typography>
           <Typography variant="caption">Same procurement geography and current marker state</Typography>
@@ -437,7 +437,7 @@ function ExpandedMap({
         <IconButton onClick={onClose} aria-label="Close expanded map" size="small"><CloseIcon fontSize="small" /></IconButton>
       </DialogTitle>
       <Divider />
-      <DialogContent sx={{ flex: 1, minHeight: 0, p: 2.5, display: 'flex', flexDirection: 'column' }}>
+      <DialogContent sx={{ flex: 1, minHeight: 0, p: space.section, display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ flex: 1, minHeight: 0 }}>
           <RegionMap
             fullscreen
@@ -450,7 +450,7 @@ function ExpandedMap({
         </Box>
       </DialogContent>
       <Divider />
-      <Box sx={{ px: 2.5, py: 1.5 }}>
+      <Box sx={{ px: space.section, py: space.related }}>
         <MapLegend items={legend} />
       </Box>
     </Dialog>
@@ -485,7 +485,7 @@ function FarmDecisionPanel({
 
   return (
     <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2 }}>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: space.related }}>
         <Box>
           <Typography variant="subtitle1">{farm.name}</Typography>
           <Typography variant="caption">{farm.district} district</Typography>
@@ -494,7 +494,7 @@ function FarmDecisionPanel({
       </DialogTitle>
       <Divider />
       <DialogContent>
-        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: space.related }}>
           <Box>
             <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>Expected supply</Typography>
             <Typography className="font-data" variant="subtitle1">{farm.supply} t · {farm.harvest}</Typography>
@@ -511,12 +511,12 @@ function FarmDecisionPanel({
             <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>Verification</Typography>
             <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>{context.verification}</Typography>
           </Box>
-          <Box sx={{ gridColumn: '1 / -1', borderTop: 1, borderColor: 'divider', pt: 1.5 }}>
+          <Box sx={{ gridColumn: '1 / -1', borderTop: 1, borderColor: 'divider', pt: space.related }}>
             <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>Relevant risk</Typography>
             <Typography variant="body2" color="text.primary">{context.risk}</Typography>
           </Box>
         </Box>
-        <Button color="primary" onClick={() => onInspectMap(farmId)} sx={{ mt: 2.5, px: 0, minWidth: 0 }}>
+        <Button color="primary" onClick={() => onInspectMap(farmId)} sx={{ mt: space.section, px: 0, minWidth: 0 }}>
           Inspect location on map →
         </Button>
       </DialogContent>
@@ -547,7 +547,7 @@ function EvidenceModal({ farmId, onClose, recovery = false }: { farmId: string; 
   const farm = FARM_MAP_META[farmId]
   return (
     <Dialog open onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2 }}>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: space.related }}>
         <Box>
           <Typography variant="overline" color="primary">Satellite + Field Evidence</Typography>
           <Typography variant="subtitle1">{farm.name}</Typography>
@@ -576,7 +576,7 @@ function EvidenceModal({ farmId, onClose, recovery = false }: { farmId: string; 
                 <p className="text-[10px] text-gray-400">{recovery ? 'Updated 2 days ago' : farm.confidence === 'LOW' ? 'Not available' : 'Confirmed recently'}</p>
               </div>
               {recovery ? <SatelliteThumbnail degraded /> : (
-                <div className="h-24 rounded border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center px-5 text-center">
+                <div className="h-24 rounded border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center px-4 text-center">
                   <p className="text-xs text-gray-500">{farm.evidence}</p>
                 </div>
               )}
@@ -585,7 +585,7 @@ function EvidenceModal({ farmId, onClose, recovery = false }: { farmId: string; 
               </p>
             </div>
           </div>
-          <Paper elevation={0} sx={{ p: 1.5, bgcolor: recovery ? 'error.50' : 'primary.50', backgroundColor: recovery ? '#FEF2F2' : '#E6F8F8' }}>
+          <Paper elevation={0} sx={{ p: space.related, bgcolor: recovery ? '#FEF2F2' : '#E6F8F8' }}>
             <Typography variant="overline" color={recovery ? 'error' : 'primary'} sx={{ display: 'block', mb: 0.5 }}>Procurement interpretation</Typography>
             <Typography variant="body2" color="text.primary">
               {recovery
@@ -632,14 +632,14 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
     <div className="flex h-full">
       {/* Main */}
-      <div className="flex-1 overflow-y-auto scroll-hide p-8">
+      <div className="flex-1 overflow-y-auto scroll-hide p-6">
         <div className="max-w-3xl">
           <SectionLabel>Procurement Command Centre</SectionLabel>
           <h1 className="text-[2.5rem] font-bold tracking-tight text-gray-900 leading-tight mb-1">4,000 t Eucalyptus</h1>
-          <p className="text-sm text-gray-500 mb-7">4-week procurement window · AP Region</p>
+          <p className="text-sm text-gray-500 mb-6">4-week procurement window · AP Region</p>
 
           {/* Target card */}
-          <DashPaper sx={{ p: 2.5, mb: 3 }}>
+          <DashPaper sx={{ p: space.section, mb: space.section }}>
             <div className="flex items-start justify-between mb-4">
               <div>
                 <SectionLabel>Procurement Target</SectionLabel>
@@ -648,7 +648,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               <p className="font-data text-3xl font-bold text-gray-900">4,000 t</p>
             </div>
             {/* Stacked bar */}
-            <Box sx={{ display: 'flex', height: 12, borderRadius: 1, overflow: 'hidden', bgcolor: 'action.hover', mb: 2 }}>
+            <Box sx={{ display: 'flex', height: 8, borderRadius: 1, overflow: 'hidden', bgcolor: 'action.hover', mb: space.related }}>
               <Box sx={{ width: `${2568/4000*100}%`, bgcolor: 'primary.main', transition: 'width 0.2s' }} />
               <Box sx={{ width: `${570/4000*100}%`, bgcolor: 'grey.400' }} />
             </Box>
@@ -659,7 +659,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 { dot: 'bg-gray-200 border border-gray-300', label: 'Gap', value: '862 t' },
               ].map(({ dot, label, value }) => (
                 <div key={label}>
-                  <div className="flex items-center gap-1.5 mb-1.5">
+                  <div className="flex items-center gap-2 mb-2">
                     <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${dot}`} />
                     <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{label}</p>
                   </div>
@@ -672,25 +672,25 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Weekly position */}
           <div className="mb-6">
             <SectionLabel>Weekly Procurement Position</SectionLabel>
-            <div className="space-y-2.5">
+            <div className="flex flex-col gap-4">
               {weeks.map(w => {
                 const pct = (w.committed / maxBar) * 100
                 const tPct = (w.target / maxBar) * 100
                 return (
                   <DashPaper
                     key={w.n}
-                    sx={{ p: 2, bgcolor: w.issue ? '#FEF2F2' : 'background.paper' }}
+                    sx={{ p: space.related, bgcolor: w.issue ? '#FEF2F2' : 'background.paper' }}
                   >
-                    <div className="flex items-center justify-between mb-2.5">
+                    <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-semibold text-gray-900">Week {w.n}</span>
                         {w.issue && (
-                          <span className="px-1.5 py-0.5 text-[9px] font-bold bg-red-700 text-white uppercase tracking-widest rounded-sm">
+                          <span className="px-2 py-1 text-[9px] font-bold bg-red-700 text-white uppercase tracking-widest rounded-sm">
                             Primary Issue
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-4">
                         <span className="font-data text-sm font-semibold text-gray-900">{w.committed.toLocaleString()}</span>
                         <span className="font-data text-xs text-gray-400">/ {w.target.toLocaleString()} t</span>
                         <span className={`font-data text-xs font-medium ${w.delta >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
@@ -718,9 +718,9 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Decision queue */}
           <div>
             <SectionLabel>Needs a Decision</SectionLabel>
-            <div className="space-y-3">
+            <div className="flex flex-col gap-4">
               {/* Week 3 primary */}
-              <DashPaper sx={{ p: 2 }}>
+              <DashPaper sx={{ p: space.related }}>
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-sm font-bold text-gray-900 mb-1">Week 3 supply gap: 620 t</p>
@@ -751,7 +751,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   cta: 'Resolve evidence',
                 },
               ].map(({ title, sub, detail, cta }) => (
-                <DashPaper key={title} sx={{ p: 2 }}>
+                <DashPaper key={title} sx={{ p: space.related }}>
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-sm font-semibold text-gray-900 mb-1">{title}</p>
@@ -781,7 +781,7 @@ className="relative flex flex-col flex-shrink-0 bg-white"
         >
           <div className="w-px h-full mx-auto bg-transparent group-hover:bg-blue-300 transition-colors" />
         </div>
-        <div className="p-4 border-b border-gray-100 flex items-start justify-between gap-3">
+        <div className="p-4 border-b border-gray-100 flex items-start justify-between gap-4">
           <div>
             <SectionLabel>Week 3 · Supply Geography</SectionLabel>
             <p className="text-xs text-gray-500">580 t committed across AP region</p>
@@ -797,7 +797,7 @@ className="relative flex flex-col flex-shrink-0 bg-white"
           </div>
         </div>
         <div className="p-4 border-t border-gray-200">
-          <p className="text-xs text-gray-600 leading-relaxed mb-3">
+          <p className="text-xs text-gray-600 leading-relaxed mb-4">
             Week 3 has a <strong className="text-gray-900">620 t supply gap</strong>. The system has identified candidate farms that can close it.
           </p>
           <PrimaryBtn fullWidth onClick={() => onNavigate('farms')}>
@@ -930,7 +930,7 @@ function FarmCard({
         bgcolor: isHovered || inComparison ? '#E6F8F8' : 'background.paper',
       }}
     >
-      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: space.tight }}>
         <Box>
           <Typography variant="subtitle2">{farm.name}</Typography>
           <Typography variant="caption">{farm.district}</Typography>
@@ -940,12 +940,12 @@ function FarmCard({
           <Typography variant="caption">{farm.harvest}</Typography>
         </Box>
       </Stack>
-      <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 0.75, mb: 1 }}>
+      <Stack direction="row" sx={{ flexWrap: 'wrap', gap: space.tight, mb: space.tight }}>
         <ConfBadge level={farm.confidence} />
         {farm.signals.map(s => <SignalBadge key={s} type={s} />)}
       </Stack>
       {farm.evidenceStatus && farm.evidenceNote && (
-        <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
+        <Typography variant="caption" sx={{ display: 'block', mb: space.tight }}>
           <Box component="strong" sx={{ color: 'text.primary' }}>{farm.evidenceStatus}</Box> · {farm.evidenceNote}
         </Typography>
       )}
@@ -954,7 +954,7 @@ function FarmCard({
       {farm.missing && (
         <Typography variant="body2" color="text.primary"><strong>Missing:</strong> {farm.missing}</Typography>
       )}
-      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1.5 }}>
+      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mt: space.related }}>
         <Button onClick={() => onViewEvidence(farm.id)} size="small" color="primary" sx={{ minWidth: 0, px: 0.5, fontSize: 12 }}>View evidence</Button>
         <Button
           size="small"
@@ -989,7 +989,7 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       {/* Map panel */}
       <div className="w-[34%] min-w-96 max-w-[440px] flex-shrink-0 flex flex-col bg-white">
         <div className="p-4 border-b border-gray-100">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">GIS Workspace · Week 3</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">GIS Workspace · Week 3</p>
           <p className="text-xs text-gray-500">Hover a farm card to highlight on map</p>
         </div>
         <div className="flex-1 min-h-0 flex flex-col">
@@ -1008,7 +1008,7 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </div>
         </div>
         <div className="p-4 border-t border-gray-200">
-          <p className="text-xs text-gray-600 mb-3">{comparison.length} farms selected for comparison</p>
+          <p className="text-xs text-gray-600 mb-4">{comparison.length} farms selected for comparison</p>
           <PrimaryBtn
             onClick={() => onNavigate('compare')}
             disabled={comparison.length < 2}
@@ -1038,7 +1038,7 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Recommended */}
           <div className="mb-6">
             <SectionLabel>Recommended for this gap</SectionLabel>
-            <div className="space-y-3">
+            <div className="flex flex-col gap-4">
               {RECOMMENDED_FARMS.map(f => (
                 <FarmCard
                   key={f.id}
@@ -1056,7 +1056,7 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Other eligible */}
           <div>
             <SectionLabel>Other eligible farms · May close remaining gap or diversify supply</SectionLabel>
-            <div className="space-y-3">
+            <div className="flex flex-col gap-4">
               {OTHER_FARMS.map(f => (
                 <FarmCard
                   key={f.id}
@@ -1143,7 +1143,7 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Fixed header */}
-      <div className="border-b border-gray-200 px-8 py-5 flex items-start justify-between flex-shrink-0">
+      <div className="border-b border-gray-200 px-6 py-4 flex items-start justify-between flex-shrink-0">
         <div>
           <SectionLabel>Candidate Comparison</SectionLabel>
           <h2 className="text-2xl font-bold text-gray-900">4 farms · Week 3</h2>
@@ -1152,17 +1152,17 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         <PrimaryBtn onClick={() => onNavigate('scenarios')}>Plan a scenario →</PrimaryBtn>
       </div>
 
-      <div className="flex-1 overflow-y-auto scroll-hide p-8">
+      <div className="flex-1 overflow-y-auto scroll-hide p-6">
         {/* Interpretation cards */}
         <div className="mb-8">
           <SectionLabel>Interpretation</SectionLabel>
           <div className="grid grid-cols-2 gap-4">
             {COMPARE_FARMS.map(f => (
-              <DashPaper key={f.id} sx={{ p: 2 }}>
-                <p className="text-sm font-bold text-gray-900 mb-0.5">{f.name}</p>
+              <DashPaper key={f.id} sx={{ p: space.related }}>
+                <p className="text-sm font-bold text-gray-900 mb-1">{f.name}</p>
                 <p className="text-xs font-semibold text-gray-500 mb-2">{f.headline}</p>
-                <p className="text-xs text-gray-600 mb-3">{f.summary}</p>
-                <p className="text-xs text-gray-700 mb-3">
+                <p className="text-xs text-gray-600 mb-4">{f.summary}</p>
+                <p className="text-xs text-gray-700 mb-4">
                   Closes <strong>{f.gapPct}%</strong> of the remaining 620 t Week 3 gap
                   {f.gapNote ? `, but ${f.gapNote}.` : '.'}
                 </p>
@@ -1229,7 +1229,7 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         </div>
       </div>
 
-      <div className="border-t border-gray-200 px-8 py-4 flex-shrink-0 flex justify-end">
+      <div className="border-t border-gray-200 px-6 py-4 flex-shrink-0 flex justify-end">
         <p className="text-xs text-gray-500 mr-auto pt-1">Scenario planning can consider these candidates and other eligible farms. The manually compared farms do not limit scenario generation.</p>
         <PrimaryBtn onClick={() => onNavigate('scenarios')}>Plan a scenario →</PrimaryBtn>
       </div>
@@ -1336,7 +1336,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     <div className="flex h-full">
       {/* Main */}
       <div className="flex-1 overflow-y-auto scroll-hide">
-        <div className="p-8">
+        <div className="p-6">
           <div className="flex items-start justify-between mb-6">
             <div>
               <SectionLabel>Scenario Planning</SectionLabel>
@@ -1350,7 +1350,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </div>
 
           {/* Constraints */}
-          <DashPaper sx={{ p: 2.5, mb: 3 }}>
+          <DashPaper sx={{ p: space.section, mb: space.section }}>
             <div className="flex items-center justify-between mb-4">
               <SectionLabel>Business Constraints</SectionLabel>
               {isModified && (
@@ -1399,22 +1399,22 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
           {/* Impact panel (shown when maxVisits changed) */}
           {showImpact && (
-            <DashPaper sx={{ p: 2.5, mb: 3, bgcolor: '#FFFBEB' }}>
+            <DashPaper sx={{ p: space.section, mb: space.section, bgcolor: '#FFFBEB' }}>
               <div className="flex items-start justify-between mb-4">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">Impact of This Change</p>
                 <p className="text-[10px] text-amber-700 font-medium">Max. field verification visits: 10 visits → <strong>{maxVisits} visit{maxVisits !== 1 ? 's' : ''}</strong></p>
               </div>
               {/* Metrics grid */}
-              <div className="grid grid-cols-4 border-y border-amber-200 py-3 mb-4">
+              <div className="grid grid-cols-4 border-y border-amber-200 py-4 mb-4">
                 {[
                   { label: 'Week 3 coverage', before: '96%', after: '89%', bad: true },
                   { label: 'Verification visits', before: '2', after: '1', bad: false },
                   { label: 'High-conf supply', before: '65%', after: '69%', bad: false },
                   { label: 'Max district conc.', before: '36%', after: '23%', bad: false },
                 ].map(({ label, before, after, bad }) => (
-                  <div key={label} className="px-3 first:pl-0 border-r border-amber-200 last:border-r-0">
+                  <div key={label} className="px-4 first:pl-0 border-r border-amber-200 last:border-r-0">
                     <p className="text-[10px] text-gray-500 mb-2">{label}</p>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-2">
                       <span className="font-data text-sm text-gray-400 line-through">{before}</span>
                       <span className="text-gray-400">→</span>
                       <span className={`font-data text-sm font-bold ${bad ? 'text-red-700' : 'text-gray-900'}`}>{after}</span>
@@ -1430,7 +1430,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   <div className="pr-4 border-r border-amber-200">
                     <p className="text-[10px] font-semibold text-red-700 mb-2">Removed</p>
                     <div className="flex items-start gap-2">
-                      <span className="text-red-600 font-bold mt-0.5">✕</span>
+                      <span className="text-red-600 font-bold mt-1">✕</span>
                       <div>
                         <p className="text-xs font-semibold text-gray-900">Tanuku Plot · <span className="font-data">160 t</span></p>
                         <p className="text-[10px] text-gray-500">Requires a field verification visit — exceeds new limit of {maxVisits}</p>
@@ -1440,7 +1440,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   <div className="pl-4">
                     <p className="text-[10px] font-semibold text-emerald-700 mb-2">Added</p>
                     <div className="flex items-start gap-2">
-                      <span className="text-emerald-600 font-bold mt-0.5">+</span>
+                      <span className="text-emerald-600 font-bold mt-1">+</span>
                       <div>
                         <p className="text-xs font-semibold text-gray-900">Guntur Strip · <span className="font-data">80 t</span></p>
                         <p className="text-[10px] text-gray-500">No field visit required — stays within {maxVisits}-visit limit</p>
@@ -1450,7 +1450,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </div>
               </div>
               {/* Coverage target not met */}
-              <DashPaper sx={{ p: 1.5, mb: 1.5, bgcolor: '#FEF2F2' }}>
+              <DashPaper sx={{ p: space.related, mb: space.related, bgcolor: '#FEF2F2' }}>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-red-700 mb-1">Coverage target not met</p>
                 <p className="text-xs font-semibold text-red-800 mb-1">Coverage-First cannot reach the 95% target with this constraint.</p>
                 <p className="text-xs text-gray-600">
@@ -1472,7 +1472,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Strategies */}
           <div>
             <SectionLabel>Generated Strategies</SectionLabel>
-            <div className="space-y-4">
+            <div className="flex flex-col gap-4">
               {STRATEGIES.map(s => {
                 const failCount = getFailCount(s)
                 const wk3 = isModified ? s.wk3Modified : s.wk3Default
@@ -1494,19 +1494,19 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     key={s.key}
                     onClick={() => setSelected(s.key === selected ? null : s.key)}
                     sx={{
-                      p: 2,
+                      p: space.related,
                       cursor: 'pointer',
                       bgcolor: isSelected ? '#E6F8F8' : failCount > 0 ? '#FEF2F2' : 'background.paper',
                     }}
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-4">
                         <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${isSelected ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-gray-300 bg-white'}`}>
-                          {isSelected && <div className="w-2 h-2 bg-white rounded-full m-auto mt-0.5" />}
+                          {isSelected && <div className="w-2 h-2 bg-white rounded-full m-auto mt-1" />}
                         </div>
                         <p className="text-sm font-bold text-gray-900">{s.name}</p>
                       </div>
-                      <span className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest rounded-sm ${
+                      <span className={`px-2 py-1 text-[10px] font-bold uppercase tracking-widest rounded-sm ${
                         failCount === 0
                           ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                           : 'bg-red-50 text-red-800 border border-red-200'
@@ -1514,27 +1514,27 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                         {failCount === 0 ? 'ALL PASS' : `${failCount} FAIL`}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-600 mb-4 ml-7">{rationale}</p>
+                    <p className="text-xs text-gray-600 mb-4 ml-6">{rationale}</p>
 
                     {/* Metrics */}
-                    <div className="grid grid-cols-4 ml-7 mb-4 border-y border-gray-100 py-3">
+                    <div className="grid grid-cols-4 ml-6 mb-4 border-y border-gray-100 py-4">
                       {[
                         { label: 'Week 3', value: wk3 === 100 ? `100% · +30 t buffer` : `${wk3}%`, fail: wk3Fails },
                         { label: 'Verification', value: String(verif), fail: verif > maxVisits },
                         { label: 'High confidence', value: `${hiconf}%`, fail: hiconf < minHighConf },
                         { label: 'Max district', value: `${dist}%`, fail: dist > maxDistConc },
                       ].map(({ label, value, fail }) => (
-                        <div key={label} className="px-3 first:pl-0 border-r border-gray-100 last:border-r-0">
+                        <div key={label} className="px-4 first:pl-0 border-r border-gray-100 last:border-r-0">
                           <p className="text-[10px] text-gray-500 mb-1">{label}</p>
                           <p className={`font-data text-sm font-bold ${fail ? 'text-red-700' : 'text-gray-900'}`}>{value}</p>
-                          {fail && <p className="text-[9px] text-red-600 mt-0.5">Fails constraint</p>}
+                          {fail && <p className="text-[9px] text-red-600 mt-1">Fails constraint</p>}
                         </div>
                       ))}
                     </div>
 
                     {/* Farm mix */}
-                    <div className="ml-7">
-                      <p className="text-[10px] font-medium text-gray-500 mb-1.5">Farm mix</p>
+                    <div className="ml-6">
+                      <p className="text-[10px] font-medium text-gray-500 mb-2">Farm mix</p>
                       <div className="flex flex-wrap gap-x-3 gap-y-1">
                       {farms.map(f => {
                         const needsVerif = f.includes('✶')
@@ -1552,7 +1552,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
           {/* Footer CTA when selected */}
           {selected && (
-            <DashPaper sx={{ mt: 3, p: 2, bgcolor: canProceed ? 'background.paper' : '#FEF2F2' }}>
+            <DashPaper sx={{ mt: space.section, p: space.related, bgcolor: canProceed ? 'background.paper' : '#FEF2F2' }}>
               {canProceed ? (
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold text-gray-900">{selectedStrategy?.name} selected — all constraints satisfied.</p>
@@ -1561,7 +1561,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               ) : (
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-semibold text-red-800 mb-0.5">Cannot proceed: {selectedStrategy?.name} fails {selectedFails} constraint{selectedFails > 1 ? 's' : ''}.</p>
+                    <p className="text-sm font-semibold text-red-800 mb-1">Cannot proceed: {selectedStrategy?.name} fails {selectedFails} constraint{selectedFails > 1 ? 's' : ''}.</p>
                     {selectedWk3 !== null && selectedWk3 < minCoverage && (
                       <p className="text-xs text-red-700">Coverage {selectedWk3}% is below the {minCoverage}% Week 3 coverage requirement.</p>
                     )}
@@ -1576,7 +1576,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
       {/* Right panel */}
       <div className="w-72 flex flex-col bg-white flex-shrink-0">
-        <div className="p-4 border-b border-gray-100 flex items-start justify-between gap-3">
+        <div className="p-4 border-b border-gray-100 flex items-start justify-between gap-4">
           <SectionLabel>Select a Strategy</SectionLabel>
           <ExpandMapButton onClick={() => {
             setMapFocusId(null)
@@ -1599,13 +1599,13 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               removedIds={isModified ? ['tanuku'] : []}
             />
           </div>
-          <div className="mt-3 mb-4">
+          <div className="mt-4 mb-4">
             <MapLegend items={DEFAULT_LEGEND} />
           </div>
           {selected && selectedStrategy && (
-            <div className="border-t border-gray-200 pt-3 mt-auto">
-              <p className="text-xs font-semibold text-gray-600 mb-3">Week 3 summary</p>
-              <div className="grid grid-cols-2 gap-3">
+            <div className="border-t border-gray-200 pt-4 mt-auto">
+              <p className="text-xs font-semibold text-gray-600 mb-4">Week 3 summary</p>
+              <div className="grid grid-cols-2 gap-4">
                 {[
                   { label: 'Coverage', value: `${isModified ? selectedStrategy.wk3Modified : selectedStrategy.wk3Default}%` },
                   {
@@ -1625,7 +1625,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   { label: 'High-confidence share', value: `${isModified ? selectedStrategy.hiconfModified : selectedStrategy.hiconfDefault}%` },
                 ].map(({ label, value }) => (
                   <div key={label}>
-                    <p className="text-[9px] text-gray-500 mb-0.5">{label}</p>
+                    <p className="text-[9px] text-gray-500 mb-1">{label}</p>
                     <p className="font-data text-base font-bold text-gray-900">{value}</p>
                   </div>
                 ))}
@@ -1691,25 +1691,25 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="border-b border-gray-200 px-8 py-5 flex items-start justify-between flex-shrink-0">
+      <div className="border-b border-gray-200 px-6 py-4 flex items-start justify-between flex-shrink-0">
         <div>
           <SectionLabel>Selective Field Verification</SectionLabel>
           <h2 className="text-2xl font-bold text-gray-900">Coverage-First · Farms requiring verification</h2>
           <p className="text-xs text-gray-500 mt-1">2 selected · 0 remaining</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <p className="text-xs text-gray-400 text-right max-w-[220px] leading-relaxed">Only farms with missing, insufficient, or conflicting evidence appear here.</p>
           <PrimaryBtn onClick={() => onNavigate('field')}>Assign 2 farms to Ravi →</PrimaryBtn>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto scroll-hide p-8">
-        <div className="max-w-2xl space-y-4">
+      <div className="flex-1 overflow-y-auto scroll-hide p-6">
+        <div className="max-w-2xl flex flex-col gap-4">
           {farms.map(f => (
-            <DashPaper key={f.id} sx={{ p: 2.5, bgcolor: '#FFFBEB' }}>
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded border border-amber-700 bg-amber-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <DashPaper key={f.id} sx={{ p: space.section, bgcolor: '#FFFBEB' }}>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-5 h-5 rounded border border-amber-700 bg-amber-700 flex items-center justify-center flex-shrink-0 mt-1">
                     <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
@@ -1721,14 +1721,14 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
                 </div>
                 <div className="text-right">
                   <p className="font-data text-xl font-bold text-gray-900 mb-1">{f.supply} t</p>
-                  <span className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest border rounded-sm ${f.tagCls}`}>
+                  <span className={`px-2 py-1 text-[10px] font-bold uppercase tracking-widest border rounded-sm ${f.tagCls}`}>
                     {f.evidenceTag}
                   </span>
                 </div>
               </div>
-              <p className="text-xs text-gray-600 mb-3">{f.reason}</p>
+              <p className="text-xs text-gray-600 mb-4">{f.reason}</p>
               <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Needs</p>
-              <ul className="space-y-1 mb-3">
+              <ul className="space-y-1 mb-4">
                 {f.needs.map(n => (
                   <li key={n} className="flex items-center gap-2 text-xs font-semibold text-gray-800">
                     <div className="w-1.5 h-1.5 rounded-full bg-gray-700 flex-shrink-0" />
@@ -1744,7 +1744,7 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
           ))}
 
           {/* Assignment summary */}
-          <div className="border-t border-gray-200 pt-5">
+          <div className="border-t border-gray-200 pt-4">
             <p className="text-xs text-gray-600 leading-relaxed mb-4">
               2 farms will be assigned to Ravi for field verification. Ravi will visit each farm, verify the requested evidence, and submit findings. Only these specific evidence items are needed — Ravi does not need to assess the full farm.
             </p>
@@ -1828,24 +1828,24 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <DashPaper sx={{ width: '100%', maxWidth: 410, overflow: 'hidden', boxShadow: 1, p: 0 }}>
         <div className="bg-white overflow-hidden">
           {/* Dark top bar */}
-          <div className="text-white px-5 pt-4 pb-3" style={{ background: '#0B1F1F', borderTop: `3px solid ${ACCENT}` }}>
+          <div className="text-white px-4 pt-4 pb-4" style={{ background: '#0B1F1F', borderTop: `3px solid ${ACCENT}` }}>
             <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-semibold text-gray-400 mb-0.5">
+              <p className="text-[10px] font-semibold text-gray-400 mb-1">
                 {view === 'brief' ? 'Assigned Farm' : 'Capture + Submit'}
               </p>
               <p className="text-sm font-semibold">{view === 'brief' ? 'Ravi · Field officer' : farm.name}</p>
             </div>
             <span className="text-sm font-data font-medium text-gray-300">{farmIdx + 1} of 2</span>
             </div>
-            <div className="h-1 bg-gray-700 mt-3 overflow-hidden">
+            <div className="h-1 bg-gray-700 mt-4 overflow-hidden">
               <div className="h-full bg-white transition-all" style={{ width: `${((farmIdx + 1) / FIELD_FARMS.length) * 100}%` }} />
             </div>
           </div>
 
           {view === 'brief' ? (
-            <div className="p-5">
-              <h3 className="text-xl font-bold text-gray-900 mb-0.5">{farm.name}</h3>
+            <div className="p-4">
+              <h3 className="text-xl font-bold text-gray-900 mb-1">{farm.name}</h3>
               <p className="text-xs text-gray-500 mb-4">{farm.location}</p>
 
               {/* Mini map */}
@@ -1875,7 +1875,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   <rect x="131" y="108" width="67" height="10" rx="2" fill="#ffffff" opacity=".9" />
                   <text x="135" y="115" fontSize="5.5" fill="#64748b">© OpenStreetMap</text>
                 </svg>
-                <div className="absolute bottom-2 left-2 bg-white border border-gray-200 rounded px-2 py-0.5">
+                <div className="absolute bottom-2 left-2 bg-white border border-gray-200 rounded px-2 py-1">
                   <p className="text-[9px] text-gray-600 font-medium">Approximate destination · West Godavari</p>
                 </div>
               </div>
@@ -1907,7 +1907,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <p className="text-xs text-gray-600 leading-relaxed">{farm.whyVisit}</p>
               </div>
 
-              <div className="border-t border-gray-100 pt-4 mb-5">
+              <div className="border-t border-gray-100 pt-4 mb-6">
                 <p className="text-[10px] font-semibold text-gray-500 mb-2">Verify</p>
                 <ul className="space-y-1.5">
                   {farm.verifyItems.map(item => (
@@ -1924,14 +1924,14 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </PrimaryBtn>
             </div>
           ) : (
-            <div className="p-5">
-              <p className="text-[10px] font-semibold text-gray-500 mb-3">Verification checklist</p>
+            <div className="p-4">
+              <p className="text-[10px] font-semibold text-gray-500 mb-4">Verification checklist</p>
 
               <div className="space-y-0 mb-4">
                 {farm.verifyItems.map((item, i) => (
                   <FormControlLabel
                     key={item}
-                    sx={{ display: 'flex', ml: 0, mr: 0, py: 1.5, borderBottom: 1, borderColor: 'divider', width: '100%' }}
+                    sx={{ display: 'flex', ml: 0, mr: 0, py: space.related, borderBottom: 1, borderColor: 'divider', width: '100%' }}
                     control={<Checkbox checked={!!farmChecks[i]} onChange={() => toggleCheck(i)} color="primary" />}
                     label={<Typography variant="body2" sx={{ fontWeight: farmChecks[i] ? 600 : 400 }}>{item}</Typography>}
                   />
@@ -1951,7 +1951,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </div>
 
               {photos[farmIdx] ? (
-                <div className="border-y border-gray-200 py-3 mb-4">
+                <div className="border-y border-gray-200 py-4 mb-4">
                   <Box component="button" onClick={() => setPhotoPreviewOpen(true)} sx={{ width: '100%', display: 'block', bgcolor: 'grey.50', border: 0, p: 0, cursor: 'pointer' }}>
                     <img
                       src={farmIdx === 0 ? bhimavaramFieldPhoto : tanukuFieldPhoto}
@@ -1959,7 +1959,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       className="w-full h-auto max-h-64 object-contain"
                     />
                   </Box>
-                  <div className="flex items-start justify-between gap-3 mt-3">
+                  <div className="flex items-start justify-between gap-4 mt-4">
                     <div>
                       <p className="text-sm font-semibold text-gray-900">Field photo captured</p>
                       <p className="text-xs text-gray-500 mt-1">Today · {farm.name}</p>
@@ -1976,7 +1976,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </>
               )}
 
-              <div className="sticky bottom-0 bg-white border-t border-gray-200 -mx-5 px-5 pt-4 pb-5 mt-5">
+              <div className="sticky bottom-0 bg-white border-t border-gray-200 -mx-5 px-4 pt-4 pb-4 mt-5">
               <p className="text-[10px] font-semibold text-gray-500 mb-2">Status and submit</p>
               <PrimaryBtn fullWidth onClick={handleSubmit} disabled={!canConfirm} className="mb-2">
                 Evidence confirmed · Submit findings
@@ -1993,7 +1993,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       {photoPreviewOpen && (
         <div className="fixed inset-0 z-50 bg-gray-950/80 flex items-center justify-center p-6" onClick={() => setPhotoPreviewOpen(false)}>
           <div className="max-w-5xl max-h-full" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between text-white mb-3">
+            <div className="flex items-center justify-between text-white mb-4">
               <div>
                 <p className="text-sm font-semibold">Field photo captured</p>
                 <p className="text-xs text-gray-300">Today · {farm.name}</p>
@@ -2032,38 +2032,38 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="border-b border-gray-200 px-8 py-5 flex-shrink-0">
+      <div className="border-b border-gray-200 px-6 py-4 flex-shrink-0">
         <SectionLabel>Field Officer Findings</SectionLabel>
         <h2 className="text-2xl font-bold text-gray-900">Review evidence</h2>
         <p className="text-xs text-gray-500 mt-1">Ravi has submitted findings for 2 farms. Evidence has been confirmed.</p>
       </div>
 
-      <div className="flex-1 overflow-y-auto scroll-hide p-8">
-        <div className="max-w-2xl space-y-5">
+      <div className="flex-1 overflow-y-auto scroll-hide p-6">
+        <div className="max-w-2xl flex flex-col gap-6">
           {findings.map(f => (
             <DashPaper key={f.id} sx={{ overflow: 'hidden', bgcolor: '#ECFDF5', p: 0 }}>
               {/* Header */}
-              <div className="border-b border-gray-100 px-5 py-4 flex items-start justify-between">
+              <div className="border-b border-gray-100 px-4 py-4 flex items-start justify-between">
                 <div>
-                  <p className="text-base font-bold text-gray-900 mb-0.5">{f.name}</p>
+                  <p className="text-base font-bold text-gray-900 mb-1">{f.name}</p>
                   <p className="text-xs text-gray-500">{f.district}</p>
                 </div>
                 <p className="font-data text-lg font-bold text-gray-900">{f.supply} t</p>
               </div>
 
-              <div className="p-5">
-                <div className="flex items-start gap-4 mb-5">
+              <div className="p-4">
+                <div className="flex items-start gap-4 mb-6">
                   <div className="w-28 flex-shrink-0">
                     <p className="text-[10px] font-medium text-gray-500 mb-1">Previous confidence</p>
                     <ConfBadge level={f.before} />
                     <p className="text-[10px] text-gray-500 mt-1">{f.before === 'LOW' ? 'Evidence missing' : 'Evidence incomplete'}</p>
                   </div>
-                  <span className="text-gray-300 pt-5">→</span>
+                  <span className="text-gray-300 pt-4">→</span>
                   <div className="flex-1">
                     <p className="text-[10px] font-medium text-gray-500 mb-1">Evidence collected</p>
                     <p className="text-xs font-semibold text-gray-800">Required evidence collected</p>
                   </div>
-                  <span className="text-gray-300 pt-5">→</span>
+                  <span className="text-gray-300 pt-4">→</span>
                   <div className="w-40 flex-shrink-0">
                     <p className="text-[10px] font-medium text-gray-500 mb-1">Updated confidence</p>
                     <ConfBadge level={f.after} />
@@ -2071,7 +2071,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   </div>
                   <div className="w-24 flex-shrink-0">
                     <p className="text-[10px] font-medium text-gray-500 mb-1">Verification</p>
-                    <span className="inline-flex px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-sm">Verified</span>
+                    <span className="inline-flex px-2 py-1 text-[10px] font-bold uppercase tracking-widest bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-sm">Verified</span>
                   </div>
                 </div>
                 <div className="border-t border-gray-100 pt-4 mb-4">
@@ -2094,7 +2094,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           ))}
 
           {/* Summary */}
-          <div className="border-t border-gray-200 pt-5">
+          <div className="border-t border-gray-200 pt-4">
             <p className="text-sm font-semibold text-gray-900 mb-2">Verification complete — Coverage-First is ready to proceed</p>
             <p className="text-xs text-gray-600 mb-4">
               Both farms are now HIGH · VERIFIED. All 4 farms in Coverage-First have sufficient evidence.
@@ -2129,7 +2129,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="border-b border-gray-200 px-8 py-5 flex items-start justify-between flex-shrink-0">
+      <div className="border-b border-gray-200 px-6 py-4 flex items-start justify-between flex-shrink-0">
         <div>
           <SectionLabel>Active Procurement Plan</SectionLabel>
           <h2 className="text-2xl font-bold text-gray-900">Coverage-First · Week 3 Active</h2>
@@ -2147,10 +2147,10 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto scroll-hide p-8">
+      <div className="flex-1 overflow-y-auto scroll-hide p-6">
         <div className="max-w-4xl">
           {/* Week 3 status card */}
-          <DashPaper sx={{ p: 2.5, mb: 3, boxShadow: 'inset 3px 0 0 #0F9F6E' }}>
+          <DashPaper sx={{ p: space.section, mb: space.section, boxShadow: 'inset 3px 0 0 #0F9F6E' }}>
             <div className="flex items-start justify-between mb-4">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Week 3 Position</p>
@@ -2158,7 +2158,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </div>
               <div className="text-right">
                 <p className="font-data text-4xl font-bold text-emerald-700">{wk3Pct}%</p>
-                <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-sm">
+                <span className="px-2 py-1 text-[10px] font-bold uppercase tracking-widest bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-sm">
                   Target Met · 95% threshold
                 </span>
               </div>
@@ -2195,24 +2195,24 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               <table className="w-full text-xs">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="text-left py-2.5 px-4 font-semibold text-gray-500">Farm</th>
-                    <th className="text-left py-2.5 px-4 font-semibold text-gray-500">District</th>
-                    <th className="text-right py-2.5 px-4 font-semibold text-gray-500">Supply</th>
-                    <th className="text-left py-2.5 px-4 font-semibold text-gray-500">Confidence</th>
-                    <th className="text-left py-2.5 px-4 font-semibold text-gray-500">Status</th>
+                    <th className="text-left py-2 px-4 font-semibold text-gray-500">Farm</th>
+                    <th className="text-left py-2 px-4 font-semibold text-gray-500">District</th>
+                    <th className="text-right py-2 px-4 font-semibold text-gray-500">Supply</th>
+                    <th className="text-left py-2 px-4 font-semibold text-gray-500">Confidence</th>
+                    <th className="text-left py-2 px-4 font-semibold text-gray-500">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {planFarms.map(f => (
                     <tr key={f.name} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                      <td className="py-3 px-4 font-medium text-gray-900">{f.name}</td>
-                      <td className="py-3 px-4 text-gray-600">{f.district}</td>
-                      <td className="py-3 px-4 font-data font-semibold text-gray-900 text-right">{f.supply} t</td>
-                      <td className="py-3 px-4">
+                      <td className="py-4 px-4 font-medium text-gray-900">{f.name}</td>
+                      <td className="py-4 px-4 text-gray-600">{f.district}</td>
+                      <td className="py-4 px-4 font-data font-semibold text-gray-900 text-right">{f.supply} t</td>
+                      <td className="py-4 px-4">
                         <ConfBadge level={f.conf} />
                         <p className="text-[10px] text-gray-500 mt-1">{f.conf === 'HIGH' ? 'Evidence current' : 'Evidence incomplete'}</p>
                       </td>
-                      <td className={`py-3 px-4 font-medium ${f.status === 'At risk' ? 'text-amber-700' : f.status.includes('Verified') ? 'text-emerald-700' : 'text-gray-600'}`}>
+                      <td className={`py-4 px-4 font-medium ${f.status === 'At risk' ? 'text-amber-700' : f.status.includes('Verified') ? 'text-emerald-700' : 'text-gray-600'}`}>
                         {f.status}
                       </td>
                     </tr>
@@ -2223,7 +2223,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </div>
 
           {/* Map */}
-          <DashPaper sx={{ p: 2, width: 'fit-content', maxWidth: '100%' }}>
+          <DashPaper sx={{ p: space.related, width: 'fit-content', maxWidth: '100%' }}>
             <div className="flex items-start justify-between">
               <SectionLabel>Geographic distribution · Week 3</SectionLabel>
               <ExpandMapButton onClick={() => setMapExpanded(true)} />
@@ -2297,13 +2297,13 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   if (recovering) {
     return (
       <div className="flex flex-col h-full overflow-hidden">
-        <div className="border-b border-emerald-200 bg-emerald-50 px-8 py-5 flex-shrink-0">
+        <div className="border-b border-emerald-200 bg-emerald-50 px-6 py-4 flex-shrink-0">
           <p className="text-xs font-semibold text-emerald-700 mb-1">Recovery accepted · Monitoring resumed</p>
           <h2 className="text-2xl font-bold text-gray-900">Rajahmundry Block added to recovery plan</h2>
           <p className="text-xs text-emerald-800 mt-1">Week 3 coverage restored to 95%. The monitoring exception is resolved.</p>
         </div>
-        <div className="flex-1 overflow-y-auto p-8">
-          <div className="max-w-3xl space-y-5">
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-3xl flex flex-col gap-6">
             <div className="border-l-4 border-emerald-500 pl-5 py-2">
               <div className="flex items-start justify-between gap-8">
                 <div>
@@ -2321,7 +2321,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <PrimaryBtn onClick={() => onNavigate('plan')}>Return to active plan →</PrimaryBtn>
               </div>
             </div>
-            <DashPaper sx={{ p: 2, width: 'fit-content', maxWidth: '100%' }}>
+            <DashPaper sx={{ p: space.related, width: 'fit-content', maxWidth: '100%' }}>
               <div className="flex items-start justify-between">
                 <SectionLabel>Recovered plan · Geographic context</SectionLabel>
                 <ExpandMapButton onClick={() => {
@@ -2354,7 +2354,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   return (
     <div className="flex flex-col h-full overflow-hidden relative">
-      <div className="border-b border-red-200 bg-red-50 px-8 py-5 flex items-start justify-between flex-shrink-0">
+      <div className="border-b border-red-200 bg-red-50 px-6 py-4 flex items-start justify-between flex-shrink-0">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
@@ -2365,10 +2365,10 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto scroll-hide p-8">
-        <div className="max-w-3xl space-y-5">
+      <div className="flex-1 overflow-y-auto scroll-hide p-6">
+        <div className="max-w-3xl flex flex-col gap-6">
           {/* What changed */}
-          <div className="border-b border-gray-200 pb-5">
+          <div className="border-b border-gray-200 pb-4">
             <div className="mb-4">
               <p className="text-sm font-semibold text-gray-800">What changed</p>
             </div>
@@ -2387,7 +2387,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </div>
               </div>
               <p className="text-xs text-gray-600">New satellite data indicates lower-than-expected standing stock. The revised estimate reflects current NDVI readings and cloud-corrected analysis from the past 72 hours.</p>
-              <Button size="small" color="primary" onClick={() => setEvidenceOpen(true)} sx={{ mt: 1.5, px: 0, minWidth: 0 }}>
+              <Button size="small" color="primary" onClick={() => setEvidenceOpen(true)} sx={{ mt: space.related, px: 0, minWidth: 0 }}>
                 View satellite evidence →
               </Button>
             </div>
@@ -2407,7 +2407,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 ].map(({ label, before, after, delta, bad }) => (
                   <div key={label} className="px-4 first:pl-0 border-r border-red-100 last:border-r-0">
                     <p className="text-[10px] text-gray-500 mb-2">{label}</p>
-                    <div className="flex items-center gap-1.5 mb-1">
+                    <div className="flex items-center gap-2 mb-1">
                       <span className="font-data text-xs text-gray-400 line-through">{before}</span>
                       <span className="text-gray-400">→</span>
                       <span className="font-data text-sm font-bold text-red-800">{after}</span>
@@ -2416,7 +2416,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   </div>
                 ))}
               </div>
-              <div className="border-t border-red-100 pt-3">
+              <div className="border-t border-red-100 pt-4">
                 <p className="text-xs text-red-800 font-semibold">Week 3 is now 110 t below the 95% coverage target of 1,140 t.</p>
               </div>
             </div>
@@ -2424,19 +2424,19 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
           {/* Recovery recommendation */}
           <DashPaper sx={{ overflow: 'hidden', p: 0 }}>
-            <div className="px-5 pt-4">
+            <div className="px-4 pt-4">
               <p className="text-xs font-semibold text-gray-600">Recommended recovery</p>
             </div>
-            <div className="px-5 pb-5 pt-3">
+            <div className="px-4 pb-4 pt-4">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <p className="text-lg font-bold text-gray-900 mb-0.5">Rajahmundry Block</p>
+                  <p className="text-lg font-bold text-gray-900 mb-1">Rajahmundry Block</p>
                   <p className="text-xs text-gray-500 mb-2">East Godavari district</p>
                   <div className="flex items-center gap-2">
                     <ConfBadge level="MEDIUM" />
                     <span className="text-[10px] text-gray-500">Evidence incomplete · Field verification required</span>
                   </div>
-                  <Button size="small" color="primary" onClick={() => setInspectedFarm('Rajahmundry Block')} sx={{ mt: 1.5, px: 0, minWidth: 0 }}>
+                  <Button size="small" color="primary" onClick={() => setInspectedFarm('Rajahmundry Block')} sx={{ mt: space.related, px: 0, minWidth: 0 }}>
                     Inspect farm details
                   </Button>
                 </div>
@@ -2447,7 +2447,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </div>
 
               {/* Before / after recovery */}
-              <div className="grid grid-cols-2 border-y border-gray-100 py-3 mb-4">
+              <div className="grid grid-cols-2 border-y border-gray-100 py-4 mb-4">
                 <div className="pr-4 border-r border-gray-100">
                   <p className="text-[10px] text-gray-500 mb-2">Current</p>
                   <p className="font-data text-xl font-bold text-red-700">1,030 t · 86%</p>
@@ -2466,14 +2466,14 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </div>
 
               {/* Tradeoffs */}
-              <p className="text-xs font-semibold text-gray-700 mb-3">Business tradeoffs</p>
-              <div className="space-y-2 mb-4">
+              <p className="text-xs font-semibold text-gray-700 mb-4">Business tradeoffs</p>
+              <div className="flex flex-col gap-2 mb-4">
                 {[
                   { icon: '↑', cls: 'text-emerald-700 bg-emerald-50', label: 'Supply impact', detail: '+110 t · Restores Week 3 to 95% coverage target' },
                   { icon: '!', cls: 'text-amber-700 bg-amber-50', label: 'Verification impact', detail: '+1 field verification required before committing' },
                   { icon: '⚑', cls: 'text-amber-700 bg-amber-50', label: 'Geographic impact', detail: 'East Godavari concentration: 8% → 17%' },
                 ].map(({ icon, cls, label, detail }) => (
-                  <div key={label} className="flex items-start gap-3">
+                  <div key={label} className="flex items-start gap-4">
                     <div className={`w-5 flex items-center justify-center flex-shrink-0 text-xs font-bold ${cls.split(' ')[0]}`}>{icon}</div>
                     <div>
                       <p className="text-xs font-semibold text-gray-800">{label}</p>
@@ -2484,7 +2484,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </div>
 
               {/* Interpretation */}
-              <div className="border-l-2 border-gray-300 pl-3 mb-5">
+              <div className="border-l-2 border-gray-300 pl-3 mb-6">
                 <p className="text-xs text-gray-700 leading-relaxed">
                   "Rajahmundry Block restores Week 3 to the 95% coverage target, but requires one field verification and increases East Godavari concentration from 8% to 17%."
                 </p>
@@ -2492,7 +2492,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
               {/* Actions */}
               {!recovering ? (
-                <div className="flex gap-3">
+                <div className="flex gap-4">
                   <PrimaryBtn onClick={() => setRecovering(true)} className="flex-1 text-center">
                     Add to recovery plan
                   </PrimaryBtn>
@@ -2502,7 +2502,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   </SecondaryBtn>
                 </div>
               ) : (
-                <DashPaper sx={{ p: 2, bgcolor: '#ECFDF5' }}>
+                <DashPaper sx={{ p: space.related, bgcolor: '#ECFDF5' }}>
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center">
                       <svg className="w-2.5 h-2.5 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -2511,7 +2511,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     </div>
                     <p className="text-sm font-semibold text-emerald-800">Rajahmundry Block added to recovery plan</p>
                   </div>
-                  <p className="text-xs text-emerald-700 mb-3">Week 3 coverage restored to 95%. Field verification for Rajahmundry Block has been assigned to Ravi.</p>
+                  <p className="text-xs text-emerald-700 mb-4">Week 3 coverage restored to 95%. Field verification for Rajahmundry Block has been assigned to Ravi.</p>
                   <PrimaryBtn onClick={() => onNavigate('plan')}>Return to active plan →</PrimaryBtn>
                 </DashPaper>
               )}
@@ -2519,7 +2519,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </DashPaper>
 
           {/* Map context */}
-          <DashPaper sx={{ p: 2, width: 'fit-content', maxWidth: '100%' }}>
+          <DashPaper sx={{ p: space.related, width: 'fit-content', maxWidth: '100%' }}>
             <div className="flex items-start justify-between">
               <SectionLabel>Recovery · Geographic context</SectionLabel>
               <ExpandMapButton onClick={() => {
@@ -2611,13 +2611,13 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
         },
       }}
     >
-      <Box sx={{ px: 2, pt: 2.5, pb: 2, borderBottom: '1px solid rgba(11,175,175,0.22)' }}>
+      <Box sx={{ px: space.related, pt: space.section, pb: space.related, borderBottom: '1px solid rgba(11,175,175,0.22)' }}>
         <Typography variant="overline" sx={{ color: ACCENT, display: 'block', mb: 0.5 }}>ITC Procurement</Typography>
         <Typography variant="subtitle2" sx={{ color: '#fff', lineHeight: 1.3 }}>Decision Support</Typography>
         <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.55)', display: 'block', mt: 0.5 }}>Eucalyptus · 4,000 t</Typography>
       </Box>
 
-      <List className="scroll-hide" sx={{ flex: 1, overflowY: 'auto', py: 1.5, px: 0 }}>
+      <List className="scroll-hide" sx={{ flex: 1, overflowY: 'auto', py: space.related, px: 0 }}>
         {NAV_ITEMS.map(({ screen, num, label, sub }) => {
           const itemIdx = FLOW_ORDER.indexOf(screen)
           const isActive = current === screen
@@ -2632,7 +2632,7 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
               onClick={() => isAccessible && onNavigate(screen)}
               sx={{
                 alignItems: 'flex-start',
-                py: 1.25,
+                py: space.related,
                 px: 2,
                 position: 'relative',
                 opacity: isAccessible ? 1 : 0.4,
@@ -2680,7 +2680,7 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
         })}
       </List>
 
-      <Box sx={{ px: 2, py: 2, borderTop: '1px solid rgba(11,175,175,0.22)' }}>
+      <Box sx={{ px: space.related, py: space.related, borderTop: '1px solid rgba(11,175,175,0.22)' }}>
         <Typography variant="body2" sx={{ fontWeight: 650, color: 'rgba(255,255,255,0.8)' }}>Shrikant · Procurement Mgr</Typography>
         <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.4)', display: 'block', mt: 0.5 }}>AP Region · ITC Agri</Typography>
       </Box>
@@ -2715,10 +2715,10 @@ function TopBar({ screen }: { screen: Screen }) {
 
   return (
     <AppBar position="static" color="inherit">
-      <Toolbar variant="dense" sx={{ minHeight: 44, px: 3, gap: 2 }}>
-        <Typography variant="subtitle2" sx={{ mr: 1 }}>{BREADCRUMB_TITLE[screen]}</Typography>
+      <Toolbar variant="dense" sx={{ minHeight: 48, px: space.section, gap: space.related }}>
+        <Typography variant="subtitle2" sx={{ mr: space.tight }}>{BREADCRUMB_TITLE[screen]}</Typography>
         {ctxParts.map((p, i) => (
-          <Stack key={p} direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+          <Stack key={p} direction="row" spacing={space.related} sx={{ alignItems: 'center' }}>
             {i > 0 && <Divider orientation="vertical" flexItem sx={{ borderColor: 'divider' }} />}
             <Typography variant="caption">{p}</Typography>
           </Stack>

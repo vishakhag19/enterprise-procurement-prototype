@@ -27,3 +27,4 @@ The requested [MaterialDesignInXamlToolkit](https://github.com/MaterialDesignInX
 
 - **Font:** Manrope
 - **Accent:** `#0BAFAF`
+- **Spacing:** Material 8dp grid (`theme.spacing`, 8 / 16 / 24 / 32)

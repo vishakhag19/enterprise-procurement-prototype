@@ -2,13 +2,29 @@ import { createTheme } from '@mui/material/styles'
 
 /** Material UI theme for ITC Procurement Decision Support.
  *  Web kit: @mui/material (MaterialDesignInXamlToolkit is WPF-only).
- *  Font: Manrope · Accent: #0BAFAF */
+ *  Font: Manrope · Accent: #0BAFAF
+ *
+ *  Spacing follows Material’s 8dp grid (theme.spacing(1) === 8px):
+ *  - Related items / tight: 1 (8)
+ *  - Within card / control groups: 2 (16)
+ *  - Section gaps / page padding: 3 (24)
+ *  - Large screen gutters: 4 (32)
+ */
 export const ACCENT = '#0BAFAF'
 export const SURFACE = '#F0F1F3'
 export const SIDEBAR_BG = '#0B1F1F'
 
+/** Layout rhythm tokens (theme spacing units). */
+export const space = {
+  tight: 1, // 8px — label↔control, chip gaps
+  related: 2, // 16px — inside cards, list item stacks
+  section: 3, // 24px — between sections, page padding
+  gutter: 4, // 32px — large screen gutters
+} as const
+
 export const theme = createTheme({
   cssVariables: true,
+  spacing: 8,
   palette: {
     mode: 'light',
     primary: {
@@ -51,15 +67,7 @@ export const theme = createTheme({
     button: { fontWeight: 650, textTransform: 'none' as const, letterSpacing: '0.01em' },
     overline: { fontWeight: 700, letterSpacing: '0.12em', fontSize: '0.625rem' },
   },
-  shape: { borderRadius: 10 },
-  shadows: [
-    'none',
-    '0 1px 2px rgba(15, 32, 43, 0.04)',
-    '0 2px 8px rgba(15, 32, 43, 0.06)',
-    '0 8px 24px rgba(15, 32, 43, 0.12)',
-    '0 12px 32px rgba(15, 32, 43, 0.16)',
-    ...Array(20).fill('0 8px 24px rgba(15, 32, 43, 0.12)'),
-  ] as unknown as import('@mui/material/styles').ThemeOptions['shadows'] extends infer S ? S : never,
+  shape: { borderRadius: 8 },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
@@ -81,8 +89,19 @@ export const theme = createTheme({
         root: {
           borderRadius: 8,
           fontWeight: 650,
-          paddingInline: 18,
-          paddingBlock: 8,
+          // Material button: 8 vertical, 16–24 horizontal
+          paddingLeft: 16,
+          paddingRight: 16,
+          paddingTop: 8,
+          paddingBottom: 8,
+          minHeight: 40,
+        },
+        sizeSmall: {
+          paddingLeft: 12,
+          paddingRight: 12,
+          paddingTop: 4,
+          paddingBottom: 4,
+          minHeight: 32,
         },
         contained: {
           boxShadow: '0 1px 2px rgba(11, 175, 175, 0.28)',
@@ -98,6 +117,7 @@ export const theme = createTheme({
     MuiChip: {
       styleOverrides: {
         root: { fontWeight: 700, letterSpacing: '0.04em' },
+        sizeSmall: { height: 24 },
       },
     },
     MuiPaper: {
@@ -106,6 +126,7 @@ export const theme = createTheme({
         root: {
           backgroundImage: 'none',
           border: 'none',
+          borderRadius: 8,
         },
       },
     },
@@ -115,6 +136,15 @@ export const theme = createTheme({
         root: {
           border: 'none',
           backgroundImage: 'none',
+          borderRadius: 8,
+        },
+      },
+    },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          padding: 16,
+          '&:last-child': { paddingBottom: 16 },
         },
       },
     },
@@ -129,6 +159,16 @@ export const theme = createTheme({
         },
       },
     },
+    MuiToolbar: {
+      styleOverrides: {
+        dense: {
+          minHeight: 48,
+          paddingLeft: 24,
+          paddingRight: 24,
+          gap: 16,
+        },
+      },
+    },
     MuiDrawer: {
       styleOverrides: {
         paper: {
@@ -138,11 +178,42 @@ export const theme = createTheme({
         },
       },
     },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 0,
+          paddingTop: 12,
+          paddingBottom: 12,
+          paddingLeft: 16,
+          paddingRight: 16,
+          '&.Mui-selected': {
+            backgroundColor: 'rgba(11,175,175,0.16)',
+            '&:hover': { backgroundColor: 'rgba(11,175,175,0.22)' },
+          },
+        },
+      },
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: { padding: '16px 24px' },
+      },
+    },
+    MuiDialogContent: {
+      styleOverrides: {
+        root: { padding: 24 },
+      },
+    },
+    MuiDialogActions: {
+      styleOverrides: {
+        root: { padding: '8px 24px 16px', gap: 8 },
+      },
+    },
     MuiTableCell: {
       styleOverrides: {
         root: {
           fontFamily: '"Manrope", system-ui, sans-serif',
           borderColor: 'rgba(15, 32, 43, 0.08)',
+          padding: '12px 16px',
         },
         head: {
           fontWeight: 650,
@@ -152,7 +223,7 @@ export const theme = createTheme({
     },
     MuiSlider: {
       styleOverrides: {
-        root: { color: ACCENT, padding: '10px 0' },
+        root: { color: ACCENT, padding: '12px 0' },
         thumb: { width: 16, height: 16 },
         track: { height: 2 },
         rail: { height: 2, opacity: 0.35 },
@@ -169,18 +240,12 @@ export const theme = createTheme({
     },
     MuiDialog: {
       styleOverrides: {
-        paper: { borderRadius: 12 },
+        paper: { borderRadius: 8 },
       },
     },
-    MuiListItemButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: 0,
-          '&.Mui-selected': {
-            backgroundColor: 'rgba(11,175,175,0.16)',
-            '&:hover': { backgroundColor: 'rgba(11,175,175,0.22)' },
-          },
-        },
+    MuiStack: {
+      defaultProps: {
+        useFlexGap: true,
       },
     },
   },
