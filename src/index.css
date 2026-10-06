@@ -3,22 +3,16 @@
 :root {
   --accent: #0BAFAF;
   --accent-dark: #089090;
-  --accent-soft: #E6F8F8;
-  --conf-high-bg: #ecfdf5;
-  --conf-high-text: #065f46;
-  --conf-high-border: #a7f3d0;
-  --conf-med-bg: #fffbeb;
-  --conf-med-text: #92400e;
-  --conf-med-border: #fcd34d;
-  --conf-low-bg: #fef2f2;
-  --conf-low-text: #991b1b;
-  --conf-low-border: #fca5a5;
-  --mui-palette-primary-main: #0BAFAF;
+  --accent-soft: #D9F2F2;
+  --ink: #0C1520;
+  --surface: #E4E9E6;
+  --paper: #FBFCFA;
+  --rule: rgba(12, 21, 32, 0.10);
+  --firm: #1F3D38;
+  --alert: #A84832;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 html, body, #root {
   height: 100%;
@@ -29,8 +23,8 @@ html, body, #root {
 body {
   font-family: 'Manrope', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
-  background: #F0F1F3;
-  color: #15202B;
+  background: var(--surface);
+  color: var(--ink);
 }
 
 .font-data {
@@ -42,64 +36,9 @@ body {
 .scroll-hide::-webkit-scrollbar { display: none; }
 .scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Material-style range inputs using accent */
-input[type='range'] {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 2px;
-  background: #d1d5db;
-  border-radius: 1px;
-  outline: none;
-  cursor: pointer;
-}
-
-input[type='range']::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: 2px solid #ffffff;
-  box-shadow: 0 0 0 1px var(--accent);
-  cursor: pointer;
-}
-
-input[type='range']::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: 2px solid #ffffff;
-  box-shadow: 0 0 0 1px var(--accent);
-  cursor: pointer;
-}
-
-/* Map / progress markers that still use gray-900 utility classes */
-.bg-gray-900 {
-  background-color: var(--accent) !important;
-}
-.border-gray-900 {
-  border-color: var(--accent) !important;
-}
-.hover\:bg-gray-700:hover {
-  background-color: var(--accent-dark) !important;
-}
-.text-blue-700 {
-  color: var(--accent-dark) !important;
-}
-.border-blue-600 {
-  border-color: var(--accent) !important;
-}
-.hover\:underline:hover {
-  text-decoration-color: var(--accent);
-}
-
-/* Dashboard surface + borderless white cards */
-.dash-surface {
-  background: #F0F1F3;
-}
-.dash-card {
-  background: #ffffff;
-  border: none;
-  border-radius: 10px;
-}
+/* Legacy utility remaps → domain palette */
+.bg-gray-900 { background-color: var(--accent) !important; }
+.border-gray-900 { border-color: var(--accent) !important; }
+.hover\:bg-gray-700:hover { background-color: var(--accent-dark) !important; }
+.text-blue-700 { color: var(--accent-dark) !important; }
+.border-blue-600 { border-color: var(--accent) !important; }

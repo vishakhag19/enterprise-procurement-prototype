@@ -23,8 +23,11 @@ Vite, React, TypeScript, [Material UI](https://mui.com/material-ui/) throughout 
 
 The requested [MaterialDesignInXamlToolkit](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit) is a WPF (XAML) kit, so this web app uses Material UI for React with the same Material Design language.
 
-## Design
 
 - **Font:** Manrope
 - **Accent:** `#0BAFAF`
 - **Spacing:** Material 8dp grid (`theme.spacing`, 8 / 16 / 24 / 32)
+- **Surfaces:** terrain canvas → open strips → map plane (not a card wall)
+- **Semantics:** canopy / earth status colors (not default green/red SaaS)
+- **Taxonomy:** shared status chips (confidence, evidence, visits, constraints)
+- **Hero focus:** Coverage, Scenario Planning, Plan Recovery

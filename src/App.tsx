@@ -35,7 +35,22 @@ import {
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
-import { ACCENT, SIDEBAR_BG, space } from './theme'
+import { ACCENT, SIDEBAR_BG, space, semantic } from './theme'
+import {
+  DashPaper,
+  SectionLabel,
+  PrimaryBtn,
+  SecondaryBtn,
+  GhostBtn,
+  StatusChip,
+  SupplyBar,
+  WeekRail,
+  ThresholdControl,
+  TradeoffBars,
+  DataStrip,
+} from './ui'
+import type { StatusKind } from './designSystem'
+import { INK, INK_MUTED, PAPER, RULE } from './designSystem'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 'field' | 'findings' | 'plan' | 'alert'
@@ -43,98 +58,25 @@ type Conf = 'HIGH' | 'MEDIUM' | 'LOW'
 type FarmRole = 'selected' | 'committed' | 'needs-verification' | 'recommended' | 'other' | 'alert'
 type MapVariant = 'coverage' | 'investigation' | 'scenario' | 'plan' | 'recovery' | 'default'
 
-// ─── Design Tokens ───────────────────────────────────────────────────────────
-// Material UI (@mui/material) — Manrope + accent #0BAFAF
-// XAML kit reference: github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit
-
-// ─── MUI layout primitives ───────────────────────────────────────────────────
-
-function DashPaper({
-  children,
-  sx,
-  onClick,
-  onMouseEnter,
-  onMouseLeave,
-}: {
-  children: React.ReactNode
-  sx?: object
-  onClick?: () => void
-  onMouseEnter?: () => void
-  onMouseLeave?: () => void
-}) {
-  return (
-    <Paper
-      elevation={0}
-      onClick={onClick}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      sx={{ p: space.related, bgcolor: 'background.paper', borderRadius: 1, border: 'none', ...sx }}
-    >
-      {children}
-    </Paper>
-  )
-}
-
-// ─── Shared Atoms ────────────────────────────────────────────────────────────
+// ─── Shared Atoms (domain taxonomy) ──────────────────────────────────────────
 
 function ConfBadge({ level }: { level: Conf }) {
-  const color = level === 'HIGH' ? 'success' : level === 'MEDIUM' ? 'warning' : 'error'
-  return <Chip size="small" label={level} color={color} variant="outlined" sx={{ fontSize: 10, height: 22, borderRadius: 1 }} />
+  const kind: StatusKind = level === 'HIGH' ? 'confidence-high' : level === 'MEDIUM' ? 'confidence-medium' : 'confidence-low'
+  return <StatusChip kind={kind} />
 }
 
 type SignalType = 'STRONG_CANDIDATE' | 'HIGH_SUPPLY_UNCERTAIN' | 'REQUIRES_VERIFICATION' | 'CONCENTRATION_RISK' | 'OUTSIDE_HARVEST'
 
-const SIGNAL_CFG: Record<SignalType, { label: string; color: 'primary' | 'warning' | 'info' | 'error' | 'default'; variant?: 'filled' | 'outlined' }> = {
-  STRONG_CANDIDATE: { label: 'STRONG CANDIDATE', color: 'primary' },
-  HIGH_SUPPLY_UNCERTAIN: { label: 'HIGH SUPPLY · UNCERTAIN', color: 'warning', variant: 'outlined' },
-  REQUIRES_VERIFICATION: { label: 'REQUIRES VERIFICATION', color: 'info', variant: 'outlined' },
-  CONCENTRATION_RISK: { label: 'CONCENTRATION RISK', color: 'error', variant: 'outlined' },
-  OUTSIDE_HARVEST: { label: 'OUTSIDE IDEAL HARVEST WINDOW', color: 'default', variant: 'outlined' },
+const SIGNAL_KIND: Record<SignalType, StatusKind> = {
+  STRONG_CANDIDATE: 'candidate-strong',
+  HIGH_SUPPLY_UNCERTAIN: 'evidence-aging',
+  REQUIRES_VERIFICATION: 'visit-required',
+  CONCENTRATION_RISK: 'concentration-risk',
+  OUTSIDE_HARVEST: 'outside-harvest',
 }
 
 function SignalBadge({ type }: { type: SignalType }) {
-  const { label, color, variant = 'filled' } = SIGNAL_CFG[type]
-  return <Chip size="small" label={label} color={color} variant={variant} sx={{ fontSize: 10, height: 22, borderRadius: 1 }} />
-}
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <Typography variant="overline" color="text.secondary" sx={{ display: 'block', mb: space.tight, lineHeight: 1.4 }}>
-      {children}
-    </Typography>
-  )
-}
-
-function PrimaryBtn({ children, onClick, disabled = false, className = '', fullWidth = false }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; className?: string; fullWidth?: boolean }) {
-  return (
-    <Button
-      variant="contained"
-      color="primary"
-      onClick={onClick}
-      disabled={disabled}
-      fullWidth={fullWidth}
-      className={className}
-      sx={{ flexShrink: 0 }}
-    >
-      {children}
-    </Button>
-  )
-}
-
-function SecondaryBtn({ children, onClick, disabled = false, className = '', fullWidth = false }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; className?: string; fullWidth?: boolean }) {
-  return (
-    <Button
-      variant="outlined"
-      color="primary"
-      onClick={onClick}
-      disabled={disabled}
-      fullWidth={fullWidth}
-      className={className}
-      sx={{ flexShrink: 0, borderColor: 'rgba(11,175,175,0.45)', color: 'text.primary' }}
-    >
-      {children}
-    </Button>
-  )
+  return <StatusChip kind={SIGNAL_KIND[type]} />
 }
 
 // ─── SVG Region Map ───────────────────────────────────────────────────────────
@@ -219,20 +161,31 @@ function RegionMap({
   const tooltipPoint = tooltipId ? FARM_COORDS[tooltipId] : null
 
   function marker(x: number, y: number, role: FarmRole, highlighted: boolean) {
-    const common = {
-      strokeWidth: highlighted ? 2.5 : 1.5,
-      stroke: highlighted ? '#2563eb' : role === 'alert' ? '#991b1b' : '#374151',
-    }
-    if (role === 'committed') return <circle cx={x} cy={y} r="4.5" fill="#6b7280" {...common} />
-    if (role === 'needs-verification') return <circle cx={x} cy={y} r="5.5" fill="#ffffff" {...common} />
-    if (role === 'recommended') return <circle cx={x} cy={y} r="5" fill="#ffffff" stroke="#2563eb" strokeWidth={highlighted ? 2.5 : 1.5} />
+    const hi = highlighted ? 2.25 : undefined
+    if (role === 'committed') return <circle cx={x} cy={y} r="4.5" fill="#1F3D38" stroke="#0C1520" strokeWidth={hi ?? 0.75} />
+    if (role === 'needs-verification') return <circle cx={x} cy={y} r="5.5" fill="#FBFCFA" stroke="#9A7B2F" strokeWidth={hi ?? 1.5} strokeDasharray="2 1.5" />
+    if (role === 'recommended') return <circle cx={x} cy={y} r="5" fill="#FBFCFA" stroke="#0BAFAF" strokeWidth={hi ?? 1.5} />
     if (role === 'alert') return (
       <g>
-        <circle cx={x} cy={y} r="7" fill="#dc2626" {...common} />
+        <circle cx={x} cy={y} r="7" fill="#A84832" stroke="#0C1520" strokeWidth={hi ?? 1} />
         <text x={x} y={y + 3} textAnchor="middle" fontSize="8" fontWeight="700" fill="#ffffff">!</text>
       </g>
     )
-    return <circle cx={x} cy={y} r={role === 'selected' ? 5.5 : 3.5} fill={role === 'selected' ? '#111827' : '#d1d5db'} {...common} />
+    return (
+      <g>
+        {role === 'selected' && (
+          <rect x={x - 7} y={y - 7} width="14" height="14" fill="rgba(11,175,175,0.18)" stroke="#0BAFAF" strokeWidth="0.75" strokeDasharray="2 1" transform={`rotate(12 ${x} ${y})`} />
+        )}
+        <circle
+          cx={x}
+          cy={y}
+          r={role === 'selected' ? 5.5 : 3.5}
+          fill={role === 'selected' ? '#0BAFAF' : '#C5CBC7'}
+          stroke={highlighted ? '#0BAFAF' : role === 'selected' ? '#089090' : '#8A9390'}
+          strokeWidth={hi ?? (role === 'selected' ? 1.25 : 0.75)}
+        />
+      </g>
+    )
   }
 
   const viewBox = {
@@ -262,8 +215,8 @@ function RegionMap({
 
   return (
     <svg viewBox={viewBox} preserveAspectRatio={variant === 'coverage' || variant === 'investigation' || fullscreen ? 'xMidYMid slice' : 'xMidYMid meet'} className={sizeClass} style={{ display: 'block' }} role="img" aria-label="Andhra Pradesh procurement geography">
-      <rect width="360" height="260" fill="#f3f0e7" />
-      <g opacity=".76" style={{ filter: 'grayscale(0.16) saturate(0.68) contrast(0.92)' }}>
+      <rect width="360" height="260" fill="#d9e0da" />
+      <g opacity=".82" style={{ filter: 'grayscale(0.28) saturate(0.55) contrast(1.05) hue-rotate(-8deg)' }}>
         {[184, 185, 186].flatMap((tileX, col) =>
           [115, 116, 117].map((tileY, row) => (
             <image
@@ -278,7 +231,7 @@ function RegionMap({
           ))
         )}
       </g>
-      <rect width="360" height="260" fill="#fffdf8" opacity=".08" />
+      <rect width="360" height="260" fill="#0C1520" opacity=".04" />
       {variant === 'recovery' ? (
         <g fontSize="7.5" fontWeight="700" fill="#475569" stroke="#ffffff" strokeWidth="2.5" paintOrder="stroke">
           <text x="207" y="145">WEST GODAVARI</text>
@@ -320,8 +273,8 @@ function RegionMap({
             {marker(x, y, displayRole, isHighlighted)}
             {addedIds.includes(id) && (
               <g pointerEvents="none">
-                <circle cx={x} cy={y} r="9" fill="none" stroke="#2563eb" strokeWidth="1.5" />
-                <text x={x - 21} y={y - 10} fontSize="6.5" fontWeight="700" fill="#1d4ed8" stroke="#ffffff" strokeWidth="2" paintOrder="stroke">ADDED</text>
+                <circle cx={x} cy={y} r="9" fill="none" stroke="#0BAFAF" strokeWidth="1.5" />
+                <text x={x - 21} y={y - 10} fontSize="6.5" fontWeight="700" fill="#089090" stroke="#ffffff" strokeWidth="2" paintOrder="stroke">ADDED</text>
               </g>
             )}
             {removedIds.includes(id) && (
@@ -353,7 +306,7 @@ function RegionMap({
               textAnchor="end"
               fontSize="6.5"
               fontWeight="600"
-              fill="#1d4ed8"
+              fill="#089090"
               className="cursor-pointer"
               onClick={() => tooltipId && onViewEvidence(tooltipId)}
             >
@@ -371,12 +324,21 @@ function RegionMap({
 type LegendItem = { role: FarmRole; label: string }
 
 const DOT_CLASS: Record<FarmRole, string> = {
-  selected: 'rounded-full bg-gray-900 border border-gray-900',
-  committed: 'rounded-full bg-gray-500 border border-gray-700',
-  'needs-verification': 'rounded-full bg-white border-2 border-gray-700',
-  recommended: 'rounded-full bg-white border-2 border-blue-600',
-  other: 'rounded-full bg-gray-300 border border-gray-500',
-  alert: 'rounded-full bg-red-600 border-2 border-red-800',
+  selected: 'rounded-full',
+  committed: 'rounded-full',
+  'needs-verification': 'rounded-full',
+  recommended: 'rounded-full',
+  other: 'rounded-full',
+  alert: 'rounded-full',
+}
+
+const DOT_STYLE: Record<FarmRole, React.CSSProperties> = {
+  selected: { background: '#0BAFAF', border: '2px solid #0BAFAF', boxShadow: '0 0 0 3px rgba(11,175,175,0.25)' },
+  committed: { background: '#1F3D38', border: '2px solid #1F3D38' },
+  'needs-verification': { background: '#FBFCFA', border: '2px dashed #9A7B2F' },
+  recommended: { background: '#FBFCFA', border: '2px solid #0BAFAF' },
+  other: { background: '#C5CBC7', border: '1px solid #8A9390' },
+  alert: { background: '#A84832', border: '2px solid #A84832' },
 }
 
 function MapLegend({ items }: { items: LegendItem[] }) {
@@ -384,7 +346,7 @@ function MapLegend({ items }: { items: LegendItem[] }) {
     <Stack spacing={space.tight}>
       {items.map(({ role, label }) => (
         <Stack key={label} direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
-          <Box className={DOT_CLASS[role]} sx={{ width: 10, height: 10, flexShrink: 0 }} />
+          <Box className={DOT_CLASS[role]} style={DOT_STYLE[role]} sx={{ width: 10, height: 10, flexShrink: 0 }} />
           <Typography variant="caption">{label}</Typography>
         </Stack>
       ))}
@@ -635,142 +597,122 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <div className="flex-1 overflow-y-auto scroll-hide p-6">
         <div className="max-w-3xl">
           <SectionLabel>Procurement Command Centre</SectionLabel>
-          <h1 className="text-[2.5rem] font-bold tracking-tight text-gray-900 leading-tight mb-1">4,000 t Eucalyptus</h1>
-          <p className="text-sm text-gray-500 mb-6">4-week procurement window · AP Region</p>
+          <Typography
+            variant="h1"
+            sx={{ color: INK, mb: 0.5, fontSize: { xs: '2rem', md: '2.75rem' } }}
+          >
+            4,000 t Eucalyptus
+          </Typography>
+          <Typography variant="body2" sx={{ mb: space.section }}>
+            4-week procurement window · AP Region · Satellite + field evidence
+          </Typography>
 
-          {/* Target card */}
-          <DashPaper sx={{ p: space.section, mb: space.section }}>
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <SectionLabel>Procurement Target</SectionLabel>
-                <p className="text-sm font-medium text-gray-700">78% committed</p>
-              </div>
-              <p className="font-data text-3xl font-bold text-gray-900">4,000 t</p>
-            </div>
-            {/* Stacked bar */}
-            <Box sx={{ display: 'flex', height: 8, borderRadius: 1, overflow: 'hidden', bgcolor: 'action.hover', mb: space.related }}>
-              <Box sx={{ width: `${2568/4000*100}%`, bgcolor: 'primary.main', transition: 'width 0.2s' }} />
-              <Box sx={{ width: `${570/4000*100}%`, bgcolor: 'grey.400' }} />
+          {/* Operational center: 620 t gap */}
+          <Box
+            sx={{
+              mb: space.section,
+              p: space.section,
+              bgcolor: PAPER,
+              borderRadius: 1,
+              backgroundImage: `linear-gradient(135deg, rgba(168,72,50,0.08) 0%, ${PAPER} 42%)`,
+            }}
+          >
+            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', gap: 2, flexWrap: 'wrap' }}>
+              <Box sx={{ flex: 1, minWidth: 200 }}>
+                <Typography variant="overline" sx={{ color: semantic.alert, display: 'block', mb: 0.5 }}>
+                  Operational focus · Week 3
+                </Typography>
+                <Typography className="font-data" sx={{ fontSize: '2.75rem', fontWeight: 700, letterSpacing: '-0.03em', color: INK, lineHeight: 1 }}>
+                  620 t
+                </Typography>
+                <Typography variant="subtitle2" sx={{ color: INK, mt: 1 }}>
+                  Supply gap still uncovered
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 0.5, maxWidth: 360 }}>
+                  1,200 t needed · 580 t committed. This is the most constrained delivery window in the procurement plan.
+                </Typography>
+              </Box>
+              <Stack spacing={1} sx={{ alignItems: 'flex-end' }}>
+                <PrimaryBtn onClick={() => onNavigate('farms')}>Investigate farms →</PrimaryBtn>
+                <GhostBtn onClick={() => onNavigate('farms')}>View candidates on map</GhostBtn>
+              </Stack>
+            </Stack>
+          </Box>
+
+          {/* Target as open strip — not a KPI card wall */}
+          <Box sx={{ mb: space.section }}>
+            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'baseline', mb: 1 }}>
+              <SectionLabel>Procurement position</SectionLabel>
+              <Typography className="font-data" variant="h2" sx={{ color: INK }}>4,000 t</Typography>
+            </Stack>
+            <SupplyBar firm={2568} atRisk={570} total={4000} />
+            <Stack direction="row" spacing={3} sx={{ mt: 1.5 }}>
+              {[
+                { label: 'Firm', value: '2,568 t', color: semantic.firm },
+                { label: 'At risk', value: '570 t', color: semantic.atRisk },
+                { label: 'Open gap', value: '862 t', color: semantic.gap },
+              ].map(m => (
+                <Stack key={m.label} direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m.color }} />
+                  <Typography variant="caption">{m.label}</Typography>
+                  <Typography className="font-data" variant="caption" sx={{ color: INK, fontWeight: 700 }}>{m.value}</Typography>
+                </Stack>
+              ))}
+              <Typography variant="caption" sx={{ ml: 'auto !important', color: INK_MUTED }}>78% committed</Typography>
+            </Stack>
+          </Box>
+
+          {/* Weekly rail — one composition with map relationship */}
+          <Box sx={{ mb: space.section }}>
+            <SectionLabel>Weekly position · linked to Week 3 geography</SectionLabel>
+            <Box sx={{ bgcolor: PAPER, borderRadius: 1, px: space.section, py: 0.5 }}>
+              <WeekRail weeks={weeks} />
             </Box>
-            <div className="grid grid-cols-3 gap-6">
-              {[
-                { dot: 'bg-gray-900', label: 'Firm',    value: '2,568 t' },
-                { dot: 'bg-gray-400', label: 'At Risk', value: '570 t'   },
-                { dot: 'bg-gray-200 border border-gray-300', label: 'Gap', value: '862 t' },
-              ].map(({ dot, label, value }) => (
-                <div key={label}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${dot}`} />
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{label}</p>
-                  </div>
-                  <p className="font-data text-2xl font-bold text-gray-900">{value}</p>
-                </div>
-              ))}
-            </div>
-          </DashPaper>
+          </Box>
 
-          {/* Weekly position */}
-          <div className="mb-6">
-            <SectionLabel>Weekly Procurement Position</SectionLabel>
-            <div className="flex flex-col gap-4">
-              {weeks.map(w => {
-                const pct = (w.committed / maxBar) * 100
-                const tPct = (w.target / maxBar) * 100
-                return (
-                  <DashPaper
-                    key={w.n}
-                    sx={{ p: space.related, bgcolor: w.issue ? '#FEF2F2' : 'background.paper' }}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-gray-900">Week {w.n}</span>
-                        {w.issue && (
-                          <span className="px-2 py-1 text-[9px] font-bold bg-red-700 text-white uppercase tracking-widest rounded-sm">
-                            Primary Issue
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <span className="font-data text-sm font-semibold text-gray-900">{w.committed.toLocaleString()}</span>
-                        <span className="font-data text-xs text-gray-400">/ {w.target.toLocaleString()} t</span>
-                        <span className={`font-data text-xs font-medium ${w.delta >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
-                          {w.delta > 0 ? `+${w.delta}` : w.delta} t
-                        </span>
-                      </div>
-                    </div>
-                    <div className="relative h-2 bg-gray-100 rounded-sm overflow-hidden">
-                      <div
-                        className={`absolute left-0 top-0 h-full rounded-sm ${w.issue ? 'bg-red-600' : w.delta >= 0 ? 'bg-gray-900' : 'bg-gray-500'}`}
-                        style={{ width: `${Math.min(pct, 100)}%` }}
-                      />
-                      {/* Target marker */}
-                      <div
-                        className="absolute top-0 h-full w-0.5 bg-gray-900 opacity-60"
-                        style={{ left: `${Math.min(tPct, 100)}%` }}
-                      />
-                    </div>
-                  </DashPaper>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Decision queue */}
-          <div>
-            <SectionLabel>Needs a Decision</SectionLabel>
-            <div className="flex flex-col gap-4">
-              {/* Week 3 primary */}
-              <DashPaper sx={{ p: space.related }}>
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-bold text-gray-900 mb-1">Week 3 supply gap: 620 t</p>
-                    <p className="text-xs text-gray-600 mb-1">1,200 t needed. 580 t currently committed.</p>
-                    <p className="text-xs text-gray-500">Week 3 is the most constrained delivery window. 620 t of demand remains uncovered.</p>
-                  </div>
-                  <PrimaryBtn onClick={() => onNavigate('farms')} className="flex-shrink-0">Resolve gap</PrimaryBtn>
-                </div>
-              </DashPaper>
-              {/* Secondary items */}
+          {/* Decision queue — primary elevated, rest as strips */}
+          <Box>
+            <SectionLabel>Needs a decision</SectionLabel>
+            <Stack spacing={0} sx={{ bgcolor: PAPER, borderRadius: 1, overflow: 'hidden' }}>
+              <Box sx={{ p: space.related, bgcolor: 'rgba(11,175,175,0.06)' }}>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 2, alignItems: 'flex-start' }}>
+                  <Box>
+                    <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
+                      <StatusChip kind="primary-issue" />
+                      <Typography variant="caption">Closes via GIS investigation</Typography>
+                    </Stack>
+                    <Typography variant="subtitle1" sx={{ color: INK }}>Week 3 supply gap: 620 t</Typography>
+                    <Typography variant="body2" sx={{ mt: 0.5 }}>
+                      Candidate farms identified on the Week 3 map. Resolve before committing the coverage strategy.
+                    </Typography>
+                  </Box>
+                  <PrimaryBtn onClick={() => onNavigate('farms')}>Resolve gap</PrimaryBtn>
+                </Stack>
+              </Box>
               {[
-                {
-                  title: '3 procurement commitments at risk',
-                  sub: '570 t of committed supply has delivery risk.',
-                  detail: 'Narsapur Farms and Avanigadda Block have flagged logistical delays. Combined exposure: 300 t.',
-                  cta: 'Review risks',
-                },
-                {
-                  title: '7 farms changed significantly this week',
-                  sub: 'Satellite condition, harvest timing, or expected supply changed.',
-                  detail: 'Changes are material enough to potentially affect existing procurement decisions.',
-                  cta: 'Review changes',
-                },
-                {
-                  title: '5 decisions blocked by missing evidence',
-                  sub: 'These farms cannot yet be treated as firm supply.',
-                  detail: 'Field evidence or current satellite data is unavailable for 5 eligible farms.',
-                  cta: 'Resolve evidence',
-                },
-              ].map(({ title, sub, detail, cta }) => (
-                <DashPaper key={title} sx={{ p: space.related }}>
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900 mb-1">{title}</p>
-                      <p className="text-xs text-gray-600 mb-1">{sub}</p>
-                      <p className="text-xs text-gray-500">{detail}</p>
-                    </div>
-                    <SecondaryBtn onClick={() => onNavigate('farms')} className="flex-shrink-0 text-xs">{cta}</SecondaryBtn>
-                  </div>
-                </DashPaper>
+                { title: '3 procurement commitments at risk', sub: '570 t delivery risk · Narsapur + Avanigadda', cta: 'Review risks' },
+                { title: '7 farms changed this week', sub: 'Satellite condition, harvest timing, or expected supply', cta: 'Review changes' },
+                { title: '5 decisions blocked by missing evidence', sub: 'Cannot treat as firm supply until field or current satellite evidence arrives', cta: 'Resolve evidence' },
+              ].map((item, i) => (
+                <DataStrip key={item.title} sx={{ px: space.related, bgcolor: PAPER, borderBottom: i === 2 ? 'none' : undefined }}>
+                  <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 2, alignItems: 'center' }}>
+                    <Box>
+                      <Typography variant="subtitle2" sx={{ color: INK }}>{item.title}</Typography>
+                      <Typography variant="body2">{item.sub}</Typography>
+                    </Box>
+                    <GhostBtn onClick={() => onNavigate('farms')}>{item.cta}</GhostBtn>
+                  </Stack>
+                </DataStrip>
               ))}
-            </div>
-          </div>
+            </Stack>
+          </Box>
         </div>
       </div>
 
       {/* Right geo panel */}
       <div
-className="relative flex flex-col flex-shrink-0 bg-white"
-        style={{ width: geoPanelWidth, minWidth: 248, maxWidth: 420 }}
+className="relative flex flex-col flex-shrink-0"
+        style={{ width: geoPanelWidth, minWidth: 280, maxWidth: 440, background: PAPER, borderLeft: `1px solid ${RULE}` }}
       >
         <div
           onPointerDown={startGeoPanelResize}
@@ -796,14 +738,17 @@ className="relative flex flex-col flex-shrink-0 bg-white"
             <MapLegend items={DEFAULT_LEGEND} />
           </div>
         </div>
-        <div className="p-4 border-t border-gray-200">
-          <p className="text-xs text-gray-600 leading-relaxed mb-4">
-            Week 3 has a <strong className="text-gray-900">620 t supply gap</strong>. The system has identified candidate farms that can close it.
-          </p>
+        <Box sx={{ p: space.related, borderTop: `1px solid ${RULE}`, bgcolor: INK, color: '#fff' }}>
+          <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.65)', display: 'block', mb: 1 }}>
+            Map · Week 3 geography
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.85)', mb: 1.5 }}>
+            620 t gap · candidates highlighted for investigation
+          </Typography>
           <PrimaryBtn fullWidth onClick={() => onNavigate('farms')}>
             Close the 620 t gap →
           </PrimaryBtn>
-        </div>
+        </Box>
       </div>
       {mapExpanded && (
         <ExpandedMap
@@ -1349,53 +1294,57 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             )}
           </div>
 
-          {/* Constraints */}
-          <DashPaper sx={{ p: space.section, mb: space.section }}>
-            <div className="flex items-center justify-between mb-4">
-              <SectionLabel>Business Constraints</SectionLabel>
+          {/* Constraints — threshold rails, not consumer sliders */}
+          <Box sx={{ mb: space.section }}>
+            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: space.tight }}>
+              <SectionLabel>Business constraints</SectionLabel>
               {isModified && (
-                <Button size="small" color="primary" onClick={() => setMaxVisits(10)} sx={{ minWidth: 0 }}>
-                  Reset to defaults
-                </Button>
+                <GhostBtn onClick={() => setMaxVisits(10)}>Reset to defaults</GhostBtn>
               )}
-            </div>
-            <div className="grid grid-cols-2 gap-x-10 gap-y-5">
-              <Box>
-                <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
-                  <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>Min. Week 3 coverage</Typography>
-                  <Typography className="font-data" variant="body2" sx={{ fontWeight: 700 }}>{minCoverage}%</Typography>
-                </Stack>
-                <Slider min={80} max={100} value={minCoverage} onChange={(_, v) => setMinCoverage(v as number)} />
-                <Stack direction="row" sx={{ justifyContent: 'space-between' }}><Typography variant="caption">80%</Typography><Typography variant="caption">100%</Typography></Stack>
-              </Box>
-              <Box>
-                <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
-                  <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>Max. field verification visits</Typography>
-                  <Typography className="font-data" variant="body2" color={isModified ? 'warning.main' : 'text.primary'} sx={{ fontWeight: 700 }}>
-                    {maxVisits} {maxVisits === 1 ? 'visit' : 'visits'}
-                  </Typography>
-                </Stack>
-                <Slider min={0} max={10} value={maxVisits} onChange={(_, v) => setMaxVisits(v as number)} />
-                <Stack direction="row" sx={{ justifyContent: 'space-between' }}><Typography variant="caption">0 visits</Typography><Typography variant="caption">10 visits</Typography></Stack>
-              </Box>
-              <Box>
-                <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
-                  <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>Min. high-confidence supply</Typography>
-                  <Typography className="font-data" variant="body2" sx={{ fontWeight: 700 }}>{minHighConf}%</Typography>
-                </Stack>
-                <Slider min={40} max={100} value={minHighConf} onChange={(_, v) => setMinHighConf(v as number)} />
-                <Stack direction="row" sx={{ justifyContent: 'space-between' }}><Typography variant="caption">40%</Typography><Typography variant="caption">100%</Typography></Stack>
-              </Box>
-              <Box>
-                <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
-                  <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>Max. single-district concentration</Typography>
-                  <Typography className="font-data" variant="body2" sx={{ fontWeight: 700 }}>{maxDistConc}%</Typography>
-                </Stack>
-                <Slider min={10} max={80} value={maxDistConc} onChange={(_, v) => setMaxDistConc(v as number)} />
-                <Stack direction="row" sx={{ justifyContent: 'space-between' }}><Typography variant="caption">10%</Typography><Typography variant="caption">80%</Typography></Stack>
-              </Box>
-            </div>
-          </DashPaper>
+            </Stack>
+            <Typography variant="body2" sx={{ mb: space.related, maxWidth: 520 }}>
+              Thresholds define feasibility. Drag a control to recompute strategies — violations surface on each option.
+            </Typography>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: space.related }}>
+              <ThresholdControl
+                label="Min. Week 3 coverage"
+                value={minCoverage}
+                display={`${minCoverage}%`}
+                min={80}
+                max={100}
+                onChange={setMinCoverage}
+                marks={['80%', '100%']}
+              />
+              <ThresholdControl
+                label="Max. field verification visits"
+                value={maxVisits}
+                display={`${maxVisits} ${maxVisits === 1 ? 'visit' : 'visits'}`}
+                min={0}
+                max={10}
+                onChange={setMaxVisits}
+                modified={isModified}
+                marks={['0', '10']}
+              />
+              <ThresholdControl
+                label="Min. high-confidence supply"
+                value={minHighConf}
+                display={`${minHighConf}%`}
+                min={40}
+                max={100}
+                onChange={setMinHighConf}
+                marks={['40%', '100%']}
+              />
+              <ThresholdControl
+                label="Max. single-district concentration"
+                value={maxDistConc}
+                display={`${maxDistConc}%`}
+                min={10}
+                max={80}
+                onChange={setMaxDistConc}
+                marks={['10%', '80%']}
+              />
+            </Box>
+          </Box>
 
           {/* Impact panel (shown when maxVisits changed) */}
           {showImpact && (
@@ -1494,43 +1443,53 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     key={s.key}
                     onClick={() => setSelected(s.key === selected ? null : s.key)}
                     sx={{
-                      p: space.related,
+                      p: space.section,
                       cursor: 'pointer',
-                      bgcolor: isSelected ? '#E6F8F8' : failCount > 0 ? '#FEF2F2' : 'background.paper',
+                      bgcolor: isSelected ? 'rgba(11,175,175,0.08)' : failCount > 0 ? semantic.alertSoft : PAPER,
+                      outline: isSelected ? `2px solid ${ACCENT}` : '2px solid transparent',
+                      outlineOffset: -2,
                     }}
                   >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${isSelected ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-gray-300 bg-white'}`}>
-                          {isSelected && <div className="w-2 h-2 bg-white rounded-full m-auto mt-1" />}
-                        </div>
-                        <p className="text-sm font-bold text-gray-900">{s.name}</p>
-                      </div>
-                      <span className={`px-2 py-1 text-[10px] font-bold uppercase tracking-widest rounded-sm ${
-                        failCount === 0
-                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                          : 'bg-red-50 text-red-800 border border-red-200'
-                      }`}>
-                        {failCount === 0 ? 'ALL PASS' : `${failCount} FAIL`}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-600 mb-4 ml-6">{rationale}</p>
+                    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+                        <Box
+                          sx={{
+                            width: 18,
+                            height: 18,
+                            borderRadius: '50%',
+                            border: isSelected ? `5px solid ${ACCENT}` : `2px solid ${RULE}`,
+                            bgcolor: PAPER,
+                            flexShrink: 0,
+                          }}
+                        />
+                        <Box>
+                          <Typography variant="subtitle1" sx={{ color: INK }}>{s.name}</Typography>
+                          {isSelected && (
+                            <Typography variant="caption" sx={{ color: ACCENT, fontWeight: 700 }}>Selected strategy</Typography>
+                          )}
+                        </Box>
+                      </Stack>
+                      <StatusChip kind={failCount === 0 ? 'constraint-pass' : 'constraint-fail'} />
+                    </Stack>
+                    <Typography variant="body2" sx={{ mb: space.related, pl: 4.25 }}>{rationale}</Typography>
 
-                    {/* Metrics */}
-                    <div className="grid grid-cols-4 ml-6 mb-4 border-y border-gray-100 py-4">
+                    <TradeoffBars coverage={wk3} visits={verif} />
+
+                    {/* Constraint metrics */}
+                    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, mt: space.related, borderTop: `1px solid ${RULE}` }}>
                       {[
-                        { label: 'Week 3', value: wk3 === 100 ? `100% · +30 t buffer` : `${wk3}%`, fail: wk3Fails },
+                        { label: 'Week 3', value: wk3 === 100 ? `100% · +30 t` : `${wk3}%`, fail: wk3Fails },
                         { label: 'Verification', value: String(verif), fail: verif > maxVisits },
-                        { label: 'High confidence', value: `${hiconf}%`, fail: hiconf < minHighConf },
+                        { label: 'High conf.', value: `${hiconf}%`, fail: hiconf < minHighConf },
                         { label: 'Max district', value: `${dist}%`, fail: dist > maxDistConc },
                       ].map(({ label, value, fail }) => (
-                        <div key={label} className="px-4 first:pl-0 border-r border-gray-100 last:border-r-0">
-                          <p className="text-[10px] text-gray-500 mb-1">{label}</p>
-                          <p className={`font-data text-sm font-bold ${fail ? 'text-red-700' : 'text-gray-900'}`}>{value}</p>
-                          {fail && <p className="text-[9px] text-red-600 mt-1">Fails constraint</p>}
-                        </div>
+                        <Box key={label} sx={{ py: 1.5, pr: 1.5, borderRight: `1px solid ${RULE}`, '&:last-child': { borderRight: 'none' } }}>
+                          <Typography variant="caption" sx={{ display: 'block' }}>{label}</Typography>
+                          <Typography className="font-data" variant="subtitle2" sx={{ color: fail ? semantic.alert : INK }}>{value}</Typography>
+                          {fail && <StatusChip kind="constraint-fail" />}
+                        </Box>
                       ))}
-                    </div>
+                    </Box>
 
                     {/* Farm mix */}
                     <div className="ml-6">
@@ -1867,8 +1826,8 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     )}
                   </g>
                   <rect width="200" height="120" fill="#f8fafc" opacity=".12" />
-                  <path d="M26 101 C56 91 82 70 104 49 C122 32 143 23 169 19" fill="none" stroke="#2563eb" strokeWidth="3" strokeDasharray="5 3" />
-                  <circle cx="26" cy="101" r="5" fill="#ffffff" stroke="#2563eb" strokeWidth="2" />
+                  <path d="M26 101 C56 91 82 70 104 49 C122 32 143 23 169 19" fill="none" stroke="#0BAFAF" strokeWidth="3" strokeDasharray="5 3" />
+                  <circle cx="26" cy="101" r="5" fill="#ffffff" stroke="#0BAFAF" strokeWidth="2" />
                   <path d="M169 9 C160 9 153 16 153 25 C153 37 169 49 169 49 C169 49 185 37 185 25 C185 16 178 9 169 9 Z" fill="#111827" />
                   <circle cx="169" cy="25" r="5" fill="#ffffff" />
                   <path d="M145 51 L190 45 L195 84 L151 91 Z" fill="#83996b" opacity=".7" stroke="#526348" strokeDasharray="3 2" />
@@ -2354,22 +2313,23 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   return (
     <div className="flex flex-col h-full overflow-hidden relative">
-      <div className="border-b border-red-200 bg-red-50 px-6 py-4 flex items-start justify-between flex-shrink-0">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
-            <p className="text-xs font-semibold text-red-700">Supply alert · Plan recovery</p>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">Godavari Combined Block — supply revised</h2>
-          <p className="text-xs text-red-700 mt-1 font-medium">New satellite data has changed the supply estimate. Week 3 is now below the 95% threshold.</p>
-        </div>
-      </div>
+      <Box sx={{ flexShrink: 0, px: space.section, py: space.related, bgcolor: semantic.alertSoft, borderBottom: `3px solid ${semantic.alert}` }}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1 }}>
+          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: semantic.alert }} />
+          <Typography variant="overline" sx={{ color: semantic.alert }}>Severity · Week 3 below 95% threshold</Typography>
+        </Stack>
+        <Typography variant="h2" sx={{ color: INK }}>Godavari Combined Block — supply revised</Typography>
+        <Typography variant="body2" sx={{ mt: 0.5, color: semantic.alert, fontWeight: 600 }}>
+          Cause: new satellite NDVI · Impact: −120 t · Recovery required
+        </Typography>
+      </Box>
 
       <div className="flex-1 overflow-y-auto scroll-hide p-6">
         <div className="max-w-3xl flex flex-col gap-6">
           {/* What changed */}
           <div className="border-b border-gray-200 pb-4">
             <div className="mb-4">
+              <Typography variant="overline" sx={{ color: semantic.alert }}>1 · Cause</Typography>
               <p className="text-sm font-semibold text-gray-800">What changed</p>
             </div>
             <div>
@@ -2394,9 +2354,10 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </div>
 
           {/* Why it matters */}
-          <div className="border-l-4 border-red-500 pl-5 py-1">
+          <Box sx={{ borderLeft: `3px solid ${semantic.alert}`, pl: space.related, py: 0.5 }}>
             <div className="mb-4">
-              <p className="text-sm font-semibold text-red-800">Why it matters</p>
+              <Typography variant="overline" sx={{ color: semantic.alert }}>2 · Business impact</Typography>
+              <p className="text-sm font-semibold" style={{ color: semantic.alert }}>Why it matters</p>
             </div>
             <div>
               <div className="grid grid-cols-3 mb-4">
@@ -2417,15 +2378,16 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 ))}
               </div>
               <div className="border-t border-red-100 pt-4">
-                <p className="text-xs text-red-800 font-semibold">Week 3 is now 110 t below the 95% coverage target of 1,140 t.</p>
+                <p className="text-xs font-semibold" style={{ color: semantic.alert }}>Week 3 is now 110 t below the 95% coverage target of 1,140 t.</p>
               </div>
             </div>
-          </div>
+          </Box>
 
           {/* Recovery recommendation */}
           <DashPaper sx={{ overflow: 'hidden', p: 0 }}>
             <div className="px-4 pt-4">
-              <p className="text-xs font-semibold text-gray-600">Recommended recovery</p>
+              <Typography variant="overline" sx={{ color: ACCENT }}>3 · Recovery options</Typography>
+              <p className="text-xs font-semibold text-gray-600">Recommended recovery · compare before accepting</p>
             </div>
             <div className="px-4 pb-4 pt-4">
               <div className="flex items-start justify-between mb-4">
