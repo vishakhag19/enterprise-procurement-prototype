@@ -1497,7 +1497,6 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       p: 2,
                       cursor: 'pointer',
                       bgcolor: isSelected ? '#E6F8F8' : failCount > 0 ? '#FEF2F2' : 'background.paper',
-                      boxShadow: isSelected ? `inset 3px 0 0 ${ACCENT}` : 'none',
                     }}
                   >
                     <div className="flex items-start justify-between mb-2">
