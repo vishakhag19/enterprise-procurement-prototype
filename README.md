@@ -19,7 +19,7 @@ pnpm preview --host 0.0.0.0 --port 43129
 
 ## Stack
 
-Vite, React, TypeScript, Tailwind CSS v4, [Material UI](https://mui.com/material-ui/) (`@mui/material`).
+Vite, React, TypeScript, [Material UI](https://mui.com/material-ui/) throughout (`@mui/material` layout, Paper, Dialog, Drawer, Table, Slider, etc.), plus Tailwind for map SVG utilities.
 
 The requested [MaterialDesignInXamlToolkit](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit) is a WPF (XAML) kit, so this web app uses Material UI for React with the same Material Design language.
 

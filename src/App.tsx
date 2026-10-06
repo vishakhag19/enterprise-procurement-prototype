@@ -2,12 +2,40 @@ import { useState } from 'react'
 import bhimavaramFieldPhoto from './assets/bhimavaram-field.jpg'
 import tanukuFieldPhoto from './assets/tanuku-field.jpg'
 import {
+  AppBar,
+  Avatar,
+  Box,
   Button,
+  Checkbox,
   Chip,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Drawer,
+  FormControlLabel,
+  IconButton,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+  Slider,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Toolbar,
   Typography,
 } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
-import { ACCENT } from './theme'
+import CloseIcon from '@mui/icons-material/Close'
+import WarningAmberIcon from '@mui/icons-material/WarningAmber'
+import { ACCENT, SIDEBAR_BG } from './theme'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 'field' | 'findings' | 'plan' | 'alert'
@@ -18,6 +46,34 @@ type MapVariant = 'coverage' | 'investigation' | 'scenario' | 'plan' | 'recovery
 // ─── Design Tokens ───────────────────────────────────────────────────────────
 // Material UI (@mui/material) — Manrope + accent #0BAFAF
 // XAML kit reference: github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit
+
+// ─── MUI layout primitives ───────────────────────────────────────────────────
+
+function DashPaper({
+  children,
+  sx,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+}: {
+  children: React.ReactNode
+  sx?: object
+  onClick?: () => void
+  onMouseEnter?: () => void
+  onMouseLeave?: () => void
+}) {
+  return (
+    <Paper
+      elevation={0}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 2.5, border: 'none', ...sx }}
+    >
+      {children}
+    </Paper>
+  )
+}
 
 // ─── Shared Atoms ────────────────────────────────────────────────────────────
 
@@ -325,14 +381,14 @@ const DOT_CLASS: Record<FarmRole, string> = {
 
 function MapLegend({ items }: { items: LegendItem[] }) {
   return (
-    <div className="flex flex-col gap-1.5">
+    <Stack spacing={0.75}>
       {items.map(({ role, label }) => (
-        <div key={label} className="flex items-center gap-2">
-          <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${DOT_CLASS[role]}`} />
-          <span className="text-[10px] text-gray-500">{label}</span>
-        </div>
+        <Stack key={label} direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          <Box className={DOT_CLASS[role]} sx={{ width: 10, height: 10, flexShrink: 0 }} />
+          <Typography variant="caption">{label}</Typography>
+        </Stack>
       ))}
-    </div>
+    </Stack>
   )
 }
 
@@ -372,16 +428,17 @@ function ExpandedMap({
   onClose: () => void
 }) {
   return (
-    <div className="fixed inset-0 z-50 bg-gray-950/35 flex items-center justify-center p-8" onClick={onClose}>
-      <div className="bg-white shadow-xl w-full max-w-5xl h-[78vh] flex flex-col rounded-xl" onClick={e => e.stopPropagation()}>
-        <div className="h-14 px-5 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
-          <div>
-            <p className="text-sm font-semibold text-gray-900">{title}</p>
-            <p className="text-xs text-gray-500">Same procurement geography and current marker state</p>
-          </div>
-          <button onClick={onClose} className="w-8 h-8 border border-gray-200 text-gray-500 hover:bg-gray-50" aria-label="Close expanded map">×</button>
-        </div>
-        <div className="flex-1 min-h-0 p-5">
+    <Dialog open onClose={onClose} maxWidth="lg" fullWidth slotProps={{ paper: { sx: { height: '78vh', display: 'flex', flexDirection: 'column' } } }}>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2, py: 2 }}>
+        <Box>
+          <Typography variant="subtitle1">{title}</Typography>
+          <Typography variant="caption">Same procurement geography and current marker state</Typography>
+        </Box>
+        <IconButton onClick={onClose} aria-label="Close expanded map" size="small"><CloseIcon fontSize="small" /></IconButton>
+      </DialogTitle>
+      <Divider />
+      <DialogContent sx={{ flex: 1, minHeight: 0, p: 2.5, display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ flex: 1, minHeight: 0 }}>
           <RegionMap
             fullscreen
             variant={variant}
@@ -390,12 +447,13 @@ function ExpandedMap({
             removedIds={removedIds}
             activeId={activeId}
           />
-        </div>
-        <div className="px-5 py-3 border-t border-gray-200 flex-shrink-0">
-          <MapLegend items={legend} />
-        </div>
-      </div>
-    </div>
+        </Box>
+      </DialogContent>
+      <Divider />
+      <Box sx={{ px: 2.5, py: 1.5 }}>
+        <MapLegend items={legend} />
+      </Box>
+    </Dialog>
   )
 }
 
@@ -426,44 +484,43 @@ function FarmDecisionPanel({
   const context = FARM_DECISION_CONTEXT[farmName] ?? { verification: 'Not required', risk: 'No material risk identified' }
 
   return (
-    <div className="fixed inset-0 z-50 bg-gray-950/20 flex items-center justify-center p-8" onClick={onClose}>
-      <div className="bg-white shadow-lg w-full max-w-md rounded-xl" onClick={e => e.stopPropagation()}>
-        <div className="px-5 py-4 border-b border-gray-200 flex items-start justify-between">
-          <div>
-            <p className="text-base font-semibold text-gray-900">{farm.name}</p>
-            <p className="text-xs text-gray-500 mt-0.5">{farm.district} district</p>
-          </div>
-          <button onClick={onClose} className="w-8 h-8 text-gray-500 hover:bg-gray-50" aria-label="Close farm details">×</button>
-        </div>
-        <div className="p-5">
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-4 text-xs">
-            <div>
-              <dt className="text-gray-500 mb-1">Expected supply</dt>
-              <dd className="font-data text-base font-bold text-gray-900">{farm.supply} t · {farm.harvest}</dd>
-            </div>
-            <div>
-              <dt className="text-gray-500 mb-1">Confidence</dt>
-              <dd><ConfBadge level={farm.confidence} /></dd>
-            </div>
-            <div>
-              <dt className="text-gray-500 mb-1">Evidence status</dt>
-              <dd className="font-medium text-gray-800">{farm.evidence}</dd>
-            </div>
-            <div>
-              <dt className="text-gray-500 mb-1">Verification</dt>
-              <dd className="font-medium text-gray-800">{context.verification}</dd>
-            </div>
-            <div className="col-span-2 border-t border-gray-100 pt-3">
-              <dt className="text-gray-500 mb-1">Relevant risk</dt>
-              <dd className="text-gray-800">{context.risk}</dd>
-            </div>
-          </dl>
-          <button onClick={() => onInspectMap(farmId)} className="text-xs font-semibold text-blue-700 mt-5 hover:underline">
-            Inspect location on map →
-          </button>
-        </div>
-      </div>
-    </div>
+    <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2 }}>
+        <Box>
+          <Typography variant="subtitle1">{farm.name}</Typography>
+          <Typography variant="caption">{farm.district} district</Typography>
+        </Box>
+        <IconButton onClick={onClose} aria-label="Close farm details" size="small"><CloseIcon fontSize="small" /></IconButton>
+      </DialogTitle>
+      <Divider />
+      <DialogContent>
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+          <Box>
+            <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>Expected supply</Typography>
+            <Typography className="font-data" variant="subtitle1">{farm.supply} t · {farm.harvest}</Typography>
+          </Box>
+          <Box>
+            <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>Confidence</Typography>
+            <ConfBadge level={farm.confidence} />
+          </Box>
+          <Box>
+            <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>Evidence status</Typography>
+            <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>{farm.evidence}</Typography>
+          </Box>
+          <Box>
+            <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>Verification</Typography>
+            <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>{context.verification}</Typography>
+          </Box>
+          <Box sx={{ gridColumn: '1 / -1', borderTop: 1, borderColor: 'divider', pt: 1.5 }}>
+            <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>Relevant risk</Typography>
+            <Typography variant="body2" color="text.primary">{context.risk}</Typography>
+          </Box>
+        </Box>
+        <Button color="primary" onClick={() => onInspectMap(farmId)} sx={{ mt: 2.5, px: 0, minWidth: 0 }}>
+          Inspect location on map →
+        </Button>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -489,17 +546,17 @@ function SatelliteThumbnail({ degraded = false }: { degraded?: boolean }) {
 function EvidenceModal({ farmId, onClose, recovery = false }: { farmId: string; onClose: () => void; recovery?: boolean }) {
   const farm = FARM_MAP_META[farmId]
   return (
-    <div className="absolute inset-0 z-40 bg-gray-950/35 flex items-center justify-center p-6" onClick={onClose}>
-      <div className="bg-white shadow-xl w-full max-w-xl overflow-hidden rounded-xl" onClick={e => e.stopPropagation()}>
-        <div className="px-5 py-4 border-b border-gray-200 flex items-start justify-between">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-blue-700">Satellite + Field Evidence</p>
-            <p className="text-base font-bold text-gray-900 mt-1">{farm.name}</p>
-            <p className="text-xs text-gray-500">{farm.district} district · Approximate field location</p>
-          </div>
-          <button onClick={onClose} className="w-8 h-8 rounded border border-gray-200 text-gray-500 hover:bg-gray-50" aria-label="Close evidence">×</button>
-        </div>
-        <div className="p-5">
+    <Dialog open onClose={onClose} maxWidth="md" fullWidth>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2 }}>
+        <Box>
+          <Typography variant="overline" color="primary">Satellite + Field Evidence</Typography>
+          <Typography variant="subtitle1">{farm.name}</Typography>
+          <Typography variant="caption">{farm.district} district · Approximate field location</Typography>
+        </Box>
+        <IconButton onClick={onClose} aria-label="Close evidence" size="small"><CloseIcon fontSize="small" /></IconButton>
+      </DialogTitle>
+      <Divider />
+      <DialogContent>
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
               <div className="flex justify-between mb-2">
@@ -528,17 +585,16 @@ function EvidenceModal({ farmId, onClose, recovery = false }: { farmId: string; 
               </p>
             </div>
           </div>
-          <div className={`rounded border p-3 ${recovery ? 'bg-red-50 border-red-200' : 'bg-blue-50 border-blue-200'}`}>
-            <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${recovery ? 'text-red-700' : 'text-blue-700'}`}>Procurement interpretation</p>
-            <p className={`text-xs leading-relaxed ${recovery ? 'text-red-800' : 'text-blue-900'}`}>
+          <Paper elevation={0} sx={{ p: 1.5, bgcolor: recovery ? 'error.50' : 'primary.50', backgroundColor: recovery ? '#FEF2F2' : '#E6F8F8' }}>
+            <Typography variant="overline" color={recovery ? 'error' : 'primary'} sx={{ display: 'block', mb: 0.5 }}>Procurement interpretation</Typography>
+            <Typography variant="body2" color="text.primary">
               {recovery
                 ? 'Vegetation decline and cloud-corrected canopy analysis indicate lower standing stock. Expected supply was revised from 200 t to 80 t.'
                 : `${farm.evidence}. The ${farm.confidence} confidence state summarizes evidence strength, recency, and agreement.`}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Typography>
+          </Paper>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -583,7 +639,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           <p className="text-sm text-gray-500 mb-7">4-week procurement window · AP Region</p>
 
           {/* Target card */}
-          <div className="dash-card p-5 mb-6">
+          <DashPaper sx={{ p: 2.5, mb: 3 }}>
             <div className="flex items-start justify-between mb-4">
               <div>
                 <SectionLabel>Procurement Target</SectionLabel>
@@ -592,10 +648,10 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               <p className="font-data text-3xl font-bold text-gray-900">4,000 t</p>
             </div>
             {/* Stacked bar */}
-            <div className="h-3 flex rounded-sm overflow-hidden bg-gray-100 mb-4">
-              <div className="bg-gray-900 transition-all" style={{ width: `${2568/4000*100}%` }} />
-              <div className="bg-gray-400" style={{ width: `${570/4000*100}%` }} />
-            </div>
+            <Box sx={{ display: 'flex', height: 12, borderRadius: 1, overflow: 'hidden', bgcolor: 'action.hover', mb: 2 }}>
+              <Box sx={{ width: `${2568/4000*100}%`, bgcolor: 'primary.main', transition: 'width 0.2s' }} />
+              <Box sx={{ width: `${570/4000*100}%`, bgcolor: 'grey.400' }} />
+            </Box>
             <div className="grid grid-cols-3 gap-6">
               {[
                 { dot: 'bg-gray-900', label: 'Firm',    value: '2,568 t' },
@@ -611,7 +667,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </div>
               ))}
             </div>
-          </div>
+          </DashPaper>
 
           {/* Weekly position */}
           <div className="mb-6">
@@ -621,9 +677,9 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 const pct = (w.committed / maxBar) * 100
                 const tPct = (w.target / maxBar) * 100
                 return (
-                  <div
+                  <DashPaper
                     key={w.n}
-                    className={`dash-card p-4 ${w.issue ? 'bg-red-50' : ''}`}
+                    sx={{ p: 2, bgcolor: w.issue ? '#FEF2F2' : 'background.paper' }}
                   >
                     <div className="flex items-center justify-between mb-2.5">
                       <div className="flex items-center gap-2">
@@ -653,7 +709,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                         style={{ left: `${Math.min(tPct, 100)}%` }}
                       />
                     </div>
-                  </div>
+                  </DashPaper>
                 )
               })}
             </div>
@@ -664,7 +720,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <SectionLabel>Needs a Decision</SectionLabel>
             <div className="space-y-3">
               {/* Week 3 primary */}
-              <div className="dash-card p-4" style={{ boxShadow: `inset 3px 0 0 ${ACCENT}`, background: '#ffffff' }}>
+              <DashPaper sx={{ p: 2, boxShadow: `inset 3px 0 0 ${ACCENT}` }}>
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-sm font-bold text-gray-900 mb-1">Week 3 supply gap: 620 t</p>
@@ -673,7 +729,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   </div>
                   <PrimaryBtn onClick={() => onNavigate('farms')} className="flex-shrink-0">Resolve gap</PrimaryBtn>
                 </div>
-              </div>
+              </DashPaper>
               {/* Secondary items */}
               {[
                 {
@@ -695,7 +751,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   cta: 'Resolve evidence',
                 },
               ].map(({ title, sub, detail, cta }) => (
-                <div key={title} className="dash-card p-4">
+                <DashPaper key={title} sx={{ p: 2 }}>
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-sm font-semibold text-gray-900 mb-1">{title}</p>
@@ -704,7 +760,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     </div>
                     <SecondaryBtn onClick={() => onNavigate('farms')} className="flex-shrink-0 text-xs">{cta}</SecondaryBtn>
                   </div>
-                </div>
+                </DashPaper>
               ))}
             </div>
           </div>
@@ -865,43 +921,41 @@ function FarmCard({
 }) {
   const isHovered = hoverId === farm.id
   return (
-    <div
-      className={`dash-card p-4 transition-all cursor-pointer ${
-        isHovered
-          ? 'bg-[var(--accent-soft)]'
-          : inComparison
-          ? 'bg-[#E6F8F8]'
-          : ''
-      }`}
+    <DashPaper
       onMouseEnter={() => onHover(farm.id)}
       onMouseLeave={() => onHover(null)}
+      sx={{
+        cursor: 'pointer',
+        transition: 'background-color 0.15s',
+        bgcolor: isHovered || inComparison ? '#E6F8F8' : 'background.paper',
+      }}
     >
-      <div className="flex items-start justify-between mb-2">
-        <div>
-          <p className="text-sm font-semibold text-gray-900">{farm.name}</p>
-          <p className="text-xs text-gray-500">{farm.district}</p>
-        </div>
-        <div className="text-right">
-          <p className="font-data text-lg font-bold text-gray-900">{farm.supply} t</p>
-          <p className="text-[10px] text-gray-400">{farm.harvest}</p>
-        </div>
-      </div>
-      <div className="flex flex-wrap gap-1.5 mb-2">
+      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+        <Box>
+          <Typography variant="subtitle2">{farm.name}</Typography>
+          <Typography variant="caption">{farm.district}</Typography>
+        </Box>
+        <Box sx={{ textAlign: 'right' }}>
+          <Typography className="font-data" variant="h6">{farm.supply} t</Typography>
+          <Typography variant="caption">{farm.harvest}</Typography>
+        </Box>
+      </Stack>
+      <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 0.75, mb: 1 }}>
         <ConfBadge level={farm.confidence} />
         {farm.signals.map(s => <SignalBadge key={s} type={s} />)}
-      </div>
+      </Stack>
       {farm.evidenceStatus && farm.evidenceNote && (
-        <p className="text-[10px] text-gray-600 mb-2">
-          <strong className="text-gray-800">{farm.evidenceStatus}</strong> · {farm.evidenceNote}
-        </p>
+        <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
+          <Box component="strong" sx={{ color: 'text.primary' }}>{farm.evidenceStatus}</Box> · {farm.evidenceNote}
+        </Typography>
       )}
-      <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-0.5">Why recommended</p>
-      <p className="text-xs text-gray-600 mb-1">{farm.why}</p>
+      <Typography variant="overline" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>Why recommended</Typography>
+      <Typography variant="body2" sx={{ mb: 0.5 }}>{farm.why}</Typography>
       {farm.missing && (
-        <p className="text-xs text-gray-700"><strong>Missing:</strong> {farm.missing}</p>
+        <Typography variant="body2" color="text.primary"><strong>Missing:</strong> {farm.missing}</Typography>
       )}
-      <div className="flex items-center justify-between mt-3">
-        <Button onClick={() => onViewEvidence(farm.id)} size="small" color="primary" sx={{ textTransform: 'none', fontWeight: 650, minWidth: 0, px: 0.5, fontSize: 12 }}>View evidence</Button>
+      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1.5 }}>
+        <Button onClick={() => onViewEvidence(farm.id)} size="small" color="primary" sx={{ minWidth: 0, px: 0.5, fontSize: 12 }}>View evidence</Button>
         <Button
           size="small"
           variant={inComparison ? 'contained' : 'outlined'}
@@ -912,8 +966,8 @@ function FarmCard({
         >
           {inComparison ? 'Added to comparison' : 'Add to comparison'}
         </Button>
-      </div>
-    </div>
+      </Stack>
+    </DashPaper>
   )
 }
 
@@ -1104,7 +1158,7 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           <SectionLabel>Interpretation</SectionLabel>
           <div className="grid grid-cols-2 gap-4">
             {COMPARE_FARMS.map(f => (
-              <div key={f.id} className="dash-card p-4">
+              <DashPaper key={f.id} sx={{ p: 2 }}>
                 <p className="text-sm font-bold text-gray-900 mb-0.5">{f.name}</p>
                 <p className="text-xs font-semibold text-gray-500 mb-2">{f.headline}</p>
                 <p className="text-xs text-gray-600 mb-3">{f.summary}</p>
@@ -1120,7 +1174,7 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   </span>
                   {f.verifReq && <span className="text-[10px] text-gray-500 font-medium">verif. req.</span>}
                 </div>
-              </div>
+              </DashPaper>
             ))}
           </div>
         </div>
@@ -1128,50 +1182,50 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         {/* Detailed table */}
         <div>
           <SectionLabel>Detailed Comparison</SectionLabel>
-          <div className="overflow-x-auto dash-card">
-            <table className="w-full text-xs border-collapse">
-              <thead>
-                <tr className="border-b border-gray-200 bg-gray-50">
-                  <th className="text-left py-3 px-4 font-semibold text-gray-500 w-44 sticky left-0 bg-gray-50">Attribute</th>
+          <TableContainer component={Paper} elevation={0} sx={{ p: 0 }}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 650, width: 176, position: 'sticky', left: 0, bgcolor: 'grey.50', zIndex: 1 }}>Attribute</TableCell>
                   {COMPARE_FARMS.map(f => (
-                    <th key={f.id} className="text-left py-3 px-4 font-semibold text-gray-900 min-w-[180px]">
-                      <p>{f.name}</p>
-                      <p className="font-normal text-gray-500">{f.district}</p>
-                    </th>
+                    <TableCell key={f.id} sx={{ fontWeight: 650, minWidth: 180 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 650 }}>{f.name}</Typography>
+                      <Typography variant="caption">{f.district}</Typography>
+                    </TableCell>
                   ))}
-                </tr>
-              </thead>
-              <tbody>
+                </TableRow>
+              </TableHead>
+              <TableBody>
                 {TABLE_ROWS.map(({ key, label }) => (
-                  <tr key={key} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                    <td className="py-3 px-4 text-gray-500 font-medium sticky left-0 bg-white align-top">{label}</td>
+                  <TableRow key={key} hover>
+                    <TableCell sx={{ color: 'text.secondary', fontWeight: 500, position: 'sticky', left: 0, bgcolor: 'background.paper', verticalAlign: 'top' }}>{label}</TableCell>
                     {COMPARE_FARMS.map(f => {
                       const val = f[key as keyof typeof f]
                       if (key === 'confidence') return (
-                        <td key={f.id} className="py-3 px-4 align-top">
+                        <TableCell key={f.id} sx={{ verticalAlign: 'top' }}>
                           <ConfBadge level={val as Conf} />
-                          <p className="text-[10px] text-gray-500 mt-1">
+                          <Typography variant="caption" sx={{ display: 'block',  mt: 0.5 }}>
                             {val === 'HIGH' ? 'Evidence current' : val === 'MEDIUM' ? 'Evidence incomplete' : 'Evidence missing'}
-                          </p>
-                        </td>
+                          </Typography>
+                        </TableCell>
                       )
                       if (key === 'verifReq') return (
-                        <td key={f.id} className={`py-3 px-4 font-semibold align-top ${val ? 'text-amber-700' : 'text-gray-700'}`}>
+                        <TableCell key={f.id} sx={{ verticalAlign: 'top', fontWeight: 650, color: val ? 'warning.dark' : 'text.primary' }}>
                           {val ? 'Yes' : 'No'}
-                        </td>
+                        </TableCell>
                       )
                       if (key === 'supply') return (
-                        <td key={f.id} className="py-3 px-4 font-data font-semibold text-gray-900 align-top">{val} t</td>
+                        <TableCell key={f.id} className="font-data" sx={{ verticalAlign: 'top', fontWeight: 650 }}>{val} t</TableCell>
                       )
                       return (
-                        <td key={f.id} className="py-3 px-4 text-gray-700 align-top leading-relaxed">{String(val)}</td>
+                        <TableCell key={f.id} sx={{ verticalAlign: 'top', color: 'text.secondary' }}>{String(val)}</TableCell>
                       )
                     })}
-                  </tr>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </div>
       </div>
 
@@ -1296,91 +1350,56 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </div>
 
           {/* Constraints */}
-          <div className="dash-card p-5 mb-6">
+          <DashPaper sx={{ p: 2.5, mb: 3 }}>
             <div className="flex items-center justify-between mb-4">
               <SectionLabel>Business Constraints</SectionLabel>
               {isModified && (
-                <button
-                  onClick={() => setMaxVisits(10)}
-                  className="text-xs text-blue-700 hover:underline font-medium"
-                >
+                <Button size="small" color="primary" onClick={() => setMaxVisits(10)} sx={{ minWidth: 0 }}>
                   Reset to defaults
-                </button>
+                </Button>
               )}
             </div>
             <div className="grid grid-cols-2 gap-x-10 gap-y-5">
-              {/* Min coverage */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-medium text-gray-700">Min. Week 3 coverage</label>
-                  <span className="font-data text-sm font-bold text-gray-900">{minCoverage}%</span>
-                </div>
-                <input
-                  type="range" min={80} max={100} value={minCoverage}
-                  onChange={e => setMinCoverage(+e.target.value)}
-                  className="w-full"
-                />
-                <div className="flex justify-between mt-0.5">
-                  <span className="text-[10px] text-gray-400">80%</span>
-                  <span className="text-[10px] text-gray-400">100%</span>
-                </div>
-              </div>
-              {/* Max visits */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-medium text-gray-700">Max. field verification visits</label>
-                  <span className={`font-data text-sm font-bold ${isModified ? 'text-amber-700' : 'text-gray-900'}`}>
+              <Box>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
+                  <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>Min. Week 3 coverage</Typography>
+                  <Typography className="font-data" variant="body2" sx={{ fontWeight: 700 }}>{minCoverage}%</Typography>
+                </Stack>
+                <Slider min={80} max={100} value={minCoverage} onChange={(_, v) => setMinCoverage(v as number)} />
+                <Stack direction="row" sx={{ justifyContent: 'space-between' }}><Typography variant="caption">80%</Typography><Typography variant="caption">100%</Typography></Stack>
+              </Box>
+              <Box>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
+                  <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>Max. field verification visits</Typography>
+                  <Typography className="font-data" variant="body2" color={isModified ? 'warning.main' : 'text.primary'} sx={{ fontWeight: 700 }}>
                     {maxVisits} {maxVisits === 1 ? 'visit' : 'visits'}
-                  </span>
-                </div>
-                <input
-                  type="range" min={0} max={10} value={maxVisits}
-                  onChange={e => setMaxVisits(+e.target.value)}
-                  className="w-full"
-                />
-                <div className="flex justify-between mt-0.5">
-                  <span className="text-[10px] text-gray-400">0 visits</span>
-                  <span className="text-[10px] text-gray-400">10 visits</span>
-                </div>
-              </div>
-              {/* Min hi-conf */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-medium text-gray-700">Min. high-confidence supply</label>
-                  <span className="font-data text-sm font-bold text-gray-900">{minHighConf}%</span>
-                </div>
-                <input
-                  type="range" min={40} max={100} value={minHighConf}
-                  onChange={e => setMinHighConf(+e.target.value)}
-                  className="w-full"
-                />
-                <div className="flex justify-between mt-0.5">
-                  <span className="text-[10px] text-gray-400">40%</span>
-                  <span className="text-[10px] text-gray-400">100%</span>
-                </div>
-              </div>
-              {/* Max dist conc */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-medium text-gray-700">Max. single-district concentration</label>
-                  <span className="font-data text-sm font-bold text-gray-900">{maxDistConc}%</span>
-                </div>
-                <input
-                  type="range" min={10} max={80} value={maxDistConc}
-                  onChange={e => setMaxDistConc(+e.target.value)}
-                  className="w-full"
-                />
-                <div className="flex justify-between mt-0.5">
-                  <span className="text-[10px] text-gray-400">10%</span>
-                  <span className="text-[10px] text-gray-400">80%</span>
-                </div>
-              </div>
+                  </Typography>
+                </Stack>
+                <Slider min={0} max={10} value={maxVisits} onChange={(_, v) => setMaxVisits(v as number)} />
+                <Stack direction="row" sx={{ justifyContent: 'space-between' }}><Typography variant="caption">0 visits</Typography><Typography variant="caption">10 visits</Typography></Stack>
+              </Box>
+              <Box>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
+                  <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>Min. high-confidence supply</Typography>
+                  <Typography className="font-data" variant="body2" sx={{ fontWeight: 700 }}>{minHighConf}%</Typography>
+                </Stack>
+                <Slider min={40} max={100} value={minHighConf} onChange={(_, v) => setMinHighConf(v as number)} />
+                <Stack direction="row" sx={{ justifyContent: 'space-between' }}><Typography variant="caption">40%</Typography><Typography variant="caption">100%</Typography></Stack>
+              </Box>
+              <Box>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
+                  <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>Max. single-district concentration</Typography>
+                  <Typography className="font-data" variant="body2" sx={{ fontWeight: 700 }}>{maxDistConc}%</Typography>
+                </Stack>
+                <Slider min={10} max={80} value={maxDistConc} onChange={(_, v) => setMaxDistConc(v as number)} />
+                <Stack direction="row" sx={{ justifyContent: 'space-between' }}><Typography variant="caption">10%</Typography><Typography variant="caption">80%</Typography></Stack>
+              </Box>
             </div>
-          </div>
+          </DashPaper>
 
           {/* Impact panel (shown when maxVisits changed) */}
           {showImpact && (
-            <div className="dash-card p-5 mb-6 bg-amber-50">
+            <DashPaper sx={{ p: 2.5, mb: 3, bgcolor: '#FFFBEB' }}>
               <div className="flex items-start justify-between mb-4">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">Impact of This Change</p>
                 <p className="text-[10px] text-amber-700 font-medium">Max. field verification visits: 10 visits → <strong>{maxVisits} visit{maxVisits !== 1 ? 's' : ''}</strong></p>
@@ -1431,7 +1450,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </div>
               </div>
               {/* Coverage target not met */}
-              <div className="dash-card p-3 mb-3 bg-red-50">
+              <DashPaper sx={{ p: 1.5, mb: 1.5, bgcolor: '#FEF2F2' }}>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-red-700 mb-1">Coverage target not met</p>
                 <p className="text-xs font-semibold text-red-800 mb-1">Coverage-First cannot reach the 95% target with this constraint.</p>
                 <p className="text-xs text-gray-600">
@@ -1440,14 +1459,14 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <p className="text-xs text-gray-600 mt-1">
                   The farm substitution replaces <strong>160 t</strong> with only <strong>80 t</strong> — a net supply loss of <strong>80 t</strong>.
                 </p>
-              </div>
+              </DashPaper>
               {/* Interpretation */}
               <div className="bg-amber-100 rounded p-3">
                 <p className="text-xs text-amber-900 leading-relaxed">
                   Reducing the verification limit to {maxVisits} removes Tanuku Plot and substitutes Guntur Strip, reducing Week 3 supply by 80 t and coverage from 96% to 89%, below the 95% target.
                 </p>
               </div>
-            </div>
+            </DashPaper>
           )}
 
           {/* Strategies */}
@@ -1471,16 +1490,15 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   : s.rationale
 
                 return (
-                  <div
+                  <DashPaper
                     key={s.key}
                     onClick={() => setSelected(s.key === selected ? null : s.key)}
-                    className={`dash-card p-4 cursor-pointer transition-all ${
-                      isSelected
-                        ? 'bg-[var(--accent-soft)] shadow-[inset_3px_0_0_#0BAFAF]'
-                        : failCount > 0
-                        ? 'bg-red-50'
-                        : ''
-                    }`}
+                    sx={{
+                      p: 2,
+                      cursor: 'pointer',
+                      bgcolor: isSelected ? '#E6F8F8' : failCount > 0 ? '#FEF2F2' : 'background.paper',
+                      boxShadow: isSelected ? `inset 3px 0 0 ${ACCENT}` : 'none',
+                    }}
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-3">
@@ -1522,21 +1540,12 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       {farms.map(f => {
                         const needsVerif = f.includes('✶')
                         return (
-                          <button
-                            key={f}
-                            onClick={e => {
-                              e.stopPropagation()
-                              setInspectedFarm(f.replace(' ✶', '').split(' · ')[0])
-                            }}
-                            className={`text-[10px] font-medium hover:underline ${needsVerif ? 'text-amber-800' : 'text-gray-600'}`}
-                          >
-                            {f}
-                          </button>
+                          <Button key={f} size="small" color="primary" onClick={e => { e.stopPropagation(); setInspectedFarm(f.replace(' ✶', '').split(' · ')[0]) }} sx={{ display: 'block', px: 0, minWidth: 0, textAlign: 'left' }}>{f}</Button>
                         )
                       })}
                       </div>
                     </div>
-                  </div>
+                  </DashPaper>
                 )
               })}
             </div>
@@ -1544,7 +1553,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
           {/* Footer CTA when selected */}
           {selected && (
-            <div className={`mt-6 dash-card p-4 ${canProceed ? '' : 'bg-red-50'}`}>
+            <DashPaper sx={{ mt: 3, p: 2, bgcolor: canProceed ? 'background.paper' : '#FEF2F2' }}>
               {canProceed ? (
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold text-gray-900">{selectedStrategy?.name} selected — all constraints satisfied.</p>
@@ -1561,7 +1570,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   <PrimaryBtn disabled>Proceed with {selectedStrategy?.name} →</PrimaryBtn>
                 </div>
               )}
-            </div>
+            </DashPaper>
           )}
         </div>
       </div>
@@ -1698,7 +1707,7 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
       <div className="flex-1 overflow-y-auto scroll-hide p-8">
         <div className="max-w-2xl space-y-4">
           {farms.map(f => (
-            <div key={f.id} className="dash-card p-5 bg-amber-50">
+            <DashPaper key={f.id} sx={{ p: 2.5, bgcolor: '#FFFBEB' }}>
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded border border-amber-700 bg-amber-700 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -1732,7 +1741,7 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
                 Confidence before verification: <strong className="text-gray-800">{f.confidence}</strong>
                 <span> · {f.confidence === 'LOW' ? 'Evidence missing' : 'Evidence incomplete'}</span>
               </p>
-            </div>
+            </DashPaper>
           ))}
 
           {/* Assignment summary */}
@@ -1817,7 +1826,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   return (
     <div className="flex items-start justify-center h-full bg-gray-100 overflow-y-auto scroll-hide py-6 px-4">
-      <div className="w-full max-w-[410px] dash-card shadow-sm overflow-hidden">
+      <DashPaper sx={{ width: '100%', maxWidth: 410, overflow: 'hidden', boxShadow: 1, p: 0 }}>
         <div className="bg-white overflow-hidden">
           {/* Dark top bar */}
           <div className="text-white px-5 pt-4 pb-3" style={{ background: '#0B1F1F', borderTop: `3px solid ${ACCENT}` }}>
@@ -1871,15 +1880,15 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   <p className="text-[9px] text-gray-600 font-medium">Approximate destination · West Godavari</p>
                 </div>
               </div>
-              <button
+              <Button
+                fullWidth
+                variant="outlined"
+                color="primary"
                 onClick={() => window.open(farmIdx === 0 ? 'https://www.openstreetmap.org/?mlat=16.54&mlon=81.52#map=12/16.54/81.52' : 'https://www.openstreetmap.org/?mlat=16.75&mlon=81.68#map=12/16.75/81.68', '_blank', 'noopener,noreferrer')}
-                className="w-full min-h-11 px-4 border border-gray-300 text-gray-700 text-sm font-medium rounded mb-5 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+                sx={{ mb: 2.5 }}
               >
                 Open in navigation
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M14 5h5v5M19 5l-8 8M19 14v5H5V5h5" />
-                </svg>
-              </button>
+              </Button>
 
               <div className="border-t border-gray-100 pt-4 mb-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -1921,58 +1930,49 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
               <div className="space-y-0 mb-4">
                 {farm.verifyItems.map((item, i) => (
-                  <div key={item} className="flex items-center gap-3 py-4 border-b border-gray-100">
-                    <button
-                      onClick={() => toggleCheck(i)}
-                      className={`w-7 h-7 rounded flex items-center justify-center flex-shrink-0 border transition-colors ${
-                        farmChecks[i] ? 'border-transparent text-white' : 'border-gray-300'
-                      }`}
-                      style={farmChecks[i] ? { background: ACCENT } : undefined}
-                    >
-                      {farmChecks[i] && (
-                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                    </button>
-                    <span className={`text-sm ${farmChecks[i] ? 'text-gray-900 font-medium' : 'text-gray-700'}`}>{item}</span>
-                  </div>
+                  <FormControlLabel
+                    key={item}
+                    sx={{ display: 'flex', ml: 0, mr: 0, py: 1.5, borderBottom: 1, borderColor: 'divider', width: '100%' }}
+                    control={<Checkbox checked={!!farmChecks[i]} onChange={() => toggleCheck(i)} color="primary" />}
+                    label={<Typography variant="body2" sx={{ fontWeight: farmChecks[i] ? 600 : 400 }}>{item}</Typography>}
+                  />
                 ))}
               </div>
 
               <div className="mb-4">
                 <p className="text-[10px] font-semibold text-gray-500 mb-2">Notes</p>
-                <textarea
+                <TextField
                   value={notes[farmIdx] || ''}
                   onChange={e => setNotes(prev => ({ ...prev, [farmIdx]: e.target.value }))}
                   placeholder="Add relevant field observations"
-                  rows={4}
-                  className="w-full border border-gray-200 rounded p-3 text-sm text-gray-700 placeholder-gray-400 resize-none focus:outline-none focus:border-gray-400"
+                  multiline
+                  minRows={4}
+                  fullWidth
                 />
               </div>
 
               {photos[farmIdx] ? (
                 <div className="border-y border-gray-200 py-3 mb-4">
-                  <button onClick={() => setPhotoPreviewOpen(true)} className="w-full block bg-gray-50">
+                  <Box component="button" onClick={() => setPhotoPreviewOpen(true)} sx={{ width: '100%', display: 'block', bgcolor: 'grey.50', border: 0, p: 0, cursor: 'pointer' }}>
                     <img
                       src={farmIdx === 0 ? bhimavaramFieldPhoto : tanukuFieldPhoto}
                       alt={`Field evidence captured at ${farm.name}`}
                       className="w-full h-auto max-h-64 object-contain"
                     />
-                  </button>
+                  </Box>
                   <div className="flex items-start justify-between gap-3 mt-3">
                     <div>
                       <p className="text-sm font-semibold text-gray-900">Field photo captured</p>
                       <p className="text-xs text-gray-500 mt-1">Today · {farm.name}</p>
                     </div>
-                    <button onClick={() => setPhotos(prev => ({ ...prev, [farmIdx]: false }))} className="min-h-11 px-2 text-xs text-gray-500 hover:text-red-700 hover:underline">Remove</button>
+                    <Button size="small" color="error" onClick={() => setPhotos(prev => ({ ...prev, [farmIdx]: false }))}>Remove</Button>
                   </div>
                 </div>
               ) : (
                 <>
-                  <button onClick={() => setPhotos(prev => ({ ...prev, [farmIdx]: true }))} className="w-full min-h-11 px-4 border border-gray-300 text-gray-700 text-sm font-medium rounded mb-1 hover:bg-gray-50 transition-colors">
+                  <Button fullWidth variant="outlined" color="primary" onClick={() => setPhotos(prev => ({ ...prev, [farmIdx]: true }))} sx={{ mb: 0.5 }}>
                     Add photo
-                  </button>
+                  </Button>
                   <p className="text-[10px] text-gray-400 text-center mb-4">0 photos added · Required to confirm evidence</p>
                 </>
               )}
@@ -1990,7 +1990,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           )}
         </div>
 
-      </div>
+      </DashPaper>
       {photoPreviewOpen && (
         <div className="fixed inset-0 z-50 bg-gray-950/80 flex items-center justify-center p-6" onClick={() => setPhotoPreviewOpen(false)}>
           <div className="max-w-5xl max-h-full" onClick={e => e.stopPropagation()}>
@@ -1999,7 +1999,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <p className="text-sm font-semibold">Field photo captured</p>
                 <p className="text-xs text-gray-300">Today · {farm.name}</p>
               </div>
-              <button onClick={() => setPhotoPreviewOpen(false)} className="w-9 h-9 border border-white/30 text-white" aria-label="Close photo preview">×</button>
+              <IconButton onClick={() => setPhotoPreviewOpen(false)} aria-label="Close photo preview" sx={{ color: '#fff' }}><CloseIcon /></IconButton>
             </div>
             <img
               src={farmIdx === 0 ? bhimavaramFieldPhoto : tanukuFieldPhoto}
@@ -2042,7 +2042,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <div className="flex-1 overflow-y-auto scroll-hide p-8">
         <div className="max-w-2xl space-y-5">
           {findings.map(f => (
-            <div key={f.id} className="dash-card overflow-hidden bg-emerald-50/40">
+            <DashPaper key={f.id} sx={{ overflow: 'hidden', bgcolor: '#ECFDF5', p: 0 }}>
               {/* Header */}
               <div className="border-b border-gray-100 px-5 py-4 flex items-start justify-between">
                 <div>
@@ -2091,7 +2091,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   <p className="text-xs text-gray-700 leading-relaxed">{f.impact}</p>
                 </div>
               </div>
-            </div>
+            </DashPaper>
           ))}
 
           {/* Summary */}
@@ -2137,19 +2137,21 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         </div>
         <div className="flex gap-2">
           <SecondaryBtn onClick={() => document.getElementById('active-farm-mix')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>View full plan</SecondaryBtn>
-          <button
+          <Button
             onClick={() => onNavigate('alert')}
-            className="px-4 py-2 border border-red-300 bg-red-50 text-red-800 text-sm font-semibold rounded hover:bg-red-100 transition-colors"
+            color="error"
+            variant="outlined"
+            sx={{ bgcolor: '#FEF2F2' }}
           >
             1 monitoring alert
-          </button>
+          </Button>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto scroll-hide p-8">
         <div className="max-w-4xl">
           {/* Week 3 status card */}
-          <div className="dash-card p-5 mb-6" style={{ boxShadow: 'inset 3px 0 0 #0F9F6E' }}>
+          <DashPaper sx={{ p: 2.5, mb: 3, boxShadow: 'inset 3px 0 0 #0F9F6E' }}>
             <div className="flex items-start justify-between mb-4">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Week 3 Position</p>
@@ -2170,7 +2172,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               <span className="text-[10px] text-emerald-700 font-semibold">95% threshold · {(0.95 * wk3Target).toLocaleString()} t</span>
               <span className="text-[10px] text-gray-400">100%</span>
             </div>
-          </div>
+          </DashPaper>
 
           {/* Stats row */}
           <div className="grid grid-cols-4 border-y border-gray-200 py-4 mb-6">
@@ -2190,7 +2192,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Farm table */}
           <div id="active-farm-mix" className="mb-6">
             <SectionLabel>Active farm mix · Week 3</SectionLabel>
-            <div className="dash-card overflow-hidden">
+            <DashPaper sx={{ overflow: 'hidden', p: 0 }}>
               <table className="w-full text-xs">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200">
@@ -2218,11 +2220,11 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </DashPaper>
           </div>
 
           {/* Map */}
-          <div className="dash-card p-4 w-fit max-w-full">
+          <DashPaper sx={{ p: 2, width: 'fit-content', maxWidth: '100%' }}>
             <div className="flex items-start justify-between">
               <SectionLabel>Geographic distribution · Week 3</SectionLabel>
               <ExpandMapButton onClick={() => setMapExpanded(true)} />
@@ -2246,7 +2248,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 ]} />
               </div>
             </div>
-          </div>
+          </DashPaper>
         </div>
       </div>
       {mapExpanded && (
@@ -2320,7 +2322,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <PrimaryBtn onClick={() => onNavigate('plan')}>Return to active plan →</PrimaryBtn>
               </div>
             </div>
-            <div className="dash-card p-4 w-fit max-w-full">
+            <DashPaper sx={{ p: 2, width: 'fit-content', maxWidth: '100%' }}>
               <div className="flex items-start justify-between">
                 <SectionLabel>Recovered plan · Geographic context</SectionLabel>
                 <ExpandMapButton onClick={() => {
@@ -2334,7 +2336,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </div>
                 <MapLegend items={recoveryLegend} />
               </div>
-            </div>
+            </DashPaper>
           </div>
         </div>
         {mapExpanded && (
@@ -2386,10 +2388,9 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </div>
               </div>
               <p className="text-xs text-gray-600">New satellite data indicates lower-than-expected standing stock. The revised estimate reflects current NDVI readings and cloud-corrected analysis from the past 72 hours.</p>
-              <button onClick={() => setEvidenceOpen(true)} className="text-xs font-semibold text-blue-700 mt-3 hover:underline flex items-center gap-1.5">
-                View satellite evidence
-                <span aria-hidden="true">→</span>
-              </button>
+              <Button size="small" color="primary" onClick={() => setEvidenceOpen(true)} sx={{ mt: 1.5, px: 0, minWidth: 0 }}>
+                View satellite evidence →
+              </Button>
             </div>
           </div>
 
@@ -2423,7 +2424,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </div>
 
           {/* Recovery recommendation */}
-          <div className="dash-card overflow-hidden">
+          <DashPaper sx={{ overflow: 'hidden', p: 0 }}>
             <div className="px-5 pt-4">
               <p className="text-xs font-semibold text-gray-600">Recommended recovery</p>
             </div>
@@ -2436,9 +2437,9 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     <ConfBadge level="MEDIUM" />
                     <span className="text-[10px] text-gray-500">Evidence incomplete · Field verification required</span>
                   </div>
-                  <button onClick={() => setInspectedFarm('Rajahmundry Block')} className="text-xs font-semibold text-blue-700 mt-3 hover:underline">
+                  <Button size="small" color="primary" onClick={() => setInspectedFarm('Rajahmundry Block')} sx={{ mt: 1.5, px: 0, minWidth: 0 }}>
                     Inspect farm details
-                  </button>
+                  </Button>
                 </div>
                 <div className="text-right">
                   <p className="font-data text-3xl font-bold text-emerald-700">+110 t</p>
@@ -2502,7 +2503,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   </SecondaryBtn>
                 </div>
               ) : (
-                <div className="dash-card p-4 bg-emerald-50">
+                <DashPaper sx={{ p: 2, bgcolor: '#ECFDF5' }}>
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center">
                       <svg className="w-2.5 h-2.5 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -2513,13 +2514,13 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   </div>
                   <p className="text-xs text-emerald-700 mb-3">Week 3 coverage restored to 95%. Field verification for Rajahmundry Block has been assigned to Ravi.</p>
                   <PrimaryBtn onClick={() => onNavigate('plan')}>Return to active plan →</PrimaryBtn>
-                </div>
+                </DashPaper>
               )}
             </div>
-          </div>
+          </DashPaper>
 
           {/* Map context */}
-          <div className="dash-card p-4 w-fit max-w-full">
+          <DashPaper sx={{ p: 2, width: 'fit-content', maxWidth: '100%' }}>
             <div className="flex items-start justify-between">
               <SectionLabel>Recovery · Geographic context</SectionLabel>
               <ExpandMapButton onClick={() => {
@@ -2538,7 +2539,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <MapLegend items={recoveryLegend} />
               </div>
             </div>
-          </div>
+          </DashPaper>
         </div>
       </div>
       {evidenceOpen && <EvidenceModal farmId="godavari" recovery onClose={() => setEvidenceOpen(false)} />}
@@ -2595,16 +2596,29 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
   const currentIdx = FLOW_ORDER.indexOf(current)
 
   return (
-    <div className="w-44 flex-shrink-0 text-white flex flex-col h-full" style={{ background: '#0B1F1F' }}>
-      {/* Brand */}
-      <div className="px-4 pt-5 pb-4" style={{ borderBottom: '1px solid rgba(11,175,175,0.22)' }}>
-        <p className="text-[9px] font-bold uppercase tracking-widest mb-1" style={{ color: ACCENT }}>ITC Procurement</p>
-        <p className="text-sm font-bold text-white leading-tight">Decision Support</p>
-        <p className="text-[10px] text-white/55 mt-0.5">Eucalyptus · 4,000 t</p>
-      </div>
+    <Drawer
+      variant="permanent"
+      sx={{
+        width: 176,
+        flexShrink: 0,
+        [`& .MuiDrawer-paper`]: {
+          width: 176,
+          boxSizing: 'border-box',
+          bgcolor: SIDEBAR_BG,
+          color: '#fff',
+          borderRight: 'none',
+          display: 'flex',
+          flexDirection: 'column',
+        },
+      }}
+    >
+      <Box sx={{ px: 2, pt: 2.5, pb: 2, borderBottom: '1px solid rgba(11,175,175,0.22)' }}>
+        <Typography variant="overline" sx={{ color: ACCENT, display: 'block', mb: 0.5 }}>ITC Procurement</Typography>
+        <Typography variant="subtitle2" sx={{ color: '#fff', lineHeight: 1.3 }}>Decision Support</Typography>
+        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.55)', display: 'block', mt: 0.5 }}>Eucalyptus · 4,000 t</Typography>
+      </Box>
 
-      {/* Nav */}
-      <nav className="flex-1 overflow-y-auto scroll-hide py-3">
+      <List className="scroll-hide" sx={{ flex: 1, overflowY: 'auto', py: 1.5, px: 0 }}>
         {NAV_ITEMS.map(({ screen, num, label, sub }) => {
           const itemIdx = FLOW_ORDER.indexOf(screen)
           const isActive = current === screen
@@ -2612,56 +2626,66 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
           const isAccessible = itemIdx <= currentIdx + 1
 
           return (
-            <button
+            <ListItemButton
               key={screen}
+              selected={isActive}
+              disabled={!isAccessible}
               onClick={() => isAccessible && onNavigate(screen)}
-              className={`w-full text-left px-4 py-3 flex items-start gap-3 transition-colors group relative ${
-                isAccessible ? 'hover:bg-white/5' : 'opacity-40 cursor-not-allowed'
-              }`}
-              style={isActive ? { background: 'rgba(11,175,175,0.16)' } : undefined}
+              sx={{
+                alignItems: 'flex-start',
+                py: 1.25,
+                px: 2,
+                position: 'relative',
+                opacity: isAccessible ? 1 : 0.4,
+                '&.Mui-selected': { bgcolor: 'rgba(11,175,175,0.16)' },
+                '&.Mui-selected::before': {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  top: 8,
+                  bottom: 8,
+                  width: 3,
+                  borderRadius: '0 2px 2px 0',
+                  bgcolor: ACCENT,
+                },
+              }}
             >
-              {isActive && (
-                <span className="absolute left-0 top-2 bottom-2 w-0.5 rounded-r" style={{ background: ACCENT }} />
-              )}
-              {/* Number/check */}
-              <div
-                className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-[10px] font-bold"
-                style={
-                  isActive
-                    ? { background: ACCENT, color: '#fff' }
-                    : isComplete
-                    ? { background: '#0F9F6E', color: '#fff' }
-                    : { border: '1px solid rgba(255,255,255,0.28)', color: 'rgba(255,255,255,0.45)' }
-                }
-              >
-                {screen === 'alert' ? (
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.3 3.7 2.6 17a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0Z" />
-                  </svg>
-                ) : isComplete ? (
-                  <CheckIcon sx={{ fontSize: 12 }} />
-                ) : num}
-              </div>
-              {/* Labels */}
-              <div>
-                <p className={`text-xs font-semibold leading-tight ${isActive ? 'text-white' : 'text-white/75'}`}>{label}</p>
-                <p className={`text-[10px] mt-0.5 ${isActive ? 'text-white/55' : 'text-white/35'}`}>{sub}</p>
-              </div>
-              {/* Alert dot */}
+              <ListItemIcon sx={{ minWidth: 28, mt: 0.25 }}>
+                <Avatar
+                  sx={{
+                    width: 20,
+                    height: 20,
+                    fontSize: 10,
+                    fontWeight: 700,
+                    bgcolor: isActive ? ACCENT : isComplete ? '#0F9F6E' : 'transparent',
+                    color: isActive || isComplete ? '#fff' : 'rgba(255,255,255,0.45)',
+                    border: isActive || isComplete ? 'none' : '1px solid rgba(255,255,255,0.28)',
+                  }}
+                >
+                  {screen === 'alert' ? <WarningAmberIcon sx={{ fontSize: 12 }} /> : isComplete ? <CheckIcon sx={{ fontSize: 12 }} /> : num}
+                </Avatar>
+              </ListItemIcon>
+              <ListItemText
+                primary={label}
+                secondary={sub}
+                slotProps={{
+                  primary: { variant: 'body2', sx: { fontWeight: 650, color: isActive ? '#fff' : 'rgba(255,255,255,0.75)', lineHeight: 1.2 } },
+                  secondary: { variant: 'caption', sx: { color: isActive ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.35)', mt: 0.25 } },
+                }}
+              />
               {screen === 'alert' && (
-                <div className="ml-auto mt-1 w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+                <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'error.main', mt: 1, ml: 0.5, flexShrink: 0 }} />
               )}
-            </button>
+            </ListItemButton>
           )
         })}
-      </nav>
+      </List>
 
-      {/* User */}
-      <div className="px-4 py-4" style={{ borderTop: '1px solid rgba(11,175,175,0.22)' }}>
-        <p className="text-xs font-semibold text-white/80">Shrikant · Procurement Mgr</p>
-        <p className="text-[10px] text-white/40 mt-0.5">AP Region · ITC Agri</p>
-      </div>
-    </div>
+      <Box sx={{ px: 2, py: 2, borderTop: '1px solid rgba(11,175,175,0.22)' }}>
+        <Typography variant="body2" sx={{ fontWeight: 650, color: 'rgba(255,255,255,0.8)' }}>Shrikant · Procurement Mgr</Typography>
+        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.4)', display: 'block', mt: 0.5 }}>AP Region · ITC Agri</Typography>
+      </Box>
+    </Drawer>
   )
 }
 
@@ -2691,15 +2715,17 @@ function TopBar({ screen }: { screen: Screen }) {
   }
 
   return (
-    <div className="h-11 border-b border-gray-200 flex items-center px-6 flex-shrink-0 bg-white" style={{ boxShadow: `inset 0 -2px 0 ${ACCENT}` }}>
-      <span className="text-sm font-semibold text-gray-900 mr-4">{BREADCRUMB_TITLE[screen]}</span>
-      {ctxParts.map((p, i) => (
-        <span key={p} className="flex items-center">
-          {i > 0 && <span className="mx-3 text-gray-300">|</span>}
-          <span className="text-xs text-gray-500">{p}</span>
-        </span>
-      ))}
-    </div>
+    <AppBar position="static" color="inherit">
+      <Toolbar variant="dense" sx={{ minHeight: 44, px: 3, gap: 2 }}>
+        <Typography variant="subtitle2" sx={{ mr: 1 }}>{BREADCRUMB_TITLE[screen]}</Typography>
+        {ctxParts.map((p, i) => (
+          <Stack key={p} direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+            {i > 0 && <Divider orientation="vertical" flexItem sx={{ borderColor: 'divider' }} />}
+            <Typography variant="caption">{p}</Typography>
+          </Stack>
+        ))}
+      </Toolbar>
+    </AppBar>
   )
 }
 
@@ -2725,14 +2751,14 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden dash-surface">
+    <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden', bgcolor: 'background.default' }}>
       <Sidebar current={screen} onNavigate={setScreen} />
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
         <TopBar screen={screen} />
-        <div className="flex-1 overflow-hidden">
+        <Box sx={{ flex: 1, overflow: 'hidden', bgcolor: 'background.default' }}>
           {screens[screen]}
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   )
 }
