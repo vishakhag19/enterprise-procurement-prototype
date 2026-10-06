@@ -15,13 +15,17 @@ export default defineConfig({
     port: 43127,
     strictPort: true,
     allowedHosts: true,
+    cors: true,
     hmr: {
       clientPort: 43127,
+      protocol: 'ws',
     },
   },
   preview: {
     host: '0.0.0.0',
     port: 43129,
+    strictPort: true,
     allowedHosts: true,
+    cors: true,
   },
 })
