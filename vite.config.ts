@@ -14,9 +14,14 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 43127,
     strictPort: true,
+    allowedHosts: true,
+    hmr: {
+      clientPort: 43127,
+    },
   },
   preview: {
     host: '0.0.0.0',
     port: 43129,
+    allowedHosts: true,
   },
 })
