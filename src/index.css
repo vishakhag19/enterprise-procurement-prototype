@@ -19,26 +19,3 @@ html, body, #root {
   margin: 0;
   padding: 0;
 }
-
-body {
-  font-family: 'Manrope', system-ui, -apple-system, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  background: var(--surface);
-  color: var(--ink);
-}
-
-.font-data {
-  font-family: 'Manrope', system-ui, sans-serif;
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-}
-
-.scroll-hide::-webkit-scrollbar { display: none; }
-.scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* Legacy utility remaps → domain palette */
-.bg-gray-900 { background-color: var(--accent) !important; }
-.border-gray-900 { border-color: var(--accent) !important; }
-.hover\:bg-gray-700:hover { background-color: var(--accent-dark) !important; }
-.text-blue-700 { color: var(--accent-dark) !important; }
-.border-blue-600 { border-color: var(--accent) !important; }

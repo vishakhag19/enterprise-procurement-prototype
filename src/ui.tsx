@@ -1,6 +1,8 @@
 import {
   Box,
   Button,
+  Chip,
+  Paper,
   Slider,
   Stack,
   Typography,
@@ -10,14 +12,11 @@ import { STATUS_META, StatusKind, semantic, space, INK, INK_MUTED, PAPER, RULE, 
 export function StatusChip({ kind }: { kind: StatusKind }) {
   const m = STATUS_META[kind]
   return (
-    <Box
-      component="span"
+    <Chip
+      size="small"
+      label={m.label}
       sx={{
-        display: 'inline-flex',
-        alignItems: 'center',
         height: 22,
-        px: 1,
-        borderRadius: '4px',
         fontSize: 10,
         fontWeight: 700,
         letterSpacing: '0.06em',
@@ -25,11 +24,9 @@ export function StatusChip({ kind }: { kind: StatusKind }) {
         color: m.fg,
         bgcolor: m.bg,
         border: m.border === 'transparent' ? 'none' : `1px solid ${m.border}`,
-        whiteSpace: 'nowrap',
+        '& .MuiChip-label': { px: 1 },
       }}
-    >
-      {m.label}
-    </Box>
+    />
   )
 }
 
@@ -58,7 +55,8 @@ export function DashPaper({
   onMouseLeave?: () => void
 }) {
   return (
-    <Box
+    <Paper
+      elevation={0}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -71,7 +69,7 @@ export function DashPaper({
       }}
     >
       {children}
-    </Box>
+    </Paper>
   )
 }
 
@@ -178,16 +176,15 @@ export function WeekRail({
                 {w.issue && <StatusChip kind="primary-issue" />}
               </Stack>
               <Stack direction="row" spacing={1.5} sx={{ alignItems: 'baseline' }}>
-                <Typography className="font-data" variant="subtitle2" sx={{ color: INK }}>
+                <Typography variant="subtitle2" sx={{ color: INK, fontVariantNumeric: 'tabular-nums' }}>
                   {w.committed.toLocaleString()}
                 </Typography>
-                <Typography className="font-data" variant="caption">
+                <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums' }}>
                   / {w.target.toLocaleString()} t
                 </Typography>
                 <Typography
-                  className="font-data"
                   variant="caption"
-                  sx={{ color: w.delta >= 0 ? semantic.canopyHigh : semantic.alert, fontWeight: 700 }}
+                  sx={{ color: w.delta >= 0 ? semantic.canopyHigh : semantic.alert, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}
                 >
                   {w.delta > 0 ? `+${w.delta}` : w.delta} t
                 </Typography>
@@ -258,9 +255,8 @@ export function ThresholdControl({
           {label}
         </Typography>
         <Typography
-          className="font-data"
           variant="subtitle2"
-          sx={{ color: modified ? semantic.canopyMed : INK }}
+          sx={{ color: modified ? semantic.canopyMed : INK, fontVariantNumeric: 'tabular-nums' }}
         >
           {display}
         </Typography>
@@ -289,7 +285,7 @@ export function TradeoffBars({
       <Box>
         <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
           <Typography variant="caption">Week 3 coverage</Typography>
-          <Typography className="font-data" variant="caption" sx={{ fontWeight: 700, color: INK }}>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: INK }}>
             {coverage}%
           </Typography>
         </Stack>
@@ -300,7 +296,7 @@ export function TradeoffBars({
       <Box>
         <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
           <Typography variant="caption">Verification load</Typography>
-          <Typography className="font-data" variant="caption" sx={{ fontWeight: 700, color: INK }}>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: INK }}>
             {visits} visit{visits === 1 ? '' : 's'}
           </Typography>
         </Stack>
