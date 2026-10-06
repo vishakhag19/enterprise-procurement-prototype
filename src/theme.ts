@@ -73,7 +73,7 @@ export const theme = createTheme({
           backgroundColor: SURFACE,
           color: INK,
           backgroundImage:
-            'radial-gradient(ellipse 120% 80% at 100% 0%, rgba(11,175,175,0.06), transparent 50%), linear-gradient(180deg, #E4E9E6 0%, #DFE5E1 100%)',
+            'radial-gradient(ellipse 100% 70% at 100% 0%, rgba(11,175,175,0.10), transparent 55%), radial-gradient(ellipse 80% 50% at 0% 100%, rgba(13,92,92,0.05), transparent 50%), linear-gradient(180deg, #F3F6F7 0%, #EEF2F3 100%)',
         },
         '.font-data': {
           fontFamily: '"Manrope", system-ui, sans-serif',

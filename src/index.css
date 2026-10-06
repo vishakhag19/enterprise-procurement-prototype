@@ -3,13 +3,15 @@
 :root {
   --accent: #0BAFAF;
   --accent-dark: #089090;
-  --accent-soft: #D9F2F2;
-  --ink: #0C1520;
-  --surface: #E4E9E6;
-  --paper: #FBFCFA;
-  --rule: rgba(12, 21, 32, 0.10);
-  --firm: #1F3D38;
-  --alert: #A84832;
+  --accent-soft: #E0F7F7;
+  --ink: #0A1A1F;
+  --ink-muted: #5B6B72;
+  --surface: #EEF2F3;
+  --paper: #FFFFFF;
+  --rule: rgba(10, 26, 31, 0.09);
+  --firm: #0D5C5C;
+  --alert: #D1433A;
+  --warn: #C4872A;
 }
 
 * { box-sizing: border-box; }

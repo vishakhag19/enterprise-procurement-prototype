@@ -1,21 +1,19 @@
 /**
- * SatSure-adjacent geospatial procurement design system.
- * Domain: satellite + field evidence for commodity procurement — not generic SaaS.
- *
- * Spacing: Material 8dp grid (theme.spacing)
- * Surfaces: terrain canvas → open data strips → map plane (primary visual)
- * Color: ink / canopy / signal-teal / earth-alert — avoid template blue/green/red kits
+ * Teal-led procurement intelligence palette.
+ * Anchor: #0BAFAF. Cool slate surfaces, deep teal ink, coral alert, amber caution.
  */
 
 export const ACCENT = '#0BAFAF'
-export const SIDEBAR_BG = '#071416'
+export const ACCENT_DARK = '#089090'
+export const ACCENT_SOFT = '#E0F7F7'
+export const SIDEBAR_BG = '#061418'
 
-/** Terrain canvas — cool sage-stone, not flat SaaS grey */
-export const SURFACE = '#E4E9E6'
-export const PAPER = '#FBFCFA'
-export const INK = '#0C1520'
-export const INK_MUTED = '#5A6A64'
-export const RULE = 'rgba(12, 21, 32, 0.10)'
+/** Cool slate canvas — clean, not muddy sage */
+export const SURFACE = '#EEF2F3'
+export const PAPER = '#FFFFFF'
+export const INK = '#0A1A1F'
+export const INK_MUTED = '#5B6B72'
+export const RULE = 'rgba(10, 26, 31, 0.09)'
 
 export const space = {
   tight: 1, // 8
@@ -24,24 +22,25 @@ export const space = {
   gutter: 4, // 32
 } as const
 
-/** Semantic supply / evidence / risk — domain language, not “success/error” */
+/** Semantic supply / evidence / risk — keyed off the teal accent family */
 export const semantic = {
-  firm: '#1F3D38', // committed canopy
-  atRisk: '#9A7B2F', // dry-season amber
-  gap: '#8A9390', // unfilled void
-  canopyHigh: '#2F6B52',
-  canopyMed: '#9A7B2F',
-  canopyLow: '#A84832',
-  evidenceFresh: '#2F6B52',
-  evidenceAging: '#9A7B2F',
-  evidenceMissing: '#A84832',
+  firm: '#0D5C5C',
+  atRisk: '#C4872A',
+  gap: '#B8C0C4',
+  canopyHigh: '#0D7A6F',
+  canopyMed: '#C4872A',
+  canopyLow: '#D1433A',
+  evidenceFresh: '#0D7A6F',
+  evidenceAging: '#C4872A',
+  evidenceMissing: '#D1433A',
   signal: ACCENT,
-  alert: '#A84832',
-  alertSoft: '#F3E6E1',
-  okSoft: '#E3EEE8',
-  warnSoft: '#F3EDE0',
+  alert: '#D1433A',
+  alertSoft: '#FDECEA',
+  okSoft: '#E6F5F3',
+  warnSoft: '#FFF6E5',
+  accentSoft: ACCENT_SOFT,
   mapWater: '#7BA8B0',
-  mapParcel: '#5C6B4A',
+  mapParcel: '#4A6B62',
   mapParcelSel: ACCENT,
 } as const
 
@@ -67,15 +66,15 @@ export const STATUS_META: Record<
   { label: string; fg: string; bg: string; border: string }
 > = {
   'confidence-high': { label: 'HIGH', fg: semantic.canopyHigh, bg: semantic.okSoft, border: 'transparent' },
-  'confidence-medium': { label: 'MEDIUM', fg: semantic.canopyMed, bg: semantic.warnSoft, border: 'transparent' },
-  'confidence-low': { label: 'LOW', fg: semantic.canopyLow, bg: semantic.alertSoft, border: 'transparent' },
+  'confidence-medium': { label: 'MEDIUM', fg: '#9A6410', bg: semantic.warnSoft, border: 'transparent' },
+  'confidence-low': { label: 'LOW', fg: semantic.alert, bg: semantic.alertSoft, border: 'transparent' },
   'evidence-current': { label: 'Evidence current', fg: semantic.canopyHigh, bg: 'transparent', border: semantic.canopyHigh },
-  'evidence-aging': { label: 'Evidence aging', fg: semantic.canopyMed, bg: 'transparent', border: semantic.canopyMed },
-  'evidence-missing': { label: 'Evidence missing', fg: semantic.canopyLow, bg: 'transparent', border: semantic.canopyLow },
-  'candidate-strong': { label: 'Strong candidate', fg: '#0A6E6E', bg: '#D9F2F2', border: 'transparent' },
-  'visit-required': { label: 'Field visit required', fg: '#1F4A6E', bg: '#E4EEF5', border: 'transparent' },
+  'evidence-aging': { label: 'Evidence aging', fg: '#9A6410', bg: 'transparent', border: semantic.canopyMed },
+  'evidence-missing': { label: 'Evidence missing', fg: semantic.alert, bg: 'transparent', border: semantic.alert },
+  'candidate-strong': { label: 'Strong candidate', fg: ACCENT_DARK, bg: ACCENT_SOFT, border: 'transparent' },
+  'visit-required': { label: 'Field visit required', fg: '#1F5A7A', bg: '#E5F1F7', border: 'transparent' },
   'concentration-risk': { label: 'Concentration risk', fg: semantic.alert, bg: semantic.alertSoft, border: 'transparent' },
-  'outside-harvest': { label: 'Outside harvest window', fg: INK_MUTED, bg: 'rgba(12,21,32,0.06)', border: 'transparent' },
+  'outside-harvest': { label: 'Outside harvest window', fg: INK_MUTED, bg: 'rgba(10,26,31,0.06)', border: 'transparent' },
   verified: { label: 'Verified', fg: semantic.canopyHigh, bg: semantic.okSoft, border: 'transparent' },
   'primary-issue': { label: 'Primary issue', fg: '#FFFFFF', bg: semantic.alert, border: 'transparent' },
   'constraint-pass': { label: 'Pass', fg: semantic.canopyHigh, bg: semantic.okSoft, border: 'transparent' },

@@ -50,7 +50,7 @@ import {
   DataStrip,
 } from './ui'
 import type { StatusKind } from './designSystem'
-import { INK, INK_MUTED, PAPER, RULE } from './designSystem'
+import { INK, INK_MUTED, PAPER, RULE, ACCENT_SOFT } from './designSystem'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 'field' | 'findings' | 'plan' | 'alert'
@@ -162,12 +162,12 @@ function RegionMap({
 
   function marker(x: number, y: number, role: FarmRole, highlighted: boolean) {
     const hi = highlighted ? 2.25 : undefined
-    if (role === 'committed') return <circle cx={x} cy={y} r="4.5" fill="#1F3D38" stroke="#0C1520" strokeWidth={hi ?? 0.75} />
-    if (role === 'needs-verification') return <circle cx={x} cy={y} r="5.5" fill="#FBFCFA" stroke="#9A7B2F" strokeWidth={hi ?? 1.5} strokeDasharray="2 1.5" />
-    if (role === 'recommended') return <circle cx={x} cy={y} r="5" fill="#FBFCFA" stroke="#0BAFAF" strokeWidth={hi ?? 1.5} />
+    if (role === 'committed') return <circle cx={x} cy={y} r="4.5" fill="#0D5C5C" stroke="#0A1A1F" strokeWidth={hi ?? 0.75} />
+    if (role === 'needs-verification') return <circle cx={x} cy={y} r="5.5" fill="#FFFFFF" stroke="#C4872A" strokeWidth={hi ?? 1.5} strokeDasharray="2 1.5" />
+    if (role === 'recommended') return <circle cx={x} cy={y} r="5" fill="#FFFFFF" stroke="#0BAFAF" strokeWidth={hi ?? 1.5} />
     if (role === 'alert') return (
       <g>
-        <circle cx={x} cy={y} r="7" fill="#A84832" stroke="#0C1520" strokeWidth={hi ?? 1} />
+        <circle cx={x} cy={y} r="7" fill="#D1433A" stroke="#0A1A1F" strokeWidth={hi ?? 1} />
         <text x={x} y={y + 3} textAnchor="middle" fontSize="8" fontWeight="700" fill="#ffffff">!</text>
       </g>
     )
@@ -180,8 +180,8 @@ function RegionMap({
           cx={x}
           cy={y}
           r={role === 'selected' ? 5.5 : 3.5}
-          fill={role === 'selected' ? '#0BAFAF' : '#C5CBC7'}
-          stroke={highlighted ? '#0BAFAF' : role === 'selected' ? '#089090' : '#8A9390'}
+          fill={role === 'selected' ? '#0BAFAF' : '#B8C0C4'}
+          stroke={highlighted ? '#0BAFAF' : role === 'selected' ? '#089090' : '#8A959C'}
           strokeWidth={hi ?? (role === 'selected' ? 1.25 : 0.75)}
         />
       </g>
@@ -221,7 +221,7 @@ function RegionMap({
 
   return (
     <svg viewBox={viewBox} preserveAspectRatio={variant === 'coverage' || variant === 'investigation' || fullscreen ? 'xMidYMid slice' : 'xMidYMid meet'} style={sizeStyle} role="img" aria-label="Andhra Pradesh procurement geography">
-      <rect width="360" height="260" fill="#d9e0da" />
+      <rect width="360" height="260" fill="#E2E8EA" />
       <g opacity=".82" style={{ filter: 'grayscale(0.28) saturate(0.55) contrast(1.05) hue-rotate(-8deg)' }}>
         {[184, 185, 186].flatMap((tileX, col) =>
           [115, 116, 117].map((tileY, row) => (
@@ -237,7 +237,7 @@ function RegionMap({
           ))
         )}
       </g>
-      <rect width="360" height="260" fill="#0C1520" opacity=".04" />
+      <rect width="360" height="260" fill="#0A1A1F" opacity=".04" />
       {variant === 'recovery' ? (
         <g fontSize="7.5" fontWeight="700" fill="#475569" stroke="#ffffff" strokeWidth="2.5" paintOrder="stroke">
           <text x="207" y="145">WEST GODAVARI</text>
@@ -295,7 +295,7 @@ function RegionMap({
       {variant === 'recovery' && (
         <g pointerEvents="none">
           <text x="185" y="45" fontSize="7" fontWeight="700" fill="#374151" stroke="#ffffff" strokeWidth="2" paintOrder="stroke">Rajahmundry recovery</text>
-          <text x="280" y="79" fontSize="7" fontWeight="700" fill="#991b1b" stroke="#ffffff" strokeWidth="2" paintOrder="stroke">Godavari revised</text>
+          <text x="280" y="79" fontSize="7" fontWeight="700" fill="#D1433A" stroke="#ffffff" strokeWidth="2" paintOrder="stroke">Godavari revised</text>
         </g>
       )}
       {tooltipMeta && tooltipPoint && !compact && (
@@ -331,11 +331,11 @@ type LegendItem = { role: FarmRole; label: string }
 
 const DOT_STYLE: Record<FarmRole, React.CSSProperties> = {
   selected: { background: '#0BAFAF', border: '2px solid #0BAFAF', boxShadow: '0 0 0 3px rgba(11,175,175,0.25)' },
-  committed: { background: '#1F3D38', border: '2px solid #1F3D38' },
-  'needs-verification': { background: '#FBFCFA', border: '2px dashed #9A7B2F' },
-  recommended: { background: '#FBFCFA', border: '2px solid #0BAFAF' },
-  other: { background: '#C5CBC7', border: '1px solid #8A9390' },
-  alert: { background: '#A84832', border: '2px solid #A84832' },
+  committed: { background: '#0D5C5C', border: '2px solid #0D5C5C' },
+  'needs-verification': { background: '#FFFFFF', border: '2px dashed #C4872A' },
+  recommended: { background: '#FFFFFF', border: '2px solid #0BAFAF' },
+  other: { background: '#B8C0C4', border: '1px solid #8A959C' },
+  alert: { background: '#D1433A', border: '2px solid #D1433A' },
 }
 
 function MapLegend({ items }: { items: LegendItem[] }) {
@@ -544,7 +544,7 @@ function EvidenceModal({ farmId, onClose, recovery = false }: { farmId: string; 
               </Typography>
             </Box>
           </Box>
-          <Paper elevation={0} sx={{ p: space.related, bgcolor: recovery ? '#FEF2F2' : '#E6F8F8' }}>
+          <Paper elevation={0} sx={{ p: space.related, bgcolor: recovery ? semantic.alertSoft : ACCENT_SOFT }}>
             <Typography variant="overline" color={recovery ? 'error' : 'primary'} sx={{ display: 'block', mb: 0.5 }}>Procurement interpretation</Typography>
             <Typography variant="body2" color="text.primary">
               {recovery
@@ -611,7 +611,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               p: space.section,
               bgcolor: PAPER,
               borderRadius: 1,
-              backgroundImage: `linear-gradient(135deg, rgba(168,72,50,0.08) 0%, ${PAPER} 42%)`,
+              backgroundImage: `linear-gradient(135deg, rgba(209,67,58,0.08) 0%, ${PAPER} 42%)`,
             }}
           >
             <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', gap: 2, flexWrap: 'wrap' }}>
@@ -671,7 +671,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           <Box>
             <SectionLabel>Needs a decision</SectionLabel>
             <Stack spacing={0} sx={{ bgcolor: PAPER, borderRadius: 1, overflow: 'hidden' }}>
-              <Box sx={{ p: space.related, bgcolor: 'rgba(11,175,175,0.06)' }}>
+              <Box sx={{ p: space.related, bgcolor: 'rgba(11,175,175,0.10)' }}>
                 <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 2, alignItems: 'flex-start' }}>
                   <Box>
                     <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
@@ -860,7 +860,7 @@ function FarmCard({
       sx={{
         cursor: 'pointer',
         transition: 'background-color 0.15s',
-        bgcolor: isHovered || inComparison ? '#E6F8F8' : 'background.paper',
+        bgcolor: isHovered || inComparison ? ACCENT_SOFT : 'background.paper',
       }}
     >
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: space.tight }}>
@@ -1336,7 +1336,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
           {/* Impact panel (shown when maxVisits changed) */}
           {showImpact && (
-            <DashPaper sx={{ p: space.section, mb: space.section, bgcolor: '#FFFBEB' }}>
+            <DashPaper sx={{ p: space.section, mb: space.section, bgcolor: semantic.warnSoft }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
                 <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'warning.dark' }}>Impact of This Change</Typography>
                 <Typography sx={{ fontSize: 10, color: 'warning.dark', fontWeight: 500 }}>Max. field verification visits: 10 visits → <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>{maxVisits} visit{maxVisits !== 1 ? 's' : ''}</Box></Typography>
@@ -1387,7 +1387,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </Box>
               </Box>
               {/* Coverage target not met */}
-              <DashPaper sx={{ p: space.related, mb: space.related, bgcolor: '#FEF2F2' }}>
+              <DashPaper sx={{ p: space.related, mb: space.related, bgcolor: semantic.alertSoft }}>
                 <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'error.dark', mb: 0.5 }}>Coverage target not met</Typography>
                 <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'error.dark', mb: 0.5 }}>Coverage-First cannot reach the 95% target with this constraint.</Typography>
                 <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
@@ -1398,8 +1398,8 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </Typography>
               </DashPaper>
               {/* Interpretation */}
-              <Box sx={{ bgcolor: '#FEF3C7', borderRadius: 1, p: 1.5 }}>
-                <Typography sx={{ fontSize: '0.75rem', color: '#78350F', lineHeight: 1.6 }}>
+              <Box sx={{ bgcolor: semantic.warnSoft, borderRadius: 1, p: 1.5 }}>
+                <Typography sx={{ fontSize: '0.75rem', color: '#9A6410', lineHeight: 1.6 }}>
                   Reducing the verification limit to {maxVisits} removes Tanuku Plot and substitutes Guntur Strip, reducing Week 3 supply by 80 t and coverage from 96% to 89%, below the 95% target.
                 </Typography>
               </Box>
@@ -1433,7 +1433,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     sx={{
                       p: space.section,
                       cursor: 'pointer',
-                      bgcolor: isSelected ? 'rgba(11,175,175,0.08)' : failCount > 0 ? semantic.alertSoft : PAPER,
+                      bgcolor: isSelected ? ACCENT_SOFT : failCount > 0 ? semantic.alertSoft : PAPER,
                       outline: isSelected ? `2px solid ${ACCENT}` : '2px solid transparent',
                       outlineOffset: -2,
                     }}
@@ -1499,7 +1499,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
           {/* Footer CTA when selected */}
           {selected && (
-            <DashPaper sx={{ mt: space.section, p: space.related, bgcolor: canProceed ? 'background.paper' : '#FEF2F2' }}>
+            <DashPaper sx={{ mt: space.section, p: space.related, bgcolor: canProceed ? 'background.paper' : semantic.alertSoft }}>
               {canProceed ? (
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'text.primary' }}>{selectedStrategy?.name} selected — all constraints satisfied.</Typography>
@@ -1653,7 +1653,7 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
       <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 3 }}>
         <Box sx={{ maxWidth: 672, display: 'flex', flexDirection: 'column', gap: 2 }}>
           {farms.map(f => (
-            <DashPaper key={f.id} sx={{ p: space.section, bgcolor: '#FFFBEB' }}>
+            <DashPaper key={f.id} sx={{ p: space.section, bgcolor: semantic.warnSoft }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
                   <Box sx={{ width: 20, height: 20, borderRadius: 1, border: 1, borderColor: 'warning.dark', bgcolor: 'warning.dark', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, mt: 0.5 }}>
@@ -1679,7 +1679,7 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
                       letterSpacing: '0.14em',
                       border: 1,
                       borderRadius: '2px',
-                      bgcolor: f.evidenceKind === 'missing' ? '#FEF2F2' : '#FFFBEB',
+                      bgcolor: f.evidenceKind === 'missing' ? semantic.alertSoft : semantic.warnSoft,
                       borderColor: f.evidenceKind === 'missing' ? 'error.light' : 'warning.light',
                       color: f.evidenceKind === 'missing' ? 'error.dark' : 'warning.dark',
                     }}
@@ -1790,7 +1790,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <DashPaper sx={{ width: '100%', maxWidth: 410, overflow: 'hidden', boxShadow: 1, p: 0 }}>
         <Box sx={{ bgcolor: 'background.paper', overflow: 'hidden' }}>
           {/* Dark top bar */}
-          <Box sx={{ color: '#fff', px: 2, pt: 2, pb: 2 }} style={{ background: '#0B1F1F', borderTop: `3px solid ${ACCENT}` }}>
+          <Box sx={{ color: '#fff', px: 2, pt: 2, pb: 2 }} style={{ background: SIDEBAR_BG, borderTop: `3px solid ${ACCENT}` }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box>
               <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 0.5 }}>
@@ -2003,7 +2003,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 3 }}>
         <Box sx={{ maxWidth: 672, display: 'flex', flexDirection: 'column' }}>
           {findings.map(f => (
-            <DashPaper key={f.id} sx={{ overflow: 'hidden', bgcolor: '#ECFDF5', p: 0 }}>
+            <DashPaper key={f.id} sx={{ overflow: 'hidden', bgcolor: semantic.okSoft, p: 0 }}>
               {/* Header */}
               <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 2, py: 2, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <Box>
@@ -2102,7 +2102,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             onClick={() => onNavigate('alert')}
             color="error"
             variant="outlined"
-            sx={{ bgcolor: '#FEF2F2' }}
+            sx={{ bgcolor: semantic.alertSoft }}
           >
             1 monitoring alert
           </Button>
@@ -2112,7 +2112,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 3 }}>
         <Box>
           {/* Week 3 status card */}
-          <DashPaper sx={{ p: space.section, mb: space.section, boxShadow: 'inset 3px 0 0 #0F9F6E' }}>
+          <DashPaper sx={{ p: space.section, mb: space.section, boxShadow: `inset 3px 0 0 ${semantic.canopyHigh}` }}>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
               <Box>
                 <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 0.5 }}>Week 3 Position</Typography>
@@ -2434,9 +2434,9 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.primary', mb: 2 }}>Business tradeoffs</Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
                 {[
-                  { icon: '↑', color: 'success.dark', bg: '#ECFDF5', label: 'Supply impact', detail: '+110 t · Restores Week 3 to 95% coverage target' },
-                  { icon: '!', color: 'warning.dark', bg: '#FFFBEB', label: 'Verification impact', detail: '+1 field verification required before committing' },
-                  { icon: '⚑', color: 'warning.dark', bg: '#FFFBEB', label: 'Geographic impact', detail: 'East Godavari concentration: 8% → 17%' },
+                  { icon: '↑', color: 'success.dark', bg: semantic.okSoft, label: 'Supply impact', detail: '+110 t · Restores Week 3 to 95% coverage target' },
+                  { icon: '!', color: 'warning.dark', bg: semantic.warnSoft, label: 'Verification impact', detail: '+1 field verification required before committing' },
+                  { icon: '⚑', color: 'warning.dark', bg: semantic.warnSoft, label: 'Geographic impact', detail: 'East Godavari concentration: 8% → 17%' },
                 ].map(({ icon, color, bg, label, detail }) => (
                   <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }} key={label}>
                     <Box sx={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, color, bgcolor: bg, borderRadius: 0.5 }}>{icon}</Box>
@@ -2467,7 +2467,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   </SecondaryBtn>
                 </Box>
               ) : (
-                <DashPaper sx={{ p: space.related, bgcolor: '#ECFDF5' }}>
+                <DashPaper sx={{ p: space.related, bgcolor: semantic.okSoft }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                     <Box sx={{ borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <svg style={{ width: 16, height: 16, color: '#047857' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>

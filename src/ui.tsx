@@ -126,7 +126,7 @@ export function SupplyBar({
   total: number
 }) {
   return (
-    <Box sx={{ display: 'flex', height: 10, borderRadius: 1, overflow: 'hidden', bgcolor: 'rgba(12,21,32,0.06)' }}>
+    <Box sx={{ display: 'flex', height: 10, borderRadius: 1, overflow: 'hidden', bgcolor: 'rgba(10,26,31,0.06)' }}>
       <Box sx={{ width: `${(firm / total) * 100}%`, bgcolor: semantic.firm }} />
       <Box sx={{ width: `${(atRisk / total) * 100}%`, bgcolor: semantic.atRisk }} />
     </Box>
@@ -153,7 +153,7 @@ export function WeekRail({
               py: 1.5,
               px: space.section,
               borderBottom: isLast ? 'none' : `1px solid ${RULE}`,
-              bgcolor: w.issue ? 'rgba(168,72,50,0.12)' : 'transparent',
+              bgcolor: w.issue ? 'rgba(209,67,58,0.10)' : 'transparent',
               boxShadow: w.issue ? `inset 3px 0 0 ${semantic.alert}` : 'none',
               width: '100%',
               boxSizing: 'border-box',
@@ -181,7 +181,7 @@ export function WeekRail({
                 </Typography>
               </Stack>
             </Stack>
-            <Box sx={{ position: 'relative', height: 6, bgcolor: 'rgba(12,21,32,0.06)', borderRadius: 1 }}>
+            <Box sx={{ position: 'relative', height: 6, bgcolor: 'rgba(10,26,31,0.06)', borderRadius: 1 }}>
               <Box
                 sx={{
                   position: 'absolute',
@@ -236,7 +236,7 @@ export function ThresholdControl({
     <Box
       sx={{
         p: space.related,
-        bgcolor: modified ? semantic.warnSoft : 'rgba(12,21,32,0.02)',
+        bgcolor: modified ? semantic.warnSoft : 'rgba(10,26,31,0.03)',
         borderRadius: 1,
         borderLeft: modified ? `3px solid ${semantic.canopyMed}` : `3px solid transparent`,
       }}
@@ -280,7 +280,7 @@ export function TradeoffBars({
             {coverage}%
           </Typography>
         </Stack>
-        <Box sx={{ height: 4, bgcolor: 'rgba(12,21,32,0.08)', borderRadius: 1 }}>
+        <Box sx={{ height: 4, bgcolor: 'rgba(10,26,31,0.08)', borderRadius: 1 }}>
           <Box sx={{ width: `${coverage}%`, height: '100%', bgcolor: ACCENT, borderRadius: 1 }} />
         </Box>
       </Box>
@@ -291,7 +291,7 @@ export function TradeoffBars({
             {visits} visit{visits === 1 ? '' : 's'}
           </Typography>
         </Stack>
-        <Box sx={{ height: 4, bgcolor: 'rgba(12,21,32,0.08)', borderRadius: 1 }}>
+        <Box sx={{ height: 4, bgcolor: 'rgba(10,26,31,0.08)', borderRadius: 1 }}>
           <Box
             sx={{
               width: `${(visits / maxVisits) * 100}%`,
