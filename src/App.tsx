@@ -1,6 +1,13 @@
 import { useState } from 'react'
 import bhimavaramFieldPhoto from './assets/bhimavaram-field.jpg'
 import tanukuFieldPhoto from './assets/tanuku-field.jpg'
+import {
+  Button,
+  Chip,
+  Typography,
+} from '@mui/material'
+import CheckIcon from '@mui/icons-material/Check'
+import { ACCENT } from './theme'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 'field' | 'findings' | 'plan' | 'alert'
@@ -8,70 +15,69 @@ type Conf = 'HIGH' | 'MEDIUM' | 'LOW'
 type FarmRole = 'selected' | 'committed' | 'needs-verification' | 'recommended' | 'other' | 'alert'
 type MapVariant = 'coverage' | 'investigation' | 'scenario' | 'plan' | 'recovery' | 'default'
 
-// ─── Design Tokens (via Tailwind) ────────────────────────────────────────────
-// Sidebar: bg-[#0f0f0f]   Label: text-[#9ca3af]   Active nav: text-white
-// Card: border border-gray-200 rounded   Primary btn: bg-gray-900 text-white
-// Data value: font-data (DM Mono)
+// ─── Design Tokens ───────────────────────────────────────────────────────────
+// Material UI (@mui/material) — Manrope + accent #0BAFAF
+// XAML kit reference: github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit
 
 // ─── Shared Atoms ────────────────────────────────────────────────────────────
 
 function ConfBadge({ level }: { level: Conf }) {
-  const cls =
-    level === 'HIGH'
-      ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-      : level === 'MEDIUM'
-      ? 'bg-amber-50 text-amber-800 border-amber-200'
-      : 'bg-red-50 text-red-800 border-red-200'
-  return (
-    <span className={`inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest border rounded-sm whitespace-nowrap ${cls}`}>
-      {level}
-    </span>
-  )
+  const color = level === 'HIGH' ? 'success' : level === 'MEDIUM' ? 'warning' : 'error'
+  return <Chip size="small" label={level} color={color} variant="outlined" sx={{ fontSize: 10, height: 22, borderRadius: 1 }} />
 }
 
 type SignalType = 'STRONG_CANDIDATE' | 'HIGH_SUPPLY_UNCERTAIN' | 'REQUIRES_VERIFICATION' | 'CONCENTRATION_RISK' | 'OUTSIDE_HARVEST'
 
-const SIGNAL_CFG: Record<SignalType, { label: string; cls: string }> = {
-  STRONG_CANDIDATE: { label: 'STRONG CANDIDATE', cls: 'bg-gray-900 text-white border-gray-900' },
-  HIGH_SUPPLY_UNCERTAIN: { label: 'HIGH SUPPLY · UNCERTAIN', cls: 'bg-amber-50 text-amber-800 border-amber-300' },
-  REQUIRES_VERIFICATION: { label: 'REQUIRES VERIFICATION', cls: 'bg-blue-50 text-blue-700 border-blue-200' },
-  CONCENTRATION_RISK: { label: 'CONCENTRATION RISK', cls: 'bg-orange-50 text-orange-800 border-orange-300' },
-  OUTSIDE_HARVEST: { label: 'OUTSIDE IDEAL HARVEST WINDOW', cls: 'bg-gray-100 text-gray-600 border-gray-300' },
+const SIGNAL_CFG: Record<SignalType, { label: string; color: 'primary' | 'warning' | 'info' | 'error' | 'default'; variant?: 'filled' | 'outlined' }> = {
+  STRONG_CANDIDATE: { label: 'STRONG CANDIDATE', color: 'primary' },
+  HIGH_SUPPLY_UNCERTAIN: { label: 'HIGH SUPPLY · UNCERTAIN', color: 'warning', variant: 'outlined' },
+  REQUIRES_VERIFICATION: { label: 'REQUIRES VERIFICATION', color: 'info', variant: 'outlined' },
+  CONCENTRATION_RISK: { label: 'CONCENTRATION RISK', color: 'error', variant: 'outlined' },
+  OUTSIDE_HARVEST: { label: 'OUTSIDE IDEAL HARVEST WINDOW', color: 'default', variant: 'outlined' },
 }
 
 function SignalBadge({ type }: { type: SignalType }) {
-  const { label, cls } = SIGNAL_CFG[type]
-  return (
-    <span className={`inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest border rounded-sm whitespace-nowrap ${cls}`}>
-      {label}
-    </span>
-  )
+  const { label, color, variant = 'filled' } = SIGNAL_CFG[type]
+  return <Chip size="small" label={label} color={color} variant={variant} sx={{ fontSize: 10, height: 22, borderRadius: 1 }} />
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <p className="text-xs font-semibold text-gray-500 mb-2">{children}</p>
-}
-
-function PrimaryBtn({ children, onClick, disabled = false, className = '' }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; className?: string }) {
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={`px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${className}`}
-    >
+    <Typography variant="overline" color="text.secondary" sx={{ display: 'block', mb: 1, lineHeight: 1.4 }}>
       {children}
-    </button>
+    </Typography>
   )
 }
 
-function SecondaryBtn({ children, onClick, className = '' }: { children: React.ReactNode; onClick?: () => void; className?: string }) {
+function PrimaryBtn({ children, onClick, disabled = false, className = '', fullWidth = false }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; className?: string; fullWidth?: boolean }) {
   return (
-    <button
+    <Button
+      variant="contained"
+      color="primary"
       onClick={onClick}
-      className={`px-4 py-2 border border-gray-300 text-gray-700 text-sm font-semibold rounded hover:bg-gray-50 transition-colors ${className}`}
+      disabled={disabled}
+      fullWidth={fullWidth}
+      className={className}
+      sx={{ flexShrink: 0, py: 1.25 }}
     >
       {children}
-    </button>
+    </Button>
+  )
+}
+
+function SecondaryBtn({ children, onClick, disabled = false, className = '', fullWidth = false }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; className?: string; fullWidth?: boolean }) {
+  return (
+    <Button
+      variant="outlined"
+      color="primary"
+      onClick={onClick}
+      disabled={disabled}
+      fullWidth={fullWidth}
+      className={className}
+      sx={{ flexShrink: 0, borderColor: 'rgba(11,175,175,0.45)', color: 'text.primary', py: 1.25 }}
+    >
+      {children}
+    </Button>
   )
 }
 
@@ -340,9 +346,9 @@ const DEFAULT_LEGEND: LegendItem[] = [
 
 function ExpandMapButton({ onClick }: { onClick: () => void }) {
   return (
-    <button onClick={onClick} className="text-xs font-medium text-blue-700 hover:underline">
+    <Button onClick={onClick} size="small" color="primary" sx={{ textTransform: 'none', fontWeight: 650, minWidth: 0, px: 0.5 }}>
       Expand map
-    </button>
+    </Button>
   )
 }
 
@@ -658,7 +664,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <SectionLabel>Needs a Decision</SectionLabel>
             <div className="space-y-3">
               {/* Week 3 primary */}
-              <div className="border-2 border-gray-900 rounded p-4 bg-gray-50">
+              <div className="rounded p-4" style={{ border: `2px solid ${ACCENT}`, background: 'var(--accent-soft)' }}>
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-sm font-bold text-gray-900 mb-1">Week 3 supply gap: 620 t</p>
@@ -738,12 +744,9 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           <p className="text-xs text-gray-600 leading-relaxed mb-3">
             Week 3 has a <strong className="text-gray-900">620 t supply gap</strong>. The system has identified candidate farms that can close it.
           </p>
-          <button
-            onClick={() => onNavigate('farms')}
-            className="w-full py-3 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-700 transition-colors"
-          >
+          <PrimaryBtn fullWidth onClick={() => onNavigate('farms')}>
             Close the 620 t gap →
-          </button>
+          </PrimaryBtn>
         </div>
       </div>
       {mapExpanded && (
@@ -898,17 +901,17 @@ function FarmCard({
         <p className="text-xs text-gray-700"><strong>Missing:</strong> {farm.missing}</p>
       )}
       <div className="flex items-center justify-between mt-3">
-        <button onClick={() => onViewEvidence(farm.id)} className="text-xs text-blue-700 hover:underline">View evidence</button>
-        <button
+        <Button onClick={() => onViewEvidence(farm.id)} size="small" color="primary" sx={{ textTransform: 'none', fontWeight: 650, minWidth: 0, px: 0.5, fontSize: 12 }}>View evidence</Button>
+        <Button
+          size="small"
+          variant={inComparison ? 'contained' : 'outlined'}
+          color="primary"
           onClick={() => onToggle(farm.id)}
-          className={`text-xs px-2.5 py-1 rounded font-medium transition-colors ${
-            inComparison
-              ? 'bg-gray-900 text-white'
-              : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
-          }`}
+          startIcon={inComparison ? <CheckIcon sx={{ fontSize: 14 }} /> : undefined}
+          sx={{ fontSize: 12, py: 0.5, px: 1.25, minWidth: 0 }}
         >
-          {inComparison ? '✓ Added to comparison' : 'Add to comparison'}
-        </button>
+          {inComparison ? 'Added to comparison' : 'Add to comparison'}
+        </Button>
       </div>
     </div>
   )
@@ -1819,7 +1822,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <div className="w-full max-w-[410px] border border-gray-300 shadow-sm">
         <div className="bg-white overflow-hidden">
           {/* Dark top bar */}
-          <div className="bg-gray-900 text-white px-5 pt-4 pb-3">
+          <div className="text-white px-5 pt-4 pb-3" style={{ background: '#0B1F1F', borderTop: `3px solid ${ACCENT}` }}>
             <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] font-semibold text-gray-400 mb-0.5">
@@ -1910,12 +1913,9 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </ul>
               </div>
 
-              <button
-                onClick={() => setView('capture')}
-                className="w-full min-h-12 px-4 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-700 transition-colors"
-              >
+              <PrimaryBtn fullWidth onClick={() => setView('capture')}>
                 Start verification
-              </button>
+              </PrimaryBtn>
             </div>
           ) : (
             <div className="p-5">
@@ -1927,8 +1927,9 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     <button
                       onClick={() => toggleCheck(i)}
                       className={`w-7 h-7 rounded flex items-center justify-center flex-shrink-0 border transition-colors ${
-                        farmChecks[i] ? 'bg-gray-900 border-gray-900' : 'border-gray-300'
+                        farmChecks[i] ? 'border-transparent text-white' : 'border-gray-300'
                       }`}
+                      style={farmChecks[i] ? { background: ACCENT } : undefined}
                     >
                       {farmChecks[i] && (
                         <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -1980,19 +1981,12 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
               <div className="sticky bottom-0 bg-white border-t border-gray-200 -mx-5 px-5 pt-4 pb-5 mt-5">
               <p className="text-[10px] font-semibold text-gray-500 mb-2">Status and submit</p>
-              <button
-                onClick={handleSubmit}
-                disabled={!canConfirm}
-                className="w-full min-h-12 px-4 bg-gray-900 text-white text-sm font-semibold rounded mb-2 hover:bg-gray-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
-              >
+              <PrimaryBtn fullWidth onClick={handleSubmit} disabled={!canConfirm} className="mb-2">
                 Evidence confirmed · Submit findings
-              </button>
-              <button
-                onClick={handleSubmit}
-                className="w-full min-h-12 px-4 border border-gray-300 text-gray-700 text-sm font-medium rounded hover:bg-gray-50 transition-colors"
-              >
+              </PrimaryBtn>
+              <SecondaryBtn fullWidth onClick={handleSubmit}>
                 Partial or uncertain · Submit findings
-              </button>
+              </SecondaryBtn>
               </div>
             </div>
           )}
@@ -2603,12 +2597,12 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
   const currentIdx = FLOW_ORDER.indexOf(current)
 
   return (
-    <div className="w-44 flex-shrink-0 bg-[#0f0f0f] text-white flex flex-col h-full">
+    <div className="w-44 flex-shrink-0 text-white flex flex-col h-full" style={{ background: '#0B1F1F' }}>
       {/* Brand */}
-      <div className="px-4 pt-5 pb-4 border-b border-[#1f1f1f]">
-        <p className="text-[9px] font-bold uppercase tracking-widest text-gray-500 mb-1">ITC Procurement</p>
+      <div className="px-4 pt-5 pb-4" style={{ borderBottom: '1px solid rgba(11,175,175,0.22)' }}>
+        <p className="text-[9px] font-bold uppercase tracking-widest mb-1" style={{ color: ACCENT }}>ITC Procurement</p>
         <p className="text-sm font-bold text-white leading-tight">Decision Support</p>
-        <p className="text-[10px] text-gray-400 mt-0.5">Eucalyptus · 4,000 t</p>
+        <p className="text-[10px] text-white/55 mt-0.5">Eucalyptus · 4,000 t</p>
       </div>
 
       {/* Nav */}
@@ -2623,36 +2617,37 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
             <button
               key={screen}
               onClick={() => isAccessible && onNavigate(screen)}
-              className={`w-full text-left px-4 py-3 flex items-start gap-3 transition-colors group ${
-                isActive
-                  ? 'bg-[#1f1f1f]'
-                  : isAccessible
-                  ? 'hover:bg-[#181818]'
-                  : 'opacity-40 cursor-not-allowed'
+              className={`w-full text-left px-4 py-3 flex items-start gap-3 transition-colors group relative ${
+                isAccessible ? 'hover:bg-white/5' : 'opacity-40 cursor-not-allowed'
               }`}
+              style={isActive ? { background: 'rgba(11,175,175,0.16)' } : undefined}
             >
+              {isActive && (
+                <span className="absolute left-0 top-2 bottom-2 w-0.5 rounded-r" style={{ background: ACCENT }} />
+              )}
               {/* Number/check */}
-              <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-[10px] font-bold ${
-                isActive
-                  ? 'bg-white text-gray-900'
-                  : isComplete
-                  ? 'bg-emerald-600 text-white'
-                  : 'border border-gray-600 text-gray-500'
-              }`}>
+              <div
+                className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-[10px] font-bold"
+                style={
+                  isActive
+                    ? { background: ACCENT, color: '#fff' }
+                    : isComplete
+                    ? { background: '#0F9F6E', color: '#fff' }
+                    : { border: '1px solid rgba(255,255,255,0.28)', color: 'rgba(255,255,255,0.45)' }
+                }
+              >
                 {screen === 'alert' ? (
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.3 3.7 2.6 17a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0Z" />
                   </svg>
                 ) : isComplete ? (
-                  <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
+                  <CheckIcon sx={{ fontSize: 12 }} />
                 ) : num}
               </div>
               {/* Labels */}
               <div>
-                <p className={`text-xs font-semibold leading-tight ${isActive ? 'text-white' : 'text-gray-300'}`}>{label}</p>
-                <p className={`text-[10px] mt-0.5 ${isActive ? 'text-gray-400' : 'text-gray-600'}`}>{sub}</p>
+                <p className={`text-xs font-semibold leading-tight ${isActive ? 'text-white' : 'text-white/75'}`}>{label}</p>
+                <p className={`text-[10px] mt-0.5 ${isActive ? 'text-white/55' : 'text-white/35'}`}>{sub}</p>
               </div>
               {/* Alert dot */}
               {screen === 'alert' && (
@@ -2664,9 +2659,9 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
       </nav>
 
       {/* User */}
-      <div className="px-4 py-4 border-t border-[#1f1f1f]">
-        <p className="text-xs font-semibold text-gray-300">Shrikant · Procurement Mgr</p>
-        <p className="text-[10px] text-gray-600 mt-0.5">AP Region · ITC Agri</p>
+      <div className="px-4 py-4" style={{ borderTop: '1px solid rgba(11,175,175,0.22)' }}>
+        <p className="text-xs font-semibold text-white/80">Shrikant · Procurement Mgr</p>
+        <p className="text-[10px] text-white/40 mt-0.5">AP Region · ITC Agri</p>
       </div>
     </div>
   )
@@ -2698,7 +2693,7 @@ function TopBar({ screen }: { screen: Screen }) {
   }
 
   return (
-    <div className="h-11 border-b border-gray-200 flex items-center px-6 flex-shrink-0 bg-white">
+    <div className="h-11 border-b border-gray-200 flex items-center px-6 flex-shrink-0 bg-white" style={{ boxShadow: `inset 0 -2px 0 ${ACCENT}` }}>
       <span className="text-sm font-semibold text-gray-900 mr-4">{BREADCRUMB_TITLE[screen]}</span>
       {ctxParts.map((p, i) => (
         <span key={p} className="flex items-center">

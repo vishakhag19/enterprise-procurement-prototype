@@ -1,8 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');
 @import 'tailwindcss';
 
 :root {
+  --accent: #0BAFAF;
+  --accent-dark: #089090;
+  --accent-soft: #E6F8F8;
   --conf-high-bg: #ecfdf5;
   --conf-high-text: #065f46;
   --conf-high-border: #a7f3d0;
@@ -12,6 +13,7 @@
   --conf-low-bg: #fef2f2;
   --conf-low-text: #991b1b;
   --conf-low-border: #fca5a5;
+  --mui-palette-primary-main: #0BAFAF;
 }
 
 * {
@@ -25,21 +27,22 @@ html, body, #root {
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Manrope', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
-  background: #ffffff;
-  color: #111827;
+  background: #F7FAFA;
+  color: #15202B;
 }
 
 .font-data {
-  font-family: 'DM Mono', 'JetBrains Mono', monospace;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
 }
 
-/* Hide scrollbar but allow scrolling */
 .scroll-hide::-webkit-scrollbar { display: none; }
 .scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Slider styling */
+/* Material-style range inputs using accent */
 input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
@@ -55,9 +58,9 @@ input[type='range']::-webkit-slider-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #111827;
+  background: var(--accent);
   border: 2px solid #ffffff;
-  box-shadow: 0 0 0 1px #111827;
+  box-shadow: 0 0 0 1px var(--accent);
   cursor: pointer;
 }
 
@@ -65,8 +68,28 @@ input[type='range']::-moz-range-thumb {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #111827;
+  background: var(--accent);
   border: 2px solid #ffffff;
-  box-shadow: 0 0 0 1px #111827;
+  box-shadow: 0 0 0 1px var(--accent);
   cursor: pointer;
+}
+
+/* Map / progress markers that still use gray-900 utility classes */
+.bg-gray-900 {
+  background-color: var(--accent) !important;
+}
+.border-gray-900 {
+  border-color: var(--accent) !important;
+}
+.hover\:bg-gray-700:hover {
+  background-color: var(--accent-dark) !important;
+}
+.text-blue-700 {
+  color: var(--accent-dark) !important;
+}
+.border-blue-600 {
+  border-color: var(--accent) !important;
+}
+.hover\:underline:hover {
+  text-decoration-color: var(--accent);
 }
