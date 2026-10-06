@@ -9,12 +9,12 @@ pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:43127](http://localhost:43127).
+Open [http://localhost:8443](http://localhost:8443).
 
 Production-style preview (after `pnpm build`):
 
 ```bash
-pnpm preview --host 0.0.0.0 --port 43129
+pnpm preview --host 0.0.0.0 --port 8443
 ```
 
 ## Stack
