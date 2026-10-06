@@ -34,6 +34,7 @@ import {
 } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
+import OpenInFullIcon from '@mui/icons-material/OpenInFull'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import { ACCENT, SIDEBAR_BG, space, semantic } from './theme'
 import {
@@ -361,9 +362,15 @@ const DEFAULT_LEGEND: LegendItem[] = [
 
 function ExpandMapButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button onClick={onClick} size="small" color="primary" sx={{ textTransform: 'none', fontWeight: 650, minWidth: 0, px: 0.5 }}>
-      Expand map
-    </Button>
+    <IconButton
+      onClick={onClick}
+      size="small"
+      color="primary"
+      aria-label="Expand map"
+      sx={{ flexShrink: 0 }}
+    >
+      <OpenInFullIcon fontSize="small" />
+    </IconButton>
   )
 }
 
