@@ -373,7 +373,7 @@ function ExpandedMap({
 }) {
   return (
     <div className="fixed inset-0 z-50 bg-gray-950/35 flex items-center justify-center p-8" onClick={onClose}>
-      <div className="bg-white border border-gray-300 shadow-xl w-full max-w-5xl h-[78vh] flex flex-col" onClick={e => e.stopPropagation()}>
+      <div className="bg-white shadow-xl w-full max-w-5xl h-[78vh] flex flex-col rounded-xl" onClick={e => e.stopPropagation()}>
         <div className="h-14 px-5 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
           <div>
             <p className="text-sm font-semibold text-gray-900">{title}</p>
@@ -427,7 +427,7 @@ function FarmDecisionPanel({
 
   return (
     <div className="fixed inset-0 z-50 bg-gray-950/20 flex items-center justify-center p-8" onClick={onClose}>
-      <div className="bg-white border border-gray-300 shadow-lg w-full max-w-md" onClick={e => e.stopPropagation()}>
+      <div className="bg-white shadow-lg w-full max-w-md rounded-xl" onClick={e => e.stopPropagation()}>
         <div className="px-5 py-4 border-b border-gray-200 flex items-start justify-between">
           <div>
             <p className="text-base font-semibold text-gray-900">{farm.name}</p>
@@ -490,7 +490,7 @@ function EvidenceModal({ farmId, onClose, recovery = false }: { farmId: string; 
   const farm = FARM_MAP_META[farmId]
   return (
     <div className="absolute inset-0 z-40 bg-gray-950/35 flex items-center justify-center p-6" onClick={onClose}>
-      <div className="bg-white border border-gray-200 rounded shadow-xl w-full max-w-xl overflow-hidden" onClick={e => e.stopPropagation()}>
+      <div className="bg-white shadow-xl w-full max-w-xl overflow-hidden rounded-xl" onClick={e => e.stopPropagation()}>
         <div className="px-5 py-4 border-b border-gray-200 flex items-start justify-between">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-blue-700">Satellite + Field Evidence</p>
@@ -583,7 +583,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           <p className="text-sm text-gray-500 mb-7">4-week procurement window · AP Region</p>
 
           {/* Target card */}
-          <div className="border border-gray-200 rounded p-5 mb-6">
+          <div className="dash-card p-5 mb-6">
             <div className="flex items-start justify-between mb-4">
               <div>
                 <SectionLabel>Procurement Target</SectionLabel>
@@ -623,7 +623,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 return (
                   <div
                     key={w.n}
-                    className={`rounded p-4 ${w.issue ? 'border-2 border-red-300 bg-red-50/30' : 'border border-gray-200 bg-white'}`}
+                    className={`dash-card p-4 ${w.issue ? 'bg-red-50' : ''}`}
                   >
                     <div className="flex items-center justify-between mb-2.5">
                       <div className="flex items-center gap-2">
@@ -664,7 +664,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <SectionLabel>Needs a Decision</SectionLabel>
             <div className="space-y-3">
               {/* Week 3 primary */}
-              <div className="rounded p-4" style={{ border: `2px solid ${ACCENT}`, background: 'var(--accent-soft)' }}>
+              <div className="dash-card p-4" style={{ boxShadow: `inset 3px 0 0 ${ACCENT}`, background: '#ffffff' }}>
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-sm font-bold text-gray-900 mb-1">Week 3 supply gap: 620 t</p>
@@ -695,7 +695,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   cta: 'Resolve evidence',
                 },
               ].map(({ title, sub, detail, cta }) => (
-                <div key={title} className="border border-gray-200 rounded p-4">
+                <div key={title} className="dash-card p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-sm font-semibold text-gray-900 mb-1">{title}</p>
@@ -713,7 +713,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
       {/* Right geo panel */}
       <div
-        className="relative border-l border-gray-200 flex flex-col flex-shrink-0"
+className="relative flex flex-col flex-shrink-0 bg-white"
         style={{ width: geoPanelWidth, minWidth: 248, maxWidth: 420 }}
       >
         <div
@@ -866,12 +866,12 @@ function FarmCard({
   const isHovered = hoverId === farm.id
   return (
     <div
-      className={`border rounded p-4 transition-all cursor-pointer ${
+      className={`dash-card p-4 transition-all cursor-pointer ${
         isHovered
-          ? 'border-blue-400 shadow-sm bg-blue-50/50'
+          ? 'bg-[var(--accent-soft)]'
           : inComparison
-          ? 'border-blue-200 bg-blue-50/25'
-          : 'border-gray-200 bg-white'
+          ? 'bg-[#E6F8F8]'
+          : ''
       }`}
       onMouseEnter={() => onHover(farm.id)}
       onMouseLeave={() => onHover(null)}
@@ -933,7 +933,7 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
     <div className="flex h-full relative">
       {/* Map panel */}
-      <div className="w-[34%] min-w-96 max-w-[440px] flex-shrink-0 border-r border-gray-200 flex flex-col">
+      <div className="w-[34%] min-w-96 max-w-[440px] flex-shrink-0 flex flex-col bg-white">
         <div className="p-4 border-b border-gray-100">
           <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">GIS Workspace · Week 3</p>
           <p className="text-xs text-gray-500">Hover a farm card to highlight on map</p>
@@ -1104,7 +1104,7 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           <SectionLabel>Interpretation</SectionLabel>
           <div className="grid grid-cols-2 gap-4">
             {COMPARE_FARMS.map(f => (
-              <div key={f.id} className="border border-gray-200 rounded p-4">
+              <div key={f.id} className="dash-card p-4">
                 <p className="text-sm font-bold text-gray-900 mb-0.5">{f.name}</p>
                 <p className="text-xs font-semibold text-gray-500 mb-2">{f.headline}</p>
                 <p className="text-xs text-gray-600 mb-3">{f.summary}</p>
@@ -1128,7 +1128,7 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         {/* Detailed table */}
         <div>
           <SectionLabel>Detailed Comparison</SectionLabel>
-          <div className="overflow-x-auto border border-gray-200 rounded">
+          <div className="overflow-x-auto dash-card">
             <table className="w-full text-xs border-collapse">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
@@ -1296,7 +1296,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </div>
 
           {/* Constraints */}
-          <div className="border border-gray-200 rounded p-5 mb-6">
+          <div className="dash-card p-5 mb-6">
             <div className="flex items-center justify-between mb-4">
               <SectionLabel>Business Constraints</SectionLabel>
               {isModified && (
@@ -1380,7 +1380,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
           {/* Impact panel (shown when maxVisits changed) */}
           {showImpact && (
-            <div className="border-2 border-amber-300 rounded p-5 mb-6 bg-amber-50">
+            <div className="dash-card p-5 mb-6 bg-amber-50">
               <div className="flex items-start justify-between mb-4">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">Impact of This Change</p>
                 <p className="text-[10px] text-amber-700 font-medium">Max. field verification visits: 10 visits → <strong>{maxVisits} visit{maxVisits !== 1 ? 's' : ''}</strong></p>
@@ -1431,7 +1431,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </div>
               </div>
               {/* Coverage target not met */}
-              <div className="bg-white rounded border border-red-200 p-3 mb-3">
+              <div className="dash-card p-3 mb-3 bg-red-50">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-red-700 mb-1">Coverage target not met</p>
                 <p className="text-xs font-semibold text-red-800 mb-1">Coverage-First cannot reach the 95% target with this constraint.</p>
                 <p className="text-xs text-gray-600">
@@ -1474,19 +1474,17 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   <div
                     key={s.key}
                     onClick={() => setSelected(s.key === selected ? null : s.key)}
-                    className={`border rounded p-4 cursor-pointer transition-all ${
+                    className={`dash-card p-4 cursor-pointer transition-all ${
                       isSelected
-                        ? 'border-blue-400 border-2 bg-blue-50/50 shadow-sm'
+                        ? 'bg-[var(--accent-soft)] shadow-[inset_3px_0_0_#0BAFAF]'
                         : failCount > 0
-                        ? 'border-red-200 bg-red-50/20 hover:border-red-300'
-                        : s.key === 'coverage-first'
-                        ? 'border-blue-200 bg-blue-50/20 hover:border-blue-300'
-                        : 'border-gray-200 bg-white hover:border-gray-400'
+                        ? 'bg-red-50'
+                        : ''
                     }`}
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-3">
-                        <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${isSelected ? 'border-blue-700 bg-blue-700' : 'border-gray-300 bg-white'}`}>
+                        <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${isSelected ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-gray-300 bg-white'}`}>
                           {isSelected && <div className="w-2 h-2 bg-white rounded-full m-auto mt-0.5" />}
                         </div>
                         <p className="text-sm font-bold text-gray-900">{s.name}</p>
@@ -1546,7 +1544,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
           {/* Footer CTA when selected */}
           {selected && (
-            <div className={`mt-6 rounded p-4 border ${canProceed ? 'border-gray-900 bg-gray-50' : 'border-red-200 bg-red-50'}`}>
+            <div className={`mt-6 dash-card p-4 ${canProceed ? '' : 'bg-red-50'}`}>
               {canProceed ? (
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold text-gray-900">{selectedStrategy?.name} selected — all constraints satisfied.</p>
@@ -1569,7 +1567,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       </div>
 
       {/* Right panel */}
-      <div className="w-72 border-l border-gray-200 flex flex-col flex-shrink-0">
+      <div className="w-72 flex flex-col bg-white flex-shrink-0">
         <div className="p-4 border-b border-gray-100 flex items-start justify-between gap-3">
           <SectionLabel>Select a Strategy</SectionLabel>
           <ExpandMapButton onClick={() => {
@@ -1700,7 +1698,7 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
       <div className="flex-1 overflow-y-auto scroll-hide p-8">
         <div className="max-w-2xl space-y-4">
           {farms.map(f => (
-            <div key={f.id} className="border border-amber-300 bg-amber-50/30 rounded p-5">
+            <div key={f.id} className="dash-card p-5 bg-amber-50">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded border border-amber-700 bg-amber-700 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -1819,7 +1817,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   return (
     <div className="flex items-start justify-center h-full bg-gray-100 overflow-y-auto scroll-hide py-6 px-4">
-      <div className="w-full max-w-[410px] border border-gray-300 shadow-sm">
+      <div className="w-full max-w-[410px] dash-card shadow-sm overflow-hidden">
         <div className="bg-white overflow-hidden">
           {/* Dark top bar */}
           <div className="text-white px-5 pt-4 pb-3" style={{ background: '#0B1F1F', borderTop: `3px solid ${ACCENT}` }}>
@@ -2044,7 +2042,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <div className="flex-1 overflow-y-auto scroll-hide p-8">
         <div className="max-w-2xl space-y-5">
           {findings.map(f => (
-            <div key={f.id} className="border border-emerald-200 bg-emerald-50/20 rounded overflow-hidden">
+            <div key={f.id} className="dash-card overflow-hidden bg-emerald-50/40">
               {/* Header */}
               <div className="border-b border-gray-100 px-5 py-4 flex items-start justify-between">
                 <div>
@@ -2151,7 +2149,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <div className="flex-1 overflow-y-auto scroll-hide p-8">
         <div className="max-w-4xl">
           {/* Week 3 status card */}
-          <div className="border-2 border-emerald-600 rounded p-5 mb-6">
+          <div className="dash-card p-5 mb-6" style={{ boxShadow: 'inset 3px 0 0 #0F9F6E' }}>
             <div className="flex items-start justify-between mb-4">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Week 3 Position</p>
@@ -2192,7 +2190,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Farm table */}
           <div id="active-farm-mix" className="mb-6">
             <SectionLabel>Active farm mix · Week 3</SectionLabel>
-            <div className="border border-gray-200 rounded overflow-hidden">
+            <div className="dash-card overflow-hidden">
               <table className="w-full text-xs">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200">
@@ -2224,7 +2222,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </div>
 
           {/* Map */}
-          <div className="border border-gray-200 rounded p-4 w-fit max-w-full">
+          <div className="dash-card p-4 w-fit max-w-full">
             <div className="flex items-start justify-between">
               <SectionLabel>Geographic distribution · Week 3</SectionLabel>
               <ExpandMapButton onClick={() => setMapExpanded(true)} />
@@ -2322,7 +2320,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <PrimaryBtn onClick={() => onNavigate('plan')}>Return to active plan →</PrimaryBtn>
               </div>
             </div>
-            <div className="border border-gray-200 rounded p-4 w-fit max-w-full">
+            <div className="dash-card p-4 w-fit max-w-full">
               <div className="flex items-start justify-between">
                 <SectionLabel>Recovered plan · Geographic context</SectionLabel>
                 <ExpandMapButton onClick={() => {
@@ -2425,7 +2423,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </div>
 
           {/* Recovery recommendation */}
-          <div className="border border-gray-300 rounded overflow-hidden">
+          <div className="dash-card overflow-hidden">
             <div className="px-5 pt-4">
               <p className="text-xs font-semibold text-gray-600">Recommended recovery</p>
             </div>
@@ -2504,7 +2502,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   </SecondaryBtn>
                 </div>
               ) : (
-                <div className="bg-emerald-50 border border-emerald-200 rounded p-4">
+                <div className="dash-card p-4 bg-emerald-50">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center">
                       <svg className="w-2.5 h-2.5 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -2521,7 +2519,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </div>
 
           {/* Map context */}
-          <div className="border border-gray-200 rounded p-4 w-fit max-w-full">
+          <div className="dash-card p-4 w-fit max-w-full">
             <div className="flex items-start justify-between">
               <SectionLabel>Recovery · Geographic context</SectionLabel>
               <ExpandMapButton onClick={() => {
@@ -2727,7 +2725,7 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-white">
+    <div className="flex h-screen overflow-hidden dash-surface">
       <Sidebar current={screen} onNavigate={setScreen} />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <TopBar screen={screen} />
