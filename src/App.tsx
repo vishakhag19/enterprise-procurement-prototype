@@ -3096,22 +3096,52 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
           const itemIdx = FLOW_ORDER.indexOf(screen)
           const isActive = current === screen
           const isAccessible = itemIdx <= currentIdx + 1
+          const isDisabled = !isAccessible
           const iconEl = <Icon fontSize="small" />
+          const labelColor = isDisabled
+            ? m3.outline
+            : isActive
+              ? m3.onSurface
+              : m3.onSurfaceVariant
+          const iconColor = isDisabled
+            ? m3.outlineVariant
+            : isActive
+              ? m3.primaryInk
+              : m3.onSurfaceVariant
 
           return (
             <ListItemButton
               key={screen}
               selected={isActive}
-              disabled={!isAccessible}
+              disabled={isDisabled}
               onClick={() => isAccessible && onNavigate(screen)}
+              aria-disabled={isDisabled}
+              sx={{
+                // Explicit state surfaces so disabled never matches enabled/active
+                ...(isDisabled && {
+                  bgcolor: 'transparent',
+                  opacity: 1,
+                  cursor: 'not-allowed',
+                  '&:hover': { bgcolor: 'transparent' },
+                }),
+                ...(!isDisabled && !isActive && {
+                  '&:hover': { bgcolor: m3.surfaceContainerLowest },
+                }),
+              }}
             >
-              <ListItemIcon>
+              <ListItemIcon sx={{ color: iconColor }}>
                 {screen === 'alert' ? (
                   <Badge
                     color="error"
                     variant="dot"
                     overlap="circular"
-                    sx={{ '& .MuiBadge-badge': { top: 4, right: 4 } }}
+                    sx={{
+                      '& .MuiBadge-badge': {
+                        top: 4,
+                        right: 4,
+                        ...(isDisabled && { opacity: 0.35 }),
+                      },
+                    }}
                   >
                     {iconEl}
                   </Badge>
@@ -3126,7 +3156,7 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
                     variant: 'body1',
                     sx: {
                       fontWeight: isActive ? 700 : 500,
-                      color: m3.onSurface,
+                      color: labelColor,
                     },
                   },
                 }}

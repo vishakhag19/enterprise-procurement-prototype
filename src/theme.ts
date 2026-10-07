@@ -292,8 +292,16 @@ export const theme = createTheme({
           },
           '&.Mui-disabled': {
             opacity: 1,
-            color: alpha(m3.onSurface, 0.38),
-            '& .MuiListItemIcon-root': { color: alpha(m3.onSurface, 0.38) },
+            color: m3.outline,
+            cursor: 'not-allowed',
+            backgroundColor: 'transparent',
+            '&:hover': { backgroundColor: 'transparent' },
+            '& .MuiListItemIcon-root': { color: m3.outlineVariant },
+            '& .MuiListItemText-primary': {
+              color: m3.outline,
+              fontWeight: 500,
+            },
+            '& .MuiBadge-badge': { opacity: 0.35 },
           },
         },
       },
