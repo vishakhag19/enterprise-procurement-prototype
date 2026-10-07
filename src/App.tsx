@@ -769,37 +769,52 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         />
       }
     >
-      <Box sx={{ maxWidth: 768 }}>
-        {/* Operational center: 620 t gap */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
+        {/* KPI strip */}
         <Box
           sx={{
-            mb: space.section,
-            p: space.section,
             ...panelSurface,
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(4, 1fr)' },
+            overflow: 'hidden',
           }}
         >
-          <Typography variant="overline" sx={{ color: semantic.alert, display: 'block', mb: 1 }}>
-            Operational focus · Week 3
-          </Typography>
-          <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '2.75rem', fontWeight: 700, letterSpacing: '-0.03em', color: INK, lineHeight: 1 }}>
-            620 t
-          </Typography>
-          <Typography variant="subtitle2" sx={{ color: INK, mt: 2 }}>
-            Supply gap still uncovered
-          </Typography>
-          <Typography variant="body2" sx={{ mt: 1, maxWidth: 360 }}>
-            1,200 t needed · 580 t committed. This is the most constrained delivery window in the procurement plan.
-          </Typography>
+          {[
+            { label: 'Week 3 gap', value: '620 t', sub: '1,200 needed · 580 committed', accent: true },
+            { label: 'Firm supply', value: '2,568 t', sub: '64% of 4,000 t target', accent: false },
+            { label: 'At risk', value: '570 t', sub: 'Narsapur + Avanigadda', accent: false },
+            { label: 'Open gap', value: '862 t', sub: '78% committed overall', accent: false },
+          ].map((kpi, i) => (
+            <Box
+              key={kpi.label}
+              sx={{
+                p: space.related,
+                bgcolor: kpi.accent ? CARD_SELECTION_BG : m3.surfaceContainerLowest,
+                borderRight: { md: i < 3 ? `1px solid ${PANEL_BORDER}` : 'none' },
+                borderBottom: { xs: i < 2 ? `1px solid ${PANEL_BORDER}` : 'none', md: 'none' },
+              }}
+            >
+              <Typography variant="caption" sx={{ display: 'block', mb: 1, color: kpi.accent ? m3.primaryInk : m3.onSurfaceVariant, fontWeight: 650 }}>
+                {kpi.label}
+              </Typography>
+              <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.02em', color: kpi.accent ? m3.error : INK, lineHeight: 1.1 }}>
+                {kpi.value}
+              </Typography>
+              <Typography variant="caption" sx={{ display: 'block', mt: 1.5, color: m3.onSurfaceVariant }}>
+                {kpi.sub}
+              </Typography>
+            </Box>
+          ))}
         </Box>
 
-        {/* Target as open strip — not a KPI card wall */}
-        <Box sx={{ mb: space.section }}>
-          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'baseline', mb: 2 }}>
+        {/* Procurement position */}
+        <Box sx={{ ...panelSurface, p: space.related }}>
+          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'baseline', mb: space.related }}>
             <SectionLabel>Procurement position</SectionLabel>
-            <Typography variant="h2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>4,000 t</Typography>
+            <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, fontSize: '1.125rem', color: INK }}>4,000 t target</Typography>
           </Stack>
           <SupplyBar firm={2568} atRisk={570} total={4000} />
-          <Stack direction="row" spacing={6} sx={{ mt: 3 }}>
+          <Stack direction="row" spacing={4} sx={{ mt: space.related, flexWrap: 'wrap' }}>
             {[
               { label: 'Firm', value: '2,568 t', color: semantic.firm },
               { label: 'At risk', value: '570 t', color: semantic.atRisk },
@@ -811,48 +826,58 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>{m.value}</Typography>
               </Stack>
             ))}
-            <Typography variant="caption" sx={{ ml: 'auto !important', color: INK_MUTED }}>78% committed</Typography>
+            <Typography variant="caption" sx={{ ml: { md: 'auto' }, color: INK_MUTED }}>78% committed</Typography>
           </Stack>
         </Box>
 
-        {/* Weekly rail — one composition with map relationship */}
-        <Box sx={{ mb: space.section }}>
-          <SectionLabel>Weekly position · linked to Week 3 geography</SectionLabel>
-          <Box sx={{ ...panelSurface, overflow: 'hidden' }}>
-            <WeekRail weeks={weeks} />
-          </Box>
-        </Box>
-
-        {/* Decision queue — primary elevated, rest as strips */}
-        <Box>
-          <SectionLabel>Needs a decision</SectionLabel>
-          <Stack spacing={0} sx={{ ...panelSurface, overflow: 'hidden' }}>
-            <Box sx={{ p: space.related, bgcolor: CARD_SELECTION_BG, color: m3.onSurface }}>
-              <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 1 }}>
-                <StatusChip kind="primary-issue" />
-                <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>Closes via GIS investigation</Typography>
-              </Stack>
-              <Typography variant="subtitle1" sx={{ color: m3.onSurface }}>Week 3 supply gap: 620 t</Typography>
-              <Typography variant="body2" sx={{ mt: 1, color: m3.onSurfaceVariant }}>
-                Candidate farms identified on the Week 3 map. Resolve before committing the coverage strategy.
-              </Typography>
+        {/* Two-column dashboard: weeks + decisions */}
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: '1.1fr 1fr' },
+            gap: space.section,
+            alignItems: 'start',
+          }}
+        >
+          <Box>
+            <SectionLabel>Weekly position</SectionLabel>
+            <Box sx={{ ...panelSurface, overflow: 'hidden' }}>
+              <WeekRail weeks={weeks} />
             </Box>
-            {[
-              { title: '3 procurement commitments at risk', sub: '570 t delivery risk · Narsapur + Avanigadda', cta: 'Review risks' },
-              { title: '7 farms changed this week', sub: 'Satellite condition, harvest timing, or expected supply', cta: 'Review changes' },
-              { title: '5 decisions blocked by missing evidence', sub: 'Cannot treat as firm supply until field or current satellite evidence arrives', cta: 'Resolve evidence' },
-            ].map((item, i) => (
-              <DataStrip key={item.title} sx={{ bgcolor: PAPER, borderBottom: i === 2 ? 'none' : undefined }}>
-                <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 4, alignItems: 'center' }}>
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ color: INK }}>{item.title}</Typography>
-                    <Typography variant="body2">{item.sub}</Typography>
-                  </Box>
-                  <GhostBtn onClick={() => onNavigate('farms')}>{item.cta}</GhostBtn>
+          </Box>
+
+          <Box>
+            <SectionLabel>Needs a decision</SectionLabel>
+            <Stack spacing={0} sx={{ ...panelSurface, overflow: 'hidden' }}>
+              <Box sx={{ p: space.related, bgcolor: CARD_SELECTION_BG, color: m3.onSurface }}>
+                <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 1 }}>
+                  <StatusChip kind="primary-issue" />
+                  <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>GIS investigation</Typography>
                 </Stack>
-              </DataStrip>
-            ))}
-          </Stack>
+                <Typography variant="subtitle2" sx={{ color: m3.onSurface }}>Week 3 supply gap: 620 t</Typography>
+                <Typography variant="caption" sx={{ display: 'block', mt: 1, color: m3.onSurfaceVariant }}>
+                  Candidates highlighted on the map. Resolve before committing strategy.
+                </Typography>
+              </Box>
+              {[
+                { title: '3 commitments at risk', sub: '570 t · Narsapur + Avanigadda', cta: 'Review' },
+                { title: '7 farms changed', sub: 'Condition, harvest, or supply', cta: 'Review' },
+                { title: '5 evidence blocked', sub: 'Awaiting field or satellite', cta: 'Resolve' },
+              ].map((item, i) => (
+                <DataStrip key={item.title} sx={{ bgcolor: PAPER, borderBottom: i === 2 ? 'none' : undefined, py: space.tight }}>
+                  <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 2, alignItems: 'center' }}>
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant="subtitle2" sx={{ color: INK }}>{item.title}</Typography>
+                      <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>{item.sub}</Typography>
+                    </Box>
+                    <GhostBtn onClick={() => onNavigate('farms')} sx={{ height: 32, minHeight: 32, px: 2 }}>
+                      {item.cta}
+                    </GhostBtn>
+                  </Stack>
+                </DataStrip>
+              ))}
+            </Stack>
+          </Box>
         </Box>
       </Box>
     </MainPane>
