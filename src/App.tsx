@@ -62,7 +62,7 @@ import {
   DataStrip,
 } from './ui'
 import type { StatusKind } from './designSystem'
-import { INK, INK_MUTED, PAPER, PANEL_BORDER, panelSurface, shellChrome, shape } from './designSystem'
+import { CARD_HOVER_BG, CARD_SELECTION_BG, INK, INK_MUTED, PAPER, PANEL_BORDER, panelSurface, shellChrome, shape } from './designSystem'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 'field' | 'findings' | 'plan' | 'alert'
@@ -702,7 +702,7 @@ function EvidenceModal({ farmId, onClose, recovery = false }: { farmId: string; 
             elevation={0}
             sx={{
               p: space.related,
-              bgcolor: recovery ? m3.errorContainer : alpha(m3.primary, 0.1),
+              bgcolor: recovery ? m3.errorContainer : CARD_SELECTION_BG,
               color: recovery ? m3.onErrorContainer : m3.onSurface,
             }}
           >
@@ -815,7 +815,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           <Box>
             <SectionLabel>Needs a decision</SectionLabel>
             <Stack spacing={0} sx={{ ...panelSurface, overflow: 'hidden' }}>
-              <Box sx={{ p: space.related, bgcolor: alpha(m3.primary, 0.1), color: m3.onSurface }}>
+              <Box sx={{ p: space.related, bgcolor: CARD_SELECTION_BG, color: m3.onSurface }}>
                 <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 4, alignItems: 'flex-start' }}>
                   <Box>
                     <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 1 }}>
@@ -970,11 +970,10 @@ function FarmCard({
   onHover: (id: string | null) => void
 }) {
   const isHovered = hoverId === farm.id
-  // Highlight washes stay at ≤10% accent; hover alone is subtler
   const cardBg = inComparison
-    ? alpha(m3.primary, 0.1)
+    ? CARD_SELECTION_BG
     : isHovered
-      ? alpha(m3.primary, 0.05)
+      ? CARD_HOVER_BG
       : 'background.paper'
   return (
     <DashPaper
@@ -1574,8 +1573,8 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       p: 0,
                       cursor: 'pointer',
                       overflow: 'hidden',
-                      // Selection highlight = 10% accent wash (no bright accent border)
-                      bgcolor: isSelected ? alpha(m3.primary, 0.1) : m3.surfaceContainerLowest,
+                      // Same wash as Farms selected cards
+                      bgcolor: isSelected ? CARD_SELECTION_BG : m3.surfaceContainerLowest,
                       border: failCount > 0 && !isSelected
                         ? `2px solid ${m3.error}`
                         : `1px solid ${PANEL_BORDER}`,
@@ -1592,7 +1591,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                               mt: 0.5,
                               borderRadius: '50%',
                               border: isSelected ? `6px solid ${m3.primary}` : `2px solid ${m3.outline}`,
-                              bgcolor: isSelected ? alpha(m3.primary, 0.1) : m3.surfaceContainerLowest,
+                              bgcolor: isSelected ? CARD_SELECTION_BG : m3.surfaceContainerLowest,
                               flexShrink: 0,
                             }}
                           />

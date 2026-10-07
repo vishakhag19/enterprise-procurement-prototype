@@ -1,8 +1,9 @@
 import { createTheme, alpha } from '@mui/material/styles'
-import { PANEL_BORDER, PANEL_BORDER_WIDTH, PAPER, SIDEBAR_BG, SURFACE, m3, semantic, shape, shellChrome, space } from './designSystem'
+import { CARD_SELECTION_BG, PANEL_BORDER, PANEL_BORDER_WIDTH, PAPER, SIDEBAR_BG, SURFACE, m3, semantic, shape, shellChrome, space } from './designSystem'
 
 export {
   ACCENT,
+  CARD_SELECTION_BG,
   SIDEBAR_BG,
   SURFACE,
   PAPER,
@@ -75,7 +76,7 @@ export const theme = createTheme({
     divider: PANEL_BORDER,
     action: {
       hover: alpha(m3.onSurface, 0.08),
-      selected: alpha(m3.primary, 0.1),
+      selected: CARD_SELECTION_BG,
       disabled: alpha(m3.onSurface, 0.38),
       disabledBackground: alpha(m3.onSurface, 0.12),
       focus: alpha(m3.onSurface, 0.12),
@@ -163,7 +164,7 @@ export const theme = createTheme({
           color: m3.primaryInk,
           '&:hover': {
             borderColor: m3.primaryInk,
-            backgroundColor: alpha(m3.primary, 0.1),
+            backgroundColor: CARD_SELECTION_BG,
           },
         },
         text: {
@@ -258,9 +259,9 @@ export const theme = createTheme({
           paddingLeft: 12,
           paddingRight: 12,
           '&.Mui-selected': {
-            backgroundColor: alpha(m3.primary, 0.1),
+            backgroundColor: CARD_SELECTION_BG,
             color: m3.onSurface,
-            '&:hover': { backgroundColor: alpha(m3.primary, 0.1) },
+            '&:hover': { backgroundColor: CARD_SELECTION_BG },
             '& .MuiListItemIcon-root': { color: m3.primaryInk },
             '& .MuiListItemText-primary': { color: m3.onSurface, fontWeight: 700 },
           },

@@ -16,7 +16,6 @@ export const m3 = {
   onPrimary: '#FFFFFF',
   /**
    * Highlight / soft accent surface — ~10% of brand accent on white.
-   * Use for selected cards, emphasized strips, and other highlight chrome.
    * Solid `#0BAFAF` stays on interactive fills only (buttons, checks, etc.).
    */
   primaryContainer: '#E6F7F7',
@@ -112,6 +111,14 @@ export const PANEL_BORDER_WIDTH = 1
 export const RULE = PANEL_BORDER
 export const ACCENT_SOFT = m3.primaryContainer
 export const ACCENT_DARK = m3.primaryBrandDark
+
+/**
+ * Shared card / list selection wash — Farms-tab selected card color.
+ * 10% brand accent (#0BAFAF). Use for every selectable card state.
+ */
+export const CARD_SELECTION_BG = 'rgba(11, 175, 175, 0.1)'
+/** Hover-only wash on unselected cards (half of selection) */
+export const CARD_HOVER_BG = 'rgba(11, 175, 175, 0.05)'
 
 /** Shared card/section panel surface chrome (px strings — safe in MUI `sx`) */
 export const panelSurface = {
