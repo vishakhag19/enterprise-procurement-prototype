@@ -1931,8 +1931,9 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                               setInspectedFarm(f.replace(' ✶', '').split(' · ')[0])
                             }}
                             sx={{
-                              bgcolor: f.includes('✶') ? m3.tertiaryContainer : m3.surfaceContainerHigh,
-                              color: f.includes('✶') ? m3.onTertiaryContainer : m3.onSurface,
+                              bgcolor: f.includes('✶') ? m3.primaryContainer : m3.surfaceContainerHigh,
+                              color: f.includes('✶') ? m3.primaryInk : m3.onSurface,
+                              fontFamily: '"Manrope", system-ui, sans-serif',
                               fontWeight: 600,
                               borderRadius: `${shape.sm}px`,
                               height: 28,
@@ -2828,132 +2829,180 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         />
       }
     >
-        <Box sx={{ maxWidth: 768, display: 'flex', flexDirection: 'column' }}>
-          {/* What changed */}
-          <Box sx={{ borderBottom: 1, borderColor: 'divider', pb: 4 }}>
-            <Box sx={{ mb: 4 }}>
-              <Typography variant="overline" sx={{ color: semantic.alert }}>1 · Cause</Typography>
-              <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'text.primary' }}>What changed</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section, maxWidth: 800 }}>
+          <DashKpiStrip
+            items={[
+              { label: 'Supply revised', value: '−120 t', sub: '200 t → 80 t', danger: true },
+              { label: 'Week 3 coverage', value: '86%', sub: 'Was 96%', danger: true },
+              { label: 'Threshold gap', value: '110 t', sub: 'Below 95% target', danger: true },
+              { label: 'Recovery path', value: '+110 t', sub: 'Rajahmundry Block', accent: true },
+            ]}
+          />
+
+          {/* 1 · Cause */}
+          <DashPaper sx={{ p: 0, overflow: 'hidden' }}>
+            <Box sx={{ px: space.section, py: space.related, borderBottom: `1px solid ${PANEL_BORDER}`, bgcolor: m3.surfaceContainerLow }}>
+              <Typography variant="overline" sx={{ color: m3.error }}>1 · Cause</Typography>
+              <Typography variant="subtitle1" sx={{ color: m3.onSurface }}>What changed</Typography>
             </Box>
-            <Box>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 4 }}>
-                <Box sx={{ flex: 1 }}>
-                  <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 1 }}>Before</Typography>
+            <Box sx={{ p: space.section }}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '1fr', sm: '1fr auto 1fr' },
+                  gap: space.related,
+                  alignItems: 'center',
+                  mb: space.related,
+                }}
+              >
+                <Box sx={{ p: space.related, bgcolor: m3.surfaceContainerLow, borderRadius: `${shape.sm}px` }}>
+                  <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>Before</Typography>
                   <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>200 t</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>Godavari Combined Block</Typography>
+                  <Typography variant="caption">Godavari Combined Block</Typography>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', fontSize: '1.5rem' }}>→</Box>
-                <Box sx={{ flex: 1, pl: 4 }}>
-                  <Typography sx={{ fontSize: 10, color: 'error.dark', mb: 1 }}>Now</Typography>
-                  <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.5rem', fontWeight: 700, color: 'error.dark' }}>80 t</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: 'error.dark', fontWeight: 500 }}>−120 t revised by satellite</Typography>
+                <Typography sx={{ textAlign: 'center', color: m3.onSurfaceVariant, fontWeight: 700 }} aria-hidden>→</Typography>
+                <Box sx={{ p: space.related, bgcolor: m3.errorContainer, borderRadius: `${shape.sm}px` }}>
+                  <Typography variant="caption" sx={{ display: 'block', mb: 1, color: m3.onErrorContainer }}>Now</Typography>
+                  <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.5rem', fontWeight: 700, color: m3.onErrorContainer }}>80 t</Typography>
+                  <Typography variant="caption" sx={{ color: m3.onErrorContainer, fontWeight: 600 }}>−120 t revised by satellite</Typography>
                 </Box>
               </Box>
-              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>New satellite data indicates lower-than-expected standing stock. The revised estimate reflects current NDVI readings and cloud-corrected analysis from the past 72 hours.</Typography>
-              <Button size="small" color="primary" onClick={() => setEvidenceOpen(true)} sx={{ mt: space.related, px: 0, minWidth: 0 }}>
+              <Typography variant="body2" sx={{ color: m3.onSurface, mb: space.related }}>
+                New satellite data indicates lower-than-expected standing stock. The revised estimate reflects current NDVI readings and cloud-corrected analysis from the past 72 hours.
+              </Typography>
+              <Button size="small" color="primary" onClick={() => setEvidenceOpen(true)} sx={{ px: 0, minWidth: 0 }}>
                 View satellite evidence →
               </Button>
             </Box>
-          </Box>
+          </DashPaper>
 
-          {/* Why it matters */}
-          <Box sx={{ borderLeft: `3px solid ${semantic.alert}`, pl: space.related, py: 1 }}>
-            <Box sx={{ mb: 4 }}>
-              <Typography variant="overline" sx={{ color: semantic.alert }}>2 · Business impact</Typography>
-              <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, ...{ color: semantic.alert } }}>Why it matters</Typography>
+          {/* 2 · Business impact */}
+          <DashPaper sx={{ p: 0, overflow: 'hidden', borderLeft: `3px solid ${m3.error}` }}>
+            <Box sx={{ px: space.section, py: space.related, borderBottom: `1px solid ${PANEL_BORDER}`, bgcolor: m3.errorContainer }}>
+              <Typography variant="overline" sx={{ color: m3.onErrorContainer }}>2 · Business impact</Typography>
+              <Typography variant="subtitle1" sx={{ color: m3.onErrorContainer }}>Why it matters</Typography>
             </Box>
-            <Box>
-              <Box sx={{ display: 'grid', mb: 4 }}>
+            <Box sx={{ p: space.section }}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+                  gap: space.related,
+                  mb: space.related,
+                }}
+              >
                 {[
-                  { label: 'Week 3 Supply', before: '1,150 t', after: '1,030 t', delta: '−120 t', bad: true },
-                  { label: 'Week 3 Coverage', before: '96%', after: '86%', delta: '−10%', bad: true },
-                  { label: 'vs. 95% threshold', before: '+10 t buffer', after: '−110 t gap', delta: '', bad: true },
-                ].map(({ label, before, after, delta, bad }) => (
-                  <Box sx={{ px: 4, borderRight: `1px solid ${PANEL_BORDER}` }} key={label}>
-                    <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 2 }}>{label}</Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-                      <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '0.75rem', color: 'text.secondary', textDecoration: 'line-through' }}>{before}</Box>
-                      <Box component="span" sx={{ color: 'text.secondary' }}>→</Box>
-                      <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '0.875rem', fontWeight: 700, color: 'error.dark' }}>{after}</Box>
-                    </Box>
-                    {delta && <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: 10, fontWeight: 700, color: 'error.dark' }}>{delta}</Typography>}
+                  { label: 'Week 3 supply', before: '1,150 t', after: '1,030 t', delta: '−120 t' },
+                  { label: 'Week 3 coverage', before: '96%', after: '86%', delta: '−10%' },
+                  { label: 'vs. 95% threshold', before: '+10 t buffer', after: '−110 t gap', delta: 'Below target' },
+                ].map(({ label, before, after, delta }) => (
+                  <Box
+                    key={label}
+                    sx={{
+                      p: space.related,
+                      border: `1px solid ${PANEL_BORDER}`,
+                      borderRadius: `${shape.sm}px`,
+                      bgcolor: m3.surfaceContainerLowest,
+                    }}
+                  >
+                    <Typography variant="caption" sx={{ display: 'block', mb: space.tight }}>{label}</Typography>
+                    <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1, flexWrap: 'wrap' }}>
+                      <Typography variant="caption" sx={{ textDecoration: 'line-through', fontVariantNumeric: 'tabular-nums' }}>{before}</Typography>
+                      <Typography variant="caption" aria-hidden>→</Typography>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: m3.error, fontVariantNumeric: 'tabular-nums' }}>{after}</Typography>
+                    </Stack>
+                    <Typography variant="caption" sx={{ fontWeight: 700, color: m3.error, fontVariantNumeric: 'tabular-nums' }}>{delta}</Typography>
                   </Box>
                 ))}
               </Box>
-              <Box sx={{ borderTop: 1, pt: 4 }}>
-                <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, ...{ color: semantic.alert } }}>Week 3 is now 110 t below the 95% coverage target of 1,140 t.</Typography>
-              </Box>
-            </Box>
-          </Box>
-
-          {/* Recovery recommendation */}
-          <DashPaper sx={{ overflow: 'hidden', p: 0 }}>
-            <Box sx={{ px: 4, pt: 4 }}>
-              <Typography variant="overline" sx={{ color: m3.primaryInk }}>3 · Recovery options</Typography>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary' }}>Recommended recovery · compare before accepting</Typography>
-            </Box>
-            <Box sx={{ px: 4, pb: 4, pt: 4 }}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
-                <Box>
-                  <Typography sx={{ fontSize: '1.125rem', fontWeight: 700, color: 'text.primary', mb: 1 }}>Rajahmundry Block</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 2 }}>East Godavari district</Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <ConfBadge level="MEDIUM" />
-                    <Box component="span" sx={{ fontSize: 10, color: 'text.secondary' }}>Evidence incomplete · Field verification required</Box>
-                  </Box>
-                  <Button size="small" color="primary" onClick={() => setInspectedFarm('Rajahmundry Block')} sx={{ mt: space.related, px: 0, minWidth: 0 }}>
-                    Inspect farm details
-                  </Button>
-                </Box>
-                <Box sx={{ textAlign: 'right' }}>
-                  <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: 'success.dark' }}>+110 t</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>Expected contribution</Typography>
-                </Box>
-              </Box>
-
-              {/* Before / after recovery */}
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: 1, borderBottom: 1, borderColor: 'divider', py: 4, mb: 4 }}>
-                <Box sx={{ pr: 4, borderRight: 1, borderColor: 'divider' }}>
-                  <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 2 }}>Current</Typography>
-                  <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: 'error.dark' }}>1,030 t · 86%</Typography>
-                  <PercentBar value={86} tone="danger" sx={{ mt: 2 }} />
-                </Box>
-                <Box sx={{ pl: 4 }}>
-                  <Typography sx={{ fontSize: 10, color: m3.primaryInk, mb: 2 }}>After recovery</Typography>
-                  <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: m3.primaryInk }}>1,140 t · 95%</Typography>
-                  <PercentBar value={95} tone="primary" markerPct={95} sx={{ mt: 2 }} />
-                  <Typography sx={{ fontSize: 9, fontWeight: 700, color: m3.primaryInk, mt: 1 }}>Target Met</Typography>
-                </Box>
-              </Box>
-
-              {/* Tradeoffs */}
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.primary', mb: 4 }}>Business tradeoffs</Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4 }}>
-                {[
-                  { icon: '↑', color: m3.primaryInk, bg: CARD_SELECTION_BG, label: 'Supply impact', detail: '+110 t · Restores Week 3 to 95% coverage target' },
-                  { icon: '!', color: m3.onWarningContainer, bg: m3.warningContainer, label: 'Verification impact', detail: '+1 field verification required before committing' },
-                  { icon: '⚑', color: m3.onWarningContainer, bg: m3.warningContainer, label: 'Geographic impact', detail: 'East Godavari concentration: 8% → 17%' },
-                ].map(({ icon, color, bg, label, detail }) => (
-                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 4 }} key={label}>
-                    <Box sx={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, color, bgcolor: bg, borderRadius: `${shape.xs}px` }}>{icon}</Box>
-                    <Box>
-                      <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface }}>{label}</Typography>
-                      <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant }}>{detail}</Typography>
-                    </Box>
-                  </Box>
-                ))}
-              </Box>
-
-              {/* Interpretation */}
-              <Box sx={{ borderColor: 'divider', mb: 6 }}>
-                <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', lineHeight: 1.6 }}>
-                  "Rajahmundry Block restores Week 3 to the 95% coverage target, but requires one field verification and increases East Godavari concentration from 8% to 17%."
+              <Box sx={{ p: space.related, bgcolor: m3.errorContainer, borderRadius: `${shape.sm}px` }}>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: m3.onErrorContainer }}>
+                  Week 3 is now 110 t below the 95% coverage target of 1,140 t.
                 </Typography>
               </Box>
-
             </Box>
           </DashPaper>
 
+          {/* 3 · Recovery */}
+          <DashPaper sx={{ p: 0, overflow: 'hidden' }}>
+            <Box sx={{ px: space.section, py: space.related, borderBottom: `1px solid ${PANEL_BORDER}`, bgcolor: m3.primaryContainer }}>
+              <Typography variant="overline" sx={{ color: m3.primaryInk }}>3 · Recovery options</Typography>
+              <Typography variant="subtitle1" sx={{ color: m3.onSurface }}>Recommended recovery</Typography>
+              <Typography variant="caption" sx={{ display: 'block', mt: 0.5 }}>Compare before accepting</Typography>
+            </Box>
+            <Box sx={{ p: space.section }}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={space.related} sx={{ justifyContent: 'space-between', mb: space.section }}>
+                <Box>
+                  <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>Rajahmundry Block</Typography>
+                  <Typography variant="caption" sx={{ display: 'block', mb: space.tight }}>East Godavari district</Typography>
+                  <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap', mb: space.tight }}>
+                    <ConfBadge level="MEDIUM" />
+                    <StatusChip kind="visit-required" />
+                  </Stack>
+                  <Button size="small" color="primary" onClick={() => setInspectedFarm('Rajahmundry Block')} sx={{ px: 0, minWidth: 0 }}>
+                    Inspect farm details
+                  </Button>
+                </Box>
+                <Box sx={{ textAlign: { xs: 'left', sm: 'right' }, flexShrink: 0 }}>
+                  <Typography variant="caption" sx={{ display: 'block' }}>Expected contribution</Typography>
+                  <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.5rem', fontWeight: 700, color: m3.primaryInk }}>+110 t</Typography>
+                </Box>
+              </Stack>
+
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+                  gap: space.related,
+                  mb: space.section,
+                }}
+              >
+                <Box sx={{ p: space.related, border: `1px solid ${PANEL_BORDER}`, borderRadius: `${shape.sm}px` }}>
+                  <Typography variant="caption" sx={{ display: 'block', mb: space.tight }}>Current</Typography>
+                  <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: m3.error, mb: space.tight }}>1,030 t · 86%</Typography>
+                  <PercentBar value={86} tone="danger" />
+                </Box>
+                <Box sx={{ p: space.related, border: `1px solid ${PANEL_BORDER}`, borderRadius: `${shape.sm}px`, bgcolor: m3.primaryContainer }}>
+                  <Typography variant="caption" sx={{ display: 'block', mb: space.tight, color: m3.primaryInk }}>After recovery</Typography>
+                  <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: m3.primaryInk, mb: space.tight }}>1,140 t · 95%</Typography>
+                  <PercentBar value={95} tone="primary" markerPct={95} />
+                  <Typography variant="caption" sx={{ display: 'block', fontWeight: 700, color: m3.primaryInk, mt: 1 }}>Target met</Typography>
+                </Box>
+              </Box>
+
+              <SectionLabel>Business tradeoffs</SectionLabel>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.tight, mb: space.section }}>
+                {[
+                  { tone: 'positive' as const, label: 'Supply impact', detail: '+110 t · Restores Week 3 to 95% coverage target' },
+                  { tone: 'caution' as const, label: 'Verification impact', detail: '+1 field verification required before committing' },
+                  { tone: 'caution' as const, label: 'Geographic impact', detail: 'East Godavari concentration: 8% → 17%' },
+                ].map(({ tone, label, detail }) => (
+                  <Box
+                    key={label}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: space.related,
+                      p: space.related,
+                      borderRadius: `${shape.sm}px`,
+                      bgcolor: tone === 'positive' ? m3.primaryContainer : m3.warningContainer,
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="subtitle2" sx={{ color: tone === 'positive' ? m3.primaryInk : m3.onWarningContainer }}>{label}</Typography>
+                      <Typography variant="caption" sx={{ color: tone === 'positive' ? m3.primaryInk : m3.onWarningContainer }}>{detail}</Typography>
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+
+              <Box sx={{ p: space.related, bgcolor: m3.surfaceContainerLow, borderRadius: `${shape.sm}px` }}>
+                <Typography variant="body2" sx={{ color: m3.onSurface, lineHeight: 1.6 }}>
+                  Rajahmundry Block restores Week 3 to the 95% coverage target, but requires one field verification and increases East Godavari concentration from 8% to 17%.
+                </Typography>
+              </Box>
+            </Box>
+          </DashPaper>
         </Box>
     </MainPane>
       {evidenceOpen && <EvidenceModal farmId="godavari" recovery onClose={() => setEvidenceOpen(false)} />}

@@ -228,24 +228,34 @@ export type StatusKind =
   | 'constraint-pass'
   | 'constraint-fail'
 
+/**
+ * Chip tones are limited to three soft fills + one solid critical.
+ * Positive = brand teal, caution = amber, negative = error soft.
+ * Avoid outlined / tertiary / success-green variants so chips read as one system.
+ */
+const CHIP_POSITIVE = { fg: m3.primaryInk, bg: m3.primaryContainer, border: 'transparent' }
+const CHIP_CAUTION = { fg: m3.onWarningContainer, bg: m3.warningContainer, border: 'transparent' }
+const CHIP_NEGATIVE = { fg: m3.onErrorContainer, bg: m3.errorContainer, border: 'transparent' }
+const CHIP_CRITICAL = { fg: m3.onError, bg: m3.error, border: 'transparent' }
+
 export const STATUS_META: Record<
   StatusKind,
   { label: string; fg: string; bg: string; border: string }
 > = {
-  'confidence-high': { label: 'HIGH', fg: m3.onSuccessContainer, bg: m3.successContainer, border: 'transparent' },
-  'confidence-medium': { label: 'MEDIUM', fg: m3.onWarningContainer, bg: m3.warningContainer, border: 'transparent' },
-  'confidence-low': { label: 'LOW', fg: m3.onErrorContainer, bg: m3.errorContainer, border: 'transparent' },
-  'evidence-current': { label: 'Evidence current', fg: m3.success, bg: 'transparent', border: m3.success },
-  'evidence-aging': { label: 'Evidence aging', fg: m3.warning, bg: 'transparent', border: m3.warning },
-  'evidence-missing': { label: 'Evidence missing', fg: m3.error, bg: 'transparent', border: m3.error },
-  'candidate-strong': { label: 'Strong candidate', fg: m3.primaryInk, bg: m3.primaryContainer, border: 'transparent' },
-  'visit-required': { label: 'Field visit required', fg: m3.onTertiaryContainer, bg: m3.tertiaryContainer, border: 'transparent' },
-  'concentration-risk': { label: 'Concentration risk', fg: m3.onErrorContainer, bg: m3.errorContainer, border: 'transparent' },
-  'outside-harvest': { label: 'Outside harvest window', fg: m3.onSurfaceVariant, bg: m3.surfaceContainerHigh, border: 'transparent' },
-  verified: { label: 'Verified', fg: m3.onSuccessContainer, bg: m3.successContainer, border: 'transparent' },
-  'primary-issue': { label: 'Primary issue', fg: m3.onError, bg: m3.error, border: 'transparent' },
-  'constraint-pass': { label: 'Pass', fg: m3.onSuccessContainer, bg: m3.successContainer, border: 'transparent' },
-  'constraint-fail': { label: 'Fails constraint', fg: m3.onErrorContainer, bg: m3.errorContainer, border: 'transparent' },
+  'confidence-high': { label: 'HIGH', ...CHIP_POSITIVE },
+  'confidence-medium': { label: 'MEDIUM', ...CHIP_CAUTION },
+  'confidence-low': { label: 'LOW', ...CHIP_NEGATIVE },
+  'evidence-current': { label: 'Evidence current', ...CHIP_POSITIVE },
+  'evidence-aging': { label: 'Evidence aging', ...CHIP_CAUTION },
+  'evidence-missing': { label: 'Evidence missing', ...CHIP_NEGATIVE },
+  'candidate-strong': { label: 'Strong candidate', ...CHIP_POSITIVE },
+  'visit-required': { label: 'Field visit required', ...CHIP_CAUTION },
+  'concentration-risk': { label: 'Concentration risk', ...CHIP_NEGATIVE },
+  'outside-harvest': { label: 'Outside harvest window', ...CHIP_CAUTION },
+  verified: { label: 'Verified', ...CHIP_POSITIVE },
+  'primary-issue': { label: 'Primary issue', ...CHIP_CRITICAL },
+  'constraint-pass': { label: 'Pass', ...CHIP_POSITIVE },
+  'constraint-fail': { label: 'Fails constraint', ...CHIP_NEGATIVE },
 }
 
 export const typographyScale = {

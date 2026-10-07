@@ -17,9 +17,10 @@ const btnBaseSx = {
   py: 0,
   px: 6,
   fontSize: '0.875rem',
-  fontWeight: 650,
+  fontWeight: 600,
   lineHeight: 1.25,
   boxSizing: 'border-box',
+  fontFamily: '"Manrope", system-ui, sans-serif',
 } as const
 
 /**
@@ -111,19 +112,21 @@ export function StatusChip({ kind }: { kind: StatusKind }) {
         m: 0,
         height: 24,
         boxSizing: 'border-box',
+        fontFamily: '"Manrope", system-ui, sans-serif',
         fontSize: 11,
-        fontWeight: 650,
+        fontWeight: 600,
         letterSpacing: '0.02em',
         textTransform: kind === 'primary-issue' || kind.startsWith('confidence') ? 'uppercase' : 'none',
         color: meta.fg,
-        bgcolor: meta.bg === 'transparent' ? 'transparent' : meta.bg,
-        border: meta.border === 'transparent' ? '1px solid transparent' : `1px solid ${meta.border}`,
+        bgcolor: meta.bg,
+        border: '1px solid transparent',
         '& .MuiChip-label': {
           px: 2.5,
           py: 0,
           lineHeight: '22px',
           display: 'flex',
           alignItems: 'center',
+          fontFamily: 'inherit',
         },
       }}
     />

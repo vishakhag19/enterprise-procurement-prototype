@@ -83,21 +83,22 @@ export const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: '"Manrope", "Roboto", system-ui, sans-serif',
-    // MD3 type scale (mapped onto MUI variants)
-    h1: { fontWeight: 700, fontSize: '2.75rem', lineHeight: 1.1, letterSpacing: '-0.02em' }, // display-small
-    h2: { fontWeight: 700, fontSize: '1.75rem', lineHeight: 1.2, letterSpacing: '-0.01em' }, // headline-medium
-    h3: { fontWeight: 650, fontSize: '1.375rem', lineHeight: 1.25 }, // headline-small
-    h4: { fontWeight: 650, fontSize: '1.25rem', lineHeight: 1.3 }, // title-large
-    h5: { fontWeight: 650, fontSize: '1rem', lineHeight: 1.35 }, // title-medium
-    h6: { fontWeight: 650, fontSize: '0.875rem', lineHeight: 1.35 }, // title-small
-    subtitle1: { fontWeight: 650, fontSize: '1rem', lineHeight: 1.4 },
-    subtitle2: { fontWeight: 650, fontSize: '0.875rem', lineHeight: 1.4 },
-    body1: { fontWeight: 500, fontSize: '0.875rem', lineHeight: 1.5, letterSpacing: '0.01em' }, // body-large
-    body2: { fontWeight: 500, fontSize: '0.8125rem', lineHeight: 1.45, color: m3.onSurfaceVariant }, // body-medium
-    caption: { fontWeight: 500, fontSize: '0.75rem', lineHeight: 1.35, color: m3.onSurfaceVariant }, // body-small
-    button: { fontWeight: 650, textTransform: 'none' as const, letterSpacing: '0.01em', fontSize: '0.875rem' },
+    fontFamily: '"Manrope", system-ui, sans-serif',
+    // MD3 type scale (mapped onto MUI variants) - Manrope weights 400/500/600/700 only
+    h1: { fontFamily: '"Manrope", system-ui, sans-serif', fontWeight: 700, fontSize: '2.75rem', lineHeight: 1.1, letterSpacing: '-0.02em' },
+    h2: { fontFamily: '"Manrope", system-ui, sans-serif', fontWeight: 700, fontSize: '1.75rem', lineHeight: 1.2, letterSpacing: '-0.01em' },
+    h3: { fontFamily: '"Manrope", system-ui, sans-serif', fontWeight: 600, fontSize: '1.375rem', lineHeight: 1.25 },
+    h4: { fontFamily: '"Manrope", system-ui, sans-serif', fontWeight: 600, fontSize: '1.25rem', lineHeight: 1.3 },
+    h5: { fontFamily: '"Manrope", system-ui, sans-serif', fontWeight: 600, fontSize: '1rem', lineHeight: 1.35 },
+    h6: { fontFamily: '"Manrope", system-ui, sans-serif', fontWeight: 600, fontSize: '0.875rem', lineHeight: 1.35 },
+    subtitle1: { fontFamily: '"Manrope", system-ui, sans-serif', fontWeight: 600, fontSize: '1rem', lineHeight: 1.4 },
+    subtitle2: { fontFamily: '"Manrope", system-ui, sans-serif', fontWeight: 600, fontSize: '0.875rem', lineHeight: 1.4 },
+    body1: { fontFamily: '"Manrope", system-ui, sans-serif', fontWeight: 500, fontSize: '0.875rem', lineHeight: 1.5, letterSpacing: '0.01em' },
+    body2: { fontFamily: '"Manrope", system-ui, sans-serif', fontWeight: 500, fontSize: '0.8125rem', lineHeight: 1.45, color: m3.onSurfaceVariant },
+    caption: { fontFamily: '"Manrope", system-ui, sans-serif', fontWeight: 500, fontSize: '0.75rem', lineHeight: 1.35, color: m3.onSurfaceVariant },
+    button: { fontFamily: '"Manrope", system-ui, sans-serif', fontWeight: 600, textTransform: 'none' as const, letterSpacing: '0.01em', fontSize: '0.875rem' },
     overline: {
+      fontFamily: '"Manrope", system-ui, sans-serif',
       fontWeight: 700,
       letterSpacing: '0.08em',
       fontSize: '0.6875rem',
@@ -109,11 +110,20 @@ export const theme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
+        'html, body, #root, *': {
+          fontFamily: '"Manrope", system-ui, sans-serif',
+        },
         body: {
-          fontFamily: '"Manrope", "Roboto", system-ui, sans-serif',
           backgroundColor: m3.surface,
           color: m3.onSurface,
           backgroundImage: 'none',
+        },
+      },
+    },
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          fontFamily: '"Manrope", system-ui, sans-serif',
         },
       },
     },
@@ -121,8 +131,9 @@ export const theme = createTheme({
       defaultProps: { disableElevation: true },
       styleOverrides: {
         root: {
+          fontFamily: '"Manrope", system-ui, sans-serif',
           borderRadius: '20px', // MD3 full button
-          fontWeight: 650,
+          fontWeight: 600,
           // MD3 label-large button: 24 horizontal, 10 vertical, 40 height
           paddingLeft: 24,
           paddingRight: 24,
@@ -173,7 +184,7 @@ export const theme = createTheme({
         },
         text: {
           color: m3.primaryInk,
-          fontWeight: 650,
+          fontWeight: 600,
           paddingInline: 12,
           minHeight: 40,
         },
@@ -187,9 +198,13 @@ export const theme = createTheme({
     MuiChip: {
       styleOverrides: {
         root: {
-          fontWeight: 650,
+          fontFamily: '"Manrope", system-ui, sans-serif',
+          fontWeight: 600,
           letterSpacing: '0.02em',
           borderRadius: `${shape.sm}px`, // MD3 small
+        },
+        label: {
+          fontFamily: '"Manrope", system-ui, sans-serif',
         },
         sizeSmall: { height: 24, fontSize: 11 },
         filled: {
@@ -331,7 +346,7 @@ export const theme = createTheme({
     MuiTableCell: {
       styleOverrides: {
         root: {
-          fontFamily: '"Manrope", "Roboto", system-ui, sans-serif',
+          fontFamily: '"Manrope", system-ui, sans-serif',
           borderColor: PANEL_BORDER,
           // MD3 data table: 16dp inset, ~52dp row with content
           padding: '14px 16px',
@@ -339,7 +354,7 @@ export const theme = createTheme({
           lineHeight: 1.45,
         },
         head: {
-          fontWeight: 650,
+          fontWeight: 600,
           backgroundColor: m3.surfaceContainerLow,
           color: m3.onSurfaceVariant,
           padding: '12px 16px',
