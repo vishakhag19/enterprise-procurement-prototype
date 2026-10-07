@@ -74,6 +74,12 @@ type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 
 type Conf = 'HIGH' | 'MEDIUM' | 'LOW'
 type FarmRole = 'selected' | 'committed' | 'needs-verification' | 'recommended' | 'other' | 'alert'
 type MapVariant = 'coverage' | 'investigation' | 'scenario' | 'plan' | 'recovery' | 'default'
+type NavigateOpts = { compareRecovery?: boolean }
+type NavigateFn = (s: Screen, opts?: NavigateOpts) => void
+
+const RECOVERY_GAP_T = 110
+const RECOVERY_BASE_SUPPLY = 1030
+const RECOVERY_WEEK_TARGET = 1200
 
 // ─── Shared Atoms (domain taxonomy) ──────────────────────────────────────────
 
@@ -1344,36 +1350,179 @@ const TABLE_ROWS = [
   { key: 'verifReq', label: 'Field visit required' },
 ]
 
-function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+/** Recovery-mode candidates vs the 110 t Week 3 threshold gap (base 1,030 t / 86%). */
+const RECOVERY_COMPARE_FARMS = [
+  {
+    id: 'raj', name: 'Rajahmundry Block', district: 'East Godavari',
+    headline: 'Closes the 110 t recovery gap in full',
+    supply: 110, gapPct: 100,
+    resultingSupply: 1140, resultingCoverage: 95,
+    confidence: 'MEDIUM' as Conf, verifReq: true,
+    evidenceKind: 'evidence-aging' as StatusKind,
+    evidenceRecencyPct: 35, evidenceRecencyLabel: '21d · aging',
+    harvestTimingPct: 100, harvestTimingLabel: 'In Week 3',
+    harvest: 'Week 3',
+    districtConc: 'East Godavari 8% → 17%',
+    whyConf: 'Satellite is current; field evidence is incomplete and needs verification before commit.',
+    history: '98% of prior-season delivery',
+    satellite: 'Moderate: NDVI 0.67',
+    field: 'Last confirmed 3 weeks ago',
+    missing: 'Current field confirmation required before committing recovery tons.',
+    risks: 'Adds verification work and raises East Godavari concentration to 17%.',
+    recommended: true,
+  },
+  {
+    id: 'kovvur', name: 'Kovvur Fields', district: 'West Godavari',
+    headline: 'Partial recovery · still 35 t short',
+    supply: 75, gapPct: 68,
+    resultingSupply: 1105, resultingCoverage: 92,
+    confidence: 'MEDIUM' as Conf, verifReq: true,
+    evidenceKind: 'evidence-aging' as StatusKind,
+    evidenceRecencyPct: 28, evidenceRecencyLabel: '35d · aging',
+    harvestTimingPct: 95, harvestTimingLabel: 'In Week 3',
+    harvest: 'Week 3',
+    districtConc: 'West Godavari 36% → 42%',
+    whyConf: 'Useful partial fill, but aging field evidence keeps confidence at MEDIUM.',
+    history: '71t (Season 2)',
+    satellite: 'Moderate: NDVI 0.64',
+    field: 'Last confirmed 5 weeks ago',
+    missing: 'Recent field evidence needed; does not fully close the 110 t gap alone.',
+    risks: 'Leaves Week 3 at 92% (still below 95%). Increases West Godavari share.',
+    recommended: false,
+  },
+  {
+    id: 'guntur', name: 'Guntur Strip', district: 'Guntur',
+    headline: 'Partial recovery · diversifies districts',
+    supply: 80, gapPct: 73,
+    resultingSupply: 1110, resultingCoverage: 93,
+    confidence: 'MEDIUM' as Conf, verifReq: false,
+    evidenceKind: 'evidence-aging' as StatusKind,
+    evidenceRecencyPct: 40, evidenceRecencyLabel: '28d · aging',
+    harvestTimingPct: 70, harvestTimingLabel: 'Wk 3-4 edge',
+    harvest: 'Wk 3-4',
+    districtConc: 'Guntur 0% → 7%',
+    whyConf: 'No new field visit required, but harvest window edges into Week 4.',
+    history: '76t (Season 1)',
+    satellite: 'Moderate: NDVI 0.66',
+    field: 'Confirmed 4 weeks ago',
+    missing: 'Harvest timing confirmation for Week 3 logistics.',
+    risks: 'Closes only 73% of the recovery gap (93% coverage). Timing risk if Week 4 slips.',
+    recommended: false,
+  },
+  {
+    id: 'eluru', name: 'Eluru Farm', district: 'West Godavari',
+    headline: 'High confidence · insufficient alone',
+    supply: 65, gapPct: 59,
+    resultingSupply: 1095, resultingCoverage: 91,
+    confidence: 'HIGH' as Conf, verifReq: false,
+    evidenceKind: 'evidence-current' as StatusKind,
+    evidenceRecencyPct: 88, evidenceRecencyLabel: '11d · current',
+    harvestTimingPct: 100, harvestTimingLabel: 'In Week 3',
+    harvest: 'Week 3',
+    districtConc: 'West Godavari 36% → 41%',
+    whyConf: 'Evidence is current and aligned, but 65 t cannot restore the 95% threshold alone.',
+    history: '62t (Season 2)',
+    satellite: 'Healthy: NDVI 0.70',
+    field: 'Confirmed recently',
+    missing: 'None for this block; still needs a second candidate to close 110 t.',
+    risks: 'Leaves a 45 t shortfall vs threshold. Raises West Godavari concentration.',
+    recommended: false,
+  },
+]
+
+const RECOVERY_TABLE_ROWS = [
+  { key: 'supply', label: 'Supply contribution' },
+  { key: 'gapPct', label: 'Share of 110 t recovery gap' },
+  { key: 'resultingCoverage', label: 'Resulting Week 3 coverage' },
+  { key: 'resultingSupply', label: 'Resulting Week 3 supply' },
+  { key: 'verifReq', label: 'Field visit required' },
+  { key: 'confidence', label: 'Confidence / evidence' },
+  { key: 'districtConc', label: 'District concentration' },
+  { key: 'harvest', label: 'Harvest window' },
+  { key: 'risks', label: 'Recovery tradeoffs' },
+]
+
+function CompareScreen({
+  onNavigate,
+  recovery = false,
+}: {
+  onNavigate: NavigateFn
+  recovery?: boolean
+}) {
+  const farms = recovery ? RECOVERY_COMPARE_FARMS : COMPARE_FARMS
+  const tableRows = recovery ? RECOVERY_TABLE_ROWS : TABLE_ROWS
+  const closesGapCount = recovery ? RECOVERY_COMPARE_FARMS.filter(f => f.gapPct >= 100).length : 0
+  const verifCount = farms.filter(f => f.verifReq).length
+
   return (
     <MainPane
       header={
         <Box>
-          <SectionLabel>Candidate Comparison</SectionLabel>
-          <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>4 farms · Week 3</Typography>
-          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Scenario planning can add or substitute farms from the full eligible pool.</Typography>
+          <SectionLabel>{recovery ? 'Recovery Comparison' : 'Candidate Comparison'}</SectionLabel>
+          <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>
+            {recovery ? `${farms.length} recovery candidates · 110 t gap` : '4 farms · Week 3'}
+          </Typography>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>
+            {recovery
+              ? 'Compare substitutes against the Week 3 threshold gap after Godavari was revised to 80 t (base 1,030 t · 86%).'
+              : 'Scenario planning can add or substitute farms from the full eligible pool.'}
+          </Typography>
         </Box>
       }
       footer={
-        <>
-          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', flex: 1 }}>
-            Scenario planning can consider these candidates and other eligible farms. The manually compared farms do not limit scenario generation.
-          </Typography>
-          <PrimaryBtn onClick={() => onNavigate('scenarios')} sx={{ flexShrink: 0 }}>Plan a scenario →</PrimaryBtn>
-        </>
+        recovery ? (
+          <>
+            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', flex: 1 }}>
+              Rajahmundry Block is the only single farm that restores 95% coverage. Return to the alert to accept recovery.
+            </Typography>
+            <Stack direction="row" spacing={2} sx={{ flexShrink: 0 }}>
+              <SecondaryBtn onClick={() => onNavigate('alert')}>Back to alert</SecondaryBtn>
+              <PrimaryBtn onClick={() => onNavigate('alert')}>Use Rajahmundry →</PrimaryBtn>
+            </Stack>
+          </>
+        ) : (
+          <>
+            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', flex: 1 }}>
+              Scenario planning can consider these candidates and other eligible farms. The manually compared farms do not limit scenario generation.
+            </Typography>
+            <PrimaryBtn onClick={() => onNavigate('scenarios')} sx={{ flexShrink: 0 }}>Plan a scenario →</PrimaryBtn>
+          </>
+        )
       }
       map={
         <MapPane
-          variant="investigation"
-          farmRoles={{
-            mach: 'selected',
-            reddy: 'selected',
-            bhim: 'needs-verification',
-            tanuku: 'needs-verification',
-          }}
+          variant={recovery ? 'recovery' : 'investigation'}
+          farmRoles={
+            recovery
+              ? {
+                  mach: 'selected', reddy: 'selected', bhim: 'selected', tanuku: 'selected',
+                  godavari: 'alert', narsapur: 'committed', palakol: 'selected', avanigadda: 'selected',
+                  raj: 'recommended', kovvur: 'recommended', guntur: 'recommended', eluru: 'recommended',
+                  kv: 'other',
+                }
+              : {
+                  mach: 'selected',
+                  reddy: 'selected',
+                  bhim: 'needs-verification',
+                  tanuku: 'needs-verification',
+                }
+          }
+          legend={
+            recovery
+              ? [
+                  { role: 'selected', label: 'In active plan' },
+                  { role: 'alert', label: 'Revised (Godavari)' },
+                  { role: 'recommended', label: 'Recovery candidate' },
+                  { role: 'committed', label: 'At risk' },
+                  { role: 'other', label: 'Not in view' },
+                ]
+              : undefined
+          }
           footer={
             <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              4 farms in comparison · map mirrors candidate set
+              {recovery
+                ? 'Recovery geography · candidates vs 110 t gap'
+                : '4 farms in comparison · map mirrors candidate set'}
             </Typography>
           }
         />
@@ -1381,61 +1530,137 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
         <DashKpiStrip
-          items={[
-            { label: 'Combined supply', value: '570 t', sub: '4 farms in set' },
-            { label: 'Gap coverage', value: '92%', sub: 'Of 620 t Week 3 gap' },
-            { label: 'High confidence', value: '2', sub: 'Evidence current' },
-            { label: 'Verif. required', value: '2', sub: 'Before commit' },
-          ]}
+          items={
+            recovery
+              ? [
+                  { label: 'Recovery gap', value: `${RECOVERY_GAP_T} t`, sub: 'To restore 95%', danger: true },
+                  { label: 'Full-close options', value: String(closesGapCount), sub: 'Single-farm close' },
+                  { label: 'Best coverage', value: '95%', sub: 'With Rajahmundry' },
+                  { label: 'Verif. required', value: String(verifCount), sub: 'Of candidates shown' },
+                ]
+              : [
+                  { label: 'Combined supply', value: '570 t', sub: '4 farms in set' },
+                  { label: 'Gap coverage', value: '92%', sub: 'Of 620 t Week 3 gap' },
+                  { label: 'High confidence', value: '2', sub: 'Evidence current' },
+                  { label: 'Verif. required', value: '2', sub: 'Before commit' },
+                ]
+          }
         />
 
+        {recovery && (
+          <DashPaper sx={{ p: space.related, bgcolor: m3.errorContainer, color: m3.onErrorContainer }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={space.related} sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' } }}>
+              <Box>
+                <Typography variant="subtitle2" sx={{ color: m3.onErrorContainer, fontWeight: 700 }}>
+                  Baseline after Godavari revision
+                </Typography>
+                <Typography variant="caption" sx={{ color: m3.onErrorContainer }}>
+                  {RECOVERY_BASE_SUPPLY.toLocaleString()} t · 86% coverage · {RECOVERY_GAP_T} t below the 1,140 t (95%) threshold
+                </Typography>
+              </Box>
+              <StatusChip kind="primary-issue" />
+            </Stack>
+          </DashPaper>
+        )}
+
         <Box>
-          <SectionLabel>Interpretation</SectionLabel>
+          <SectionLabel>{recovery ? 'Recovery interpretation' : 'Interpretation'}</SectionLabel>
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: space.related }}>
-            {COMPARE_FARMS.map(f => (
-              <DashPaper key={f.id} sx={{ p: space.related }}>
-                <Stack spacing={space.related}>
-                  <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <Box>
-                      <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: 'text.primary' }}>{f.name}</Typography>
-                      <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary', mt: 1 }}>{f.headline}</Typography>
-                    </Box>
-                    <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700 }}>{f.supply} t</Typography>
-                  </Stack>
-                  <PercentBar label="Gap closed" display={`${f.gapPct}%`} value={f.gapPct} tone={f.verifReq ? 'muted' : 'primary'} />
-                  <Stack direction="row" spacing={space.related} sx={{ alignItems: 'flex-start' }}>
-                    <EvidenceCueBar
-                      label="Evidence recency"
-                      valueLabel={f.evidenceRecencyLabel}
-                      pct={f.evidenceRecencyPct}
-                      tone={f.evidenceRecencyPct >= 70 ? 'primary' : f.evidenceRecencyPct >= 30 ? 'caution' : 'danger'}
+            {farms.map(f => {
+              const recoveryFarm = recovery ? (f as typeof RECOVERY_COMPARE_FARMS[number]) : null
+              return (
+                <DashPaper
+                  key={f.id}
+                  sx={{
+                    p: space.related,
+                    ...(recoveryFarm?.recommended
+                      ? { border: `2px solid ${m3.primary}`, bgcolor: m3.surfaceContainerLowest }
+                      : {}),
+                  }}
+                >
+                  <Stack spacing={space.related}>
+                    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <Box>
+                        {recoveryFarm?.recommended && (
+                          <Typography variant="caption" sx={{ color: m3.primaryInk, fontWeight: 700, display: 'block', mb: 0.5 }}>
+                            Recommended
+                          </Typography>
+                        )}
+                        <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: 'text.primary' }}>{f.name}</Typography>
+                        <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary', mt: 1 }}>{f.headline}</Typography>
+                      </Box>
+                      <Box sx={{ textAlign: 'right' }}>
+                        <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700 }}>{f.supply} t</Typography>
+                        {recoveryFarm && (
+                          <Typography variant="caption" sx={{ display: 'block', color: recoveryFarm.resultingCoverage >= 95 ? m3.primaryInk : m3.error, fontWeight: 700 }}>
+                            → {recoveryFarm.resultingCoverage}%
+                          </Typography>
+                        )}
+                      </Box>
+                    </Stack>
+                    <PercentBar
+                      label={recovery ? 'Of 110 t recovery gap' : 'Gap closed'}
+                      display={`${f.gapPct}%`}
+                      value={f.gapPct}
+                      tone={recovery ? (f.gapPct >= 100 ? 'primary' : 'caution') : f.verifReq ? 'muted' : 'primary'}
                     />
-                    <EvidenceCueBar
-                      label="Harvest timing"
-                      valueLabel={f.harvestTimingLabel}
-                      pct={f.harvestTimingPct}
-                      tone={f.harvestTimingPct >= 90 ? 'primary' : 'caution'}
-                    />
+                    {recoveryFarm && (
+                      <Stack direction="row" spacing={space.related} sx={{ alignItems: 'flex-start' }}>
+                        <EvidenceCueBar
+                          label="Resulting coverage"
+                          valueLabel={`${recoveryFarm.resultingCoverage}% · ${recoveryFarm.resultingSupply.toLocaleString()} t`}
+                          pct={recoveryFarm.resultingCoverage}
+                          tone={recoveryFarm.resultingCoverage >= 95 ? 'primary' : 'caution'}
+                        />
+                        <EvidenceCueBar
+                          label="District concentration"
+                          valueLabel={recoveryFarm.districtConc.split(' → ').pop() ?? recoveryFarm.districtConc}
+                          pct={recoveryFarm.id === 'raj' ? 34 : recoveryFarm.id === 'guntur' ? 14 : 82}
+                          tone={recoveryFarm.id === 'guntur' ? 'primary' : 'caution'}
+                        />
+                      </Stack>
+                    )}
+                    {!recovery && (
+                      <Stack direction="row" spacing={space.related} sx={{ alignItems: 'flex-start' }}>
+                        <EvidenceCueBar
+                          label="Evidence recency"
+                          valueLabel={f.evidenceRecencyLabel}
+                          pct={f.evidenceRecencyPct}
+                          tone={f.evidenceRecencyPct >= 70 ? 'primary' : f.evidenceRecencyPct >= 30 ? 'caution' : 'danger'}
+                        />
+                        <EvidenceCueBar
+                          label="Harvest timing"
+                          valueLabel={f.harvestTimingLabel}
+                          pct={f.harvestTimingPct}
+                          tone={f.harvestTimingPct >= 90 ? 'primary' : 'caution'}
+                        />
+                      </Stack>
+                    )}
+                    <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+                      <ConfBadge level={f.confidence} />
+                      <StatusChip kind={f.evidenceKind} />
+                      {f.verifReq && <StatusChip kind="visit-required" />}
+                    </Stack>
+                    {recoveryFarm && (
+                      <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+                        {recoveryFarm.districtConc} · {recoveryFarm.verifReq ? 'Verification required' : 'No new field visit'}
+                      </Typography>
+                    )}
                   </Stack>
-                  <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-                    <ConfBadge level={f.confidence} />
-                    <StatusChip kind={f.evidenceKind} />
-                    {f.verifReq && <StatusChip kind="visit-required" />}
-                  </Stack>
-                </Stack>
-              </DashPaper>
-            ))}
+                </DashPaper>
+              )
+            })}
           </Box>
         </Box>
 
         <Box>
-          <SectionLabel>Detailed Comparison</SectionLabel>
+          <SectionLabel>{recovery ? 'Detailed recovery comparison' : 'Detailed Comparison'}</SectionLabel>
           <TableContainer component={Paper} elevation={0}>
             <Table>
               <TableHead>
                 <TableRow>
                   <TableCell sx={{ width: 176, position: 'sticky', left: 0, bgcolor: m3.surfaceContainerLow, zIndex: 1 }}>Attribute</TableCell>
-                  {COMPARE_FARMS.map(f => (
+                  {farms.map(f => (
                     <TableCell key={f.id} sx={{ minWidth: 180 }}>
                       <Typography variant="subtitle2" sx={{ color: m3.onSurface }}>{f.name}</Typography>
                       <Typography variant="caption" sx={{ display: 'block', mt: space.xs }}>{f.district}</Typography>
@@ -1444,10 +1669,10 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {TABLE_ROWS.map(({ key, label }) => (
+                {tableRows.map(({ key, label }) => (
                   <TableRow key={key} hover>
                     <TableCell sx={{ color: 'text.secondary', fontWeight: 500, position: 'sticky', left: 0, bgcolor: m3.surfaceContainerLowest, verticalAlign: 'top' }}>{label}</TableCell>
-                    {COMPARE_FARMS.map(f => {
+                    {farms.map(f => {
                       const val = f[key as keyof typeof f]
                       if (key === 'confidence') return (
                         <TableCell key={f.id} sx={{ verticalAlign: 'top' }}>
@@ -1455,6 +1680,11 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                           <Typography variant="caption" sx={{ display: 'block', mt: space.xs }}>
                             {val === 'HIGH' ? 'Evidence current' : val === 'MEDIUM' ? 'Evidence incomplete' : 'Evidence missing'}
                           </Typography>
+                          {'evidenceKind' in f && (
+                            <Box sx={{ mt: space.tight }}>
+                              <StatusChip kind={(f as { evidenceKind: StatusKind }).evidenceKind} />
+                            </Box>
+                          )}
                         </TableCell>
                       )
                       if (key === 'verifReq') return (
@@ -1462,8 +1692,26 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                           {val ? 'Yes' : 'No'}
                         </TableCell>
                       )
-                      if (key === 'supply') return (
+                      if (key === 'supply' || key === 'resultingSupply') return (
                         <TableCell key={f.id} sx={{ fontVariantNumeric: 'tabular-nums', verticalAlign: 'top', fontWeight: 650 }}>{val} t</TableCell>
+                      )
+                      if (key === 'gapPct') return (
+                        <TableCell key={f.id} sx={{ fontVariantNumeric: 'tabular-nums', verticalAlign: 'top', fontWeight: 650 }}>
+                          {val}% of {RECOVERY_GAP_T} t
+                        </TableCell>
+                      )
+                      if (key === 'resultingCoverage') return (
+                        <TableCell
+                          key={f.id}
+                          sx={{
+                            fontVariantNumeric: 'tabular-nums',
+                            verticalAlign: 'top',
+                            fontWeight: 700,
+                            color: Number(val) >= 95 ? m3.primaryInk : m3.error,
+                          }}
+                        >
+                          {val}%
+                        </TableCell>
                       )
                       return (
                         <TableCell key={f.id} sx={{ verticalAlign: 'top', color: 'text.secondary' }}>{String(val)}</TableCell>
@@ -2714,7 +2962,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
 // ─── ALERT SCREEN ─────────────────────────────────────────────────────────────
 
-function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
   const [recovering, setRecovering] = useState(false)
   const [evidenceOpen, setEvidenceOpen] = useState(false)
   const [mapExpanded, setMapExpanded] = useState(false)
@@ -2810,7 +3058,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       footer={
         <>
           <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexWrap: 'wrap', flex: 1, minWidth: 0 }}>
-            <SecondaryBtn onClick={() => onNavigate('compare')}>Compare alternatives</SecondaryBtn>
+            <SecondaryBtn onClick={() => onNavigate('compare', { compareRecovery: true })}>Compare alternatives</SecondaryBtn>
             <SecondaryBtn onClick={() => onNavigate('scenarios')}>Reopen scenario planning</SecondaryBtn>
             <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', display: { xs: 'none', md: 'block' } }}>
               Recovery required to restore Week 3 above the 95% threshold.
@@ -3200,21 +3448,31 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('coverage')
+  const [compareRecovery, setCompareRecovery] = useState(false)
+
+  const navigate: NavigateFn = (s, opts) => {
+    if (s === 'compare') {
+      setCompareRecovery(Boolean(opts?.compareRecovery))
+    } else {
+      setCompareRecovery(false)
+    }
+    setScreen(s)
+  }
 
   if (screen === 'field') {
-    return <FieldScreen onNavigate={setScreen} />
+    return <FieldScreen onNavigate={navigate} />
   }
 
   const screens: Record<Screen, React.ReactNode> = {
-    coverage:     <CoverageScreen     onNavigate={setScreen} />,
-    farms:        <FarmsScreen        onNavigate={setScreen} />,
-    compare:      <CompareScreen      onNavigate={setScreen} />,
-    scenarios:    <ScenariosScreen    onNavigate={setScreen} />,
-    verification: <VerificationScreen onNavigate={setScreen} />,
+    coverage:     <CoverageScreen     onNavigate={navigate} />,
+    farms:        <FarmsScreen        onNavigate={navigate} />,
+    compare:      <CompareScreen      onNavigate={navigate} recovery={compareRecovery} />,
+    scenarios:    <ScenariosScreen    onNavigate={navigate} />,
+    verification: <VerificationScreen onNavigate={navigate} />,
     field:        null,
-    findings:     <FindingsScreen     onNavigate={setScreen} />,
-    plan:         <PlanScreen         onNavigate={setScreen} />,
-    alert:        <AlertScreen        onNavigate={setScreen} />,
+    findings:     <FindingsScreen     onNavigate={navigate} />,
+    plan:         <PlanScreen         onNavigate={navigate} />,
+    alert:        <AlertScreen        onNavigate={navigate} />,
   }
 
   return (
@@ -3228,7 +3486,7 @@ export default function App() {
         gap: space.tight,
       }}
     >
-      <Sidebar current={screen} onNavigate={setScreen} />
+      <Sidebar current={screen} onNavigate={navigate} />
       <Box sx={{ flex: 1, minWidth: 0, overflow: 'hidden', minHeight: 0 }}>
         {screens[screen]}
       </Box>
