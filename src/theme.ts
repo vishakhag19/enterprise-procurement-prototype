@@ -25,7 +25,8 @@ export const theme = createTheme({
   shape: { borderRadius: 12 },
   palette: {
     mode: 'light',
-    // MD3 color roles: filled actions use primary (#006A6A) + onPrimary — not the seed accent
+    // Filled actions use brand accent #0BAFAF + dark onPrimary (AA).
+    // Text/outlined labels use primaryInk via component overrides.
     primary: {
       main: m3.primary,
       dark: m3.primaryPressed,
@@ -141,8 +142,13 @@ export const theme = createTheme({
           '&:hover': {
             boxShadow: 'none',
           },
+          '&.MuiButton-containedPrimary': {
+            backgroundColor: m3.primary,
+            color: m3.onPrimary,
+          },
           '&.MuiButton-containedPrimary:hover': {
             backgroundColor: m3.primaryPressed,
+            color: m3.onPrimary,
           },
           '&.MuiButton-containedSecondary': {
             backgroundColor: m3.secondaryContainer,
@@ -153,15 +159,15 @@ export const theme = createTheme({
           },
         },
         outlined: {
-          borderColor: m3.outline,
-          color: m3.primary,
+          borderColor: m3.primaryInk,
+          color: m3.primaryInk,
           '&:hover': {
-            borderColor: m3.primary,
-            backgroundColor: alpha(m3.primary, 0.08),
+            borderColor: m3.primaryInk,
+            backgroundColor: alpha(m3.primary, 0.12),
           },
         },
         text: {
-          color: m3.primary,
+          color: m3.primaryInk,
           fontWeight: 650,
           paddingInline: 12,
         },
@@ -252,11 +258,11 @@ export const theme = createTheme({
           paddingLeft: 12,
           paddingRight: 12,
           '&.Mui-selected': {
-            backgroundColor: m3.secondaryContainer,
-            color: m3.onSecondaryContainer,
-            '&:hover': { backgroundColor: alpha(m3.secondary, 0.22) },
-            '& .MuiListItemIcon-root': { color: m3.onSecondaryContainer },
-            '& .MuiListItemText-primary': { color: m3.onSecondaryContainer, fontWeight: 700 },
+            backgroundColor: m3.primarySoft,
+            color: m3.onPrimaryContainer,
+            '&:hover': { backgroundColor: alpha(m3.primary, 0.16) },
+            '& .MuiListItemIcon-root': { color: m3.primaryInk },
+            '& .MuiListItemText-primary': { color: m3.onPrimaryContainer, fontWeight: 700 },
           },
           '&:hover': {
             backgroundColor: alpha(m3.onSurface, 0.08),
@@ -274,6 +280,14 @@ export const theme = createTheme({
         root: {
           minWidth: 36,
           color: m3.onSurfaceVariant,
+        },
+      },
+    },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          color: m3.outline,
+          '&.Mui-checked': { color: m3.primary },
         },
       },
     },

@@ -5,21 +5,30 @@
 
 export const ACCENT = '#0BAFAF'
 
-/** M3 tonal palette from accent seed */
+/** M3 tonal palette from accent seed #0BAFAF */
 export const m3 = {
-  primary: '#006A6A',
-  onPrimary: '#FFFFFF',
+  /**
+   * Brand accent fill — the seed color. Use with `onPrimary` (dark) on filled
+   * controls. Do not use as small body text on white (fails AA); use `primaryInk`.
+   */
+  primary: ACCENT,
+  /** Dark label/icon on accent fills (AA on #0BAFAF) */
+  onPrimary: '#002020',
   primaryContainer: '#9EF2F1',
   onPrimaryContainer: '#002020',
+  /** Very light accent wash — selected cards, soft highlights */
+  primarySoft: '#E6F8F8',
   /**
-   * Seed / brand highlight (#0BAFAF). Decorative only — never body text or
-   * filled-button fill (fails WCAG AA). Prefer `primary` + `onPrimary` for actions.
+   * AA-safe teal for small text / outlined labels on light surfaces.
+   * Prefer this over `primary` whenever the accent is used as text color.
    */
+  primaryInk: '#006A6A',
+  /** @deprecated alias of primary — kept for older call sites */
   primaryBrand: ACCENT,
-  /** Hover/pressed companion for brand chrome (still not for small text) */
+  /** Hover/pressed companion for accent fills */
   primaryBrandDark: '#089090',
-  /** Darker primary for pressed/hover state layers on filled buttons */
-  primaryPressed: '#004F4F',
+  /** Pressed/hover layer for filled accent buttons */
+  primaryPressed: '#089090',
 
   secondary: '#4A6363',
   onSecondary: '#FFFFFF',
