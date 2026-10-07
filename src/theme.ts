@@ -1,7 +1,20 @@
 import { createTheme, alpha } from '@mui/material/styles'
-import { PANEL_BORDER, PAPER, SIDEBAR_BG, SURFACE, m3, semantic, space } from './designSystem'
+import { PANEL_BORDER, PANEL_BORDER_WIDTH, PAPER, SIDEBAR_BG, SURFACE, m3, semantic, shape, space } from './designSystem'
 
-export { ACCENT, SIDEBAR_BG, SURFACE, PAPER, PANEL_BORDER, space, semantic, m3 } from './designSystem'
+export {
+  ACCENT,
+  SIDEBAR_BG,
+  SURFACE,
+  PAPER,
+  PANEL_BORDER,
+  PANEL_BORDER_WIDTH,
+  space,
+  semantic,
+  shape,
+  m3,
+} from './designSystem'
+
+const hairline = `${PANEL_BORDER_WIDTH}px solid ${PANEL_BORDER}`
 
 /** Material Design 3 theme — tonal surfaces, MD3 shape, type roles */
 export const theme = createTheme({
@@ -56,7 +69,8 @@ export const theme = createTheme({
       primary: m3.onSurface,
       secondary: m3.onSurfaceVariant,
     },
-    divider: m3.outlineVariant,
+    // Match panel hairlines so borderColor: 'divider' stays consistent
+    divider: PANEL_BORDER,
     action: {
       hover: alpha(m3.onSurface, 0.08),
       selected: alpha(m3.primary, 0.12),
@@ -104,7 +118,7 @@ export const theme = createTheme({
       defaultProps: { disableElevation: true },
       styleOverrides: {
         root: {
-          borderRadius: 20,
+          borderRadius: '20px', // MD3 full button
           fontWeight: 650,
           // MD3 label-large button: 24 horizontal, 10 vertical, 40 height
           paddingLeft: 24,
@@ -114,7 +128,7 @@ export const theme = createTheme({
           minHeight: 40,
         },
         sizeSmall: {
-          borderRadius: 16,
+          borderRadius: `${shape.lg}px`,
           paddingLeft: 16,
           paddingRight: 16,
           paddingTop: 6,
@@ -154,7 +168,7 @@ export const theme = createTheme({
     },
     MuiFab: {
       styleOverrides: {
-        root: { borderRadius: 16, boxShadow: 'none' },
+        root: { borderRadius: `${shape.lg}px`, boxShadow: 'none' },
       },
     },
     MuiChip: {
@@ -162,7 +176,7 @@ export const theme = createTheme({
         root: {
           fontWeight: 650,
           letterSpacing: '0.02em',
-          borderRadius: 8, // MD3 chips
+          borderRadius: `${shape.sm}px`, // MD3 small
         },
         sizeSmall: { height: 24, fontSize: 11 },
         filled: {
@@ -176,8 +190,8 @@ export const theme = createTheme({
         root: {
           backgroundImage: 'none',
           backgroundColor: m3.surfaceContainerLowest,
-          border: `1px solid ${PANEL_BORDER}`,
-          borderRadius: 16, // MD3 medium shape
+          border: hairline,
+          borderRadius: `${shape.lg}px`, // MD3 large — cards/panels
         },
       },
     },
@@ -186,8 +200,8 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: m3.surfaceContainerLowest,
-          borderRadius: 16,
-          border: `1px solid ${PANEL_BORDER}`,
+          borderRadius: `${shape.lg}px`,
+          border: hairline,
           boxShadow: 'none',
         },
       },
@@ -198,7 +212,7 @@ export const theme = createTheme({
         root: {
           backgroundColor: m3.surface,
           color: m3.onSurface,
-          borderBottom: `1px solid ${PANEL_BORDER}`,
+          borderBottom: hairline,
           boxShadow: 'none',
         },
       },
@@ -216,14 +230,14 @@ export const theme = createTheme({
           width: 240,
           backgroundColor: m3.surfaceContainerLow,
           color: m3.onSurface,
-          borderRight: `1px solid ${PANEL_BORDER}`,
+          borderRight: hairline,
         },
       },
     },
     MuiListItemButton: {
       styleOverrides: {
         root: {
-          borderRadius: 28,
+          borderRadius: `${shape.xl}px`,
           // Compact nav destination: 48dp tall, tight insets for 240dp drawer
           minHeight: 48,
           marginInline: 8,
@@ -271,10 +285,10 @@ export const theme = createTheme({
             boxShadow: `0 0 0 8px ${alpha(m3.primary, 0.16)}`,
           },
         },
-        track: { height: 4, borderRadius: 2 },
+        track: { height: 4, borderRadius: `${shape.xs}px` },
         rail: {
           height: 4,
-          borderRadius: 2,
+          borderRadius: `${shape.xs}px`,
           opacity: 1,
           backgroundColor: m3.surfaceContainerHighest,
         },
@@ -293,7 +307,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           fontFamily: '"Manrope", "Roboto", system-ui, sans-serif',
-          borderColor: m3.outlineVariant,
+          borderColor: PANEL_BORDER,
           // MD3 data table: 16dp inset, ~52dp row with content
           padding: '14px 16px',
           fontSize: '0.875rem',
@@ -306,7 +320,7 @@ export const theme = createTheme({
           padding: '12px 16px',
           fontSize: '0.75rem',
           letterSpacing: '0.02em',
-          borderBottom: `1px solid ${m3.outlineVariant}`,
+          borderBottom: hairline,
         },
         sizeSmall: {
           // Keep MD3 16dp horizontal even when size="small" is used
@@ -336,7 +350,8 @@ export const theme = createTheme({
     MuiTableContainer: {
       styleOverrides: {
         root: {
-          borderRadius: 16,
+          borderRadius: `${shape.lg}px`,
+          border: hairline,
           // Avoid outer padding fighting cell insets
           padding: 0,
         },
@@ -344,7 +359,7 @@ export const theme = createTheme({
     },
     MuiDialog: {
       styleOverrides: {
-        paper: { borderRadius: 28 },
+        paper: { borderRadius: `${shape.xl}px` },
       },
     },
     // MD3 dialog: 24dp padding
@@ -355,11 +370,11 @@ export const theme = createTheme({
     MuiLinearProgress: {
       styleOverrides: {
         root: {
-          borderRadius: 4,
+          borderRadius: `${shape.xs}px`,
           height: 8,
           backgroundColor: m3.surfaceContainerHighest,
         },
-        bar: { borderRadius: 4 },
+        bar: { borderRadius: `${shape.xs}px` },
       },
     },
     MuiTextField: {
@@ -368,7 +383,7 @@ export const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
+          borderRadius: `${shape.md}px`,
           '& .MuiOutlinedInput-notchedOutline': {
             borderColor: m3.outline,
           },
@@ -378,13 +393,13 @@ export const theme = createTheme({
     MuiIconButton: {
       styleOverrides: {
         root: {
-          borderRadius: 20,
+          borderRadius: '20px',
         },
       },
     },
     MuiDivider: {
       styleOverrides: {
-        root: { borderColor: m3.outlineVariant },
+        root: { borderColor: PANEL_BORDER, borderBottomWidth: PANEL_BORDER_WIDTH },
       },
     },
   },

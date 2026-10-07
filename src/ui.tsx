@@ -7,7 +7,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, m3 } from './designSystem'
+import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3 } from './designSystem'
 
 export function StatusChip({ kind }: { kind: StatusKind }) {
   const meta = STATUS_META[kind]
@@ -66,11 +66,9 @@ export function DashPaper({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       sx={{
-        // MD3 card: 16dp content padding + light panel chrome
+        // MD3 large card: 16dp padding + unified hairline chrome
         p: space.related,
-        bgcolor: m3.surfaceContainerLowest,
-        borderRadius: '16px',
-        border: `1px solid ${PANEL_BORDER}`,
+        ...panelSurface,
         boxShadow: 'none',
         ...sx,
       }}
@@ -88,7 +86,7 @@ export function DataStrip({ children, sx }: { children: React.ReactNode; sx?: ob
         // MD3 list row: 16dp vertical + horizontal
         py: space.related,
         px: space.related,
-        borderBottom: `1px solid ${m3.outlineVariant}`,
+        borderBottom: `1px solid ${PANEL_BORDER}`,
         ...sx,
       }}
     >
@@ -136,7 +134,7 @@ export function SupplyBar({
   total: number
 }) {
   return (
-    <Box sx={{ display: 'flex', height: 12, borderRadius: 2, overflow: 'hidden', bgcolor: m3.surfaceContainerHighest }}>
+    <Box sx={{ display: 'flex', height: 12, borderRadius: `${shape.xs}px`, overflow: 'hidden', bgcolor: m3.surfaceContainerHighest }}>
       <Box sx={{ width: `${(firm / total) * 100}%`, bgcolor: m3.primary }} />
       <Box sx={{ width: `${(atRisk / total) * 100}%`, bgcolor: m3.warning }} />
     </Box>
@@ -162,7 +160,7 @@ export function WeekRail({
               // MD3: 16dp row padding; full-bleed bg to card edges
               py: space.related,
               px: space.related,
-              borderBottom: isLast ? 'none' : `1px solid ${m3.outlineVariant}`,
+              borderBottom: isLast ? 'none' : `1px solid ${PANEL_BORDER}`,
               bgcolor: w.issue ? m3.errorContainer : 'transparent',
               boxShadow: w.issue ? `inset 4px 0 0 ${m3.error}` : 'none',
               width: '100%',
@@ -195,7 +193,7 @@ export function WeekRail({
                 </Typography>
               </Stack>
             </Stack>
-            <Box sx={{ position: 'relative', height: 8, bgcolor: m3.surfaceContainerHighest, borderRadius: 2 }}>
+            <Box sx={{ position: 'relative', height: 8, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px` }}>
               <Box
                 sx={{
                   position: 'absolute',
@@ -204,7 +202,7 @@ export function WeekRail({
                   height: '100%',
                   width: `${Math.min(pct, 100)}%`,
                   bgcolor: w.issue ? m3.error : w.delta >= 0 ? m3.primary : m3.outline,
-                  borderRadius: 2,
+                  borderRadius: `${shape.xs}px`,
                 }}
               />
               <Box
@@ -250,7 +248,8 @@ export function ThresholdControl({
       sx={{
         p: space.related,
         bgcolor: modified ? m3.warningContainer : m3.surfaceContainerLow,
-        borderRadius: 3,
+        borderRadius: `${shape.lg}px`,
+        border: `1px solid ${PANEL_BORDER}`,
       }}
     >
       <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1 }}>
@@ -291,8 +290,8 @@ export function TradeoffBars({
             {coverage}%
           </Typography>
         </Stack>
-        <Box sx={{ height: 6, bgcolor: m3.surfaceContainerHighest, borderRadius: 2 }}>
-          <Box sx={{ width: `${coverage}%`, height: '100%', bgcolor: m3.primary, borderRadius: 2 }} />
+        <Box sx={{ height: 6, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px` }}>
+          <Box sx={{ width: `${coverage}%`, height: '100%', bgcolor: m3.primary, borderRadius: `${shape.xs}px` }} />
         </Box>
       </Box>
       <Box>
@@ -302,13 +301,13 @@ export function TradeoffBars({
             {visits} visit{visits === 1 ? '' : 's'}
           </Typography>
         </Stack>
-        <Box sx={{ height: 6, bgcolor: m3.surfaceContainerHighest, borderRadius: 2 }}>
+        <Box sx={{ height: 6, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px` }}>
           <Box
             sx={{
               width: `${(visits / maxVisits) * 100}%`,
               height: '100%',
               bgcolor: m3.warning,
-              borderRadius: 2,
+              borderRadius: `${shape.xs}px`,
             }}
           />
         </Box>

@@ -63,7 +63,7 @@ import {
   DataStrip,
 } from './ui'
 import type { StatusKind } from './designSystem'
-import { INK, INK_MUTED, PAPER, RULE, ACCENT_SOFT, PANEL_BORDER } from './designSystem'
+import { INK, INK_MUTED, PAPER, RULE, ACCENT_SOFT, PANEL_BORDER, panelSurface, paneEdgeLeft, paneEdgeRight, shape } from './designSystem'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 'field' | 'findings' | 'plan' | 'alert'
@@ -332,7 +332,7 @@ function RegionMap({
       )}
       {tooltipMeta && tooltipPoint && !compact && (
         <g transform={`translate(${variant === 'investigation' ? Math.min(Math.max(tooltipPoint.x + 8, 130), 188) : Math.min(tooltipPoint.x + 12, 224)} ${Math.max(tooltipPoint.y - 58, variant === 'investigation' ? 22 : 8)})`}>
-          <rect width="108" height="55" rx="8" fill={m3.surfaceContainerLowest} stroke={m3.outlineVariant} />
+          <rect width="108" height="55" rx={shape.md} fill={m3.surfaceContainerLowest} stroke={PANEL_BORDER} />
           <text x="7" y="12" fontSize="7.5" fontWeight="700" fill={m3.onSurface}>{tooltipMeta.name}</text>
           <text x="7" y="22" fontSize="6.5" fill={m3.onSurfaceVariant}>{tooltipMeta.district}</text>
           <text x="7" y="34" fontSize="7" fontWeight="600" fill={m3.onSurface}>{tooltipMeta.supply} t · {tooltipMeta.harvest}</text>
@@ -523,7 +523,7 @@ function FarmDecisionPanel({
 
 function SatelliteThumbnail({ degraded = false }: { degraded?: boolean }) {
   return (
-    <svg viewBox="0 0 180 96" style={{ width: '100%', height: 96, borderRadius: '16px', border: '1px solid rgba(12,21,32,0.12)' }} role="img" aria-label={degraded ? 'Current satellite field condition' : 'Previous satellite field condition'}>
+    <svg viewBox="0 0 180 96" style={{ width: '100%', height: 96, borderRadius: shape.lg, border: `1px solid ${PANEL_BORDER}` }} role="img" aria-label={degraded ? 'Current satellite field condition' : 'Previous satellite field condition'}>
       <rect width="180" height="96" fill="#d8d7c7" />
       <path d="M0 0 H70 L61 43 L0 37 Z" fill={degraded ? '#a9a77e' : '#718b55'} />
       <path d="M73 0 H132 L126 42 L64 42 Z" fill={degraded ? '#b3ad75' : '#809a5c'} />
@@ -573,7 +573,7 @@ function EvidenceModal({ farmId, onClose, recovery = false }: { farmId: string; 
                 <Typography sx={{ fontSize: 10, color: 'text.secondary' }}>{recovery ? 'Updated 2 days ago' : farm.confidence === 'LOW' ? 'Not available' : 'Confirmed recently'}</Typography>
               </Box>
               {recovery ? <SatelliteThumbnail degraded /> : (
-                <Box sx={{ height: 96, borderRadius: 1, border: 1, borderStyle: 'dashed', borderColor: 'divider', bgcolor: 'grey.50', display: 'flex', alignItems: 'center', justifyContent: 'center', px: 4, textAlign: 'center' }}>
+                <Box sx={{ height: 96, borderRadius: `${shape.sm}px`, border: `1px dashed ${PANEL_BORDER}`, bgcolor: 'grey.50', display: 'flex', alignItems: 'center', justifyContent: 'center', px: 4, textAlign: 'center' }}>
                   <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>{farm.evidence}</Typography>
                 </Box>
               )}
@@ -647,9 +647,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             sx={{
               mb: space.section,
               p: space.section,
-              bgcolor: m3.surfaceContainerLowest,
-              borderRadius: '16px',
-              border: `1px solid ${PANEL_BORDER}`,
+              ...panelSurface,
               backgroundImage: `linear-gradient(135deg, rgba(209,67,58,0.08) 0%, ${PAPER} 42%)`,
             }}
           >
@@ -701,7 +699,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Weekly rail — one composition with map relationship */}
           <Box sx={{ mb: space.section }}>
             <SectionLabel>Weekly position · linked to Week 3 geography</SectionLabel>
-            <Box sx={{ bgcolor: m3.surfaceContainerLowest, borderRadius: '16px', overflow: 'hidden', border: `1px solid ${PANEL_BORDER}` }}>
+            <Box sx={{ ...panelSurface, overflow: 'hidden' }}>
               <WeekRail weeks={weeks} />
             </Box>
           </Box>
@@ -709,7 +707,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Decision queue — primary elevated, rest as strips */}
           <Box>
             <SectionLabel>Needs a decision</SectionLabel>
-            <Stack spacing={0} sx={{ bgcolor: m3.surfaceContainerLowest, borderRadius: '16px', overflow: 'hidden', border: `1px solid ${PANEL_BORDER}` }}>
+            <Stack spacing={0} sx={{ ...panelSurface, overflow: 'hidden' }}>
               <Box sx={{ p: space.related, bgcolor: m3.primaryContainer }}>
                 <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 4, alignItems: 'flex-start' }}>
                   <Box>
@@ -746,7 +744,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       </Box>
 
       {/* Right geo panel */}
-      <Box sx={{ position: 'relative', display: 'flex', flexDirection: 'column', flexShrink: 0, borderLeft: `1px solid ${PANEL_BORDER}` }} style={{ width: geoPanelWidth, minWidth: 320, maxWidth: 560, background: PAPER }}>
+      <Box sx={{ position: 'relative', display: 'flex', flexDirection: 'column', flexShrink: 0, ...paneEdgeLeft }} style={{ width: geoPanelWidth, minWidth: 320, maxWidth: 560, background: PAPER }}>
         <Box sx={{ position: 'absolute', left: -4, top: 0, bottom: 0, width: 8, cursor: 'col-resize', touchAction: 'none', zIndex: 10 }} onPointerDown={startGeoPanelResize} role="separator" aria-orientation="vertical" aria-label="Resize supply geography panel">
           <Box sx={{ width: '1px', height: '100%', mx: 'auto', bgcolor: 'transparent', transition: 'background-color 0.15s' }} />
         </Box>
@@ -959,7 +957,7 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
     <Box sx={{ display: 'flex', height: '100%', position: 'relative' }}>
       {/* Map stays compact so the farm list (right) keeps primary width */}
-      <Box sx={{ width: '30%', minWidth: 300, maxWidth: 380, flexShrink: 0, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', borderRight: `1px solid ${PANEL_BORDER}` }}>
+      <Box sx={{ width: '30%', minWidth: 300, maxWidth: 380, flexShrink: 0, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', ...paneEdgeRight }}>
         <Box sx={{ p: 4, borderBottom: 1, borderColor: 'divider' }}>
           <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>GIS Workspace · Week 3</Typography>
           <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>Hover a farm card to highlight on map</Typography>
@@ -1437,7 +1435,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </Typography>
               </DashPaper>
               {/* Interpretation */}
-              <Box sx={{ bgcolor: semantic.warnSoft, borderRadius: 1, p: 3 }}>
+              <Box sx={{ bgcolor: semantic.warnSoft, borderRadius: `${shape.sm}px`, p: 3, border: `1px solid ${PANEL_BORDER}` }}>
                 <Typography sx={{ fontSize: '0.75rem', color: '#9A6410', lineHeight: 1.6 }}>
                   Reducing the verification limit to {maxVisits} removes Tanuku Plot and substitutes Guntur Strip, reducing Week 3 supply by 80 t and coverage from 96% to 89%, below the 95% target.
                 </Typography>
@@ -1561,7 +1559,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       </Box>
 
       {/* Right panel */}
-      <Box sx={{ width: 400, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', flexShrink: 0, borderLeft: `1px solid ${PANEL_BORDER}` }}>
+      <Box sx={{ width: 400, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', flexShrink: 0, ...paneEdgeLeft }}>
         <Box sx={{ p: 4, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 4 }}>
           <SectionLabel>Select a Strategy</SectionLabel>
           <ExpandMapButton onClick={() => {
@@ -1695,7 +1693,7 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
             <DashPaper key={f.id} sx={{ p: space.section, bgcolor: semantic.warnSoft }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 4 }}>
-                  <Box sx={{ width: 20, height: 20, borderRadius: 1, border: 1, borderColor: 'warning.dark', bgcolor: 'warning.dark', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, mt: 1 }}>
+                  <Box sx={{ width: 20, height: 20, borderRadius: `${shape.xs}px`, border: `1px solid`, borderColor: 'warning.dark', bgcolor: 'warning.dark', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, mt: 1 }}>
                     <svg style={{ width: 12, height: 12, color: '#fff' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
@@ -1717,7 +1715,7 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
                       textTransform: 'uppercase',
                       letterSpacing: '0.14em',
                       border: 1,
-                      borderRadius: '2px',
+                      borderRadius: `${shape.xs}px`,
                       bgcolor: f.evidenceKind === 'missing' ? semantic.alertSoft : semantic.warnSoft,
                       borderColor: f.evidenceKind === 'missing' ? 'error.light' : 'warning.light',
                       color: f.evidenceKind === 'missing' ? 'error.dark' : 'warning.dark',
@@ -1850,7 +1848,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 4 }}>{farm.location}</Typography>
 
               {/* Mini map */}
-              <Box sx={{ bgcolor: 'grey.100', borderRadius: 1, border: 1, borderColor: 'divider', height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2, overflow: 'hidden', position: 'relative' }}>
+              <Box sx={{ bgcolor: 'grey.100', borderRadius: `${shape.sm}px`, border: `1px solid ${PANEL_BORDER}`, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2, overflow: 'hidden', position: 'relative' }}>
                 <svg viewBox="0 0 200 120" style={{ width: '100%', height: '100%' }}>
                   <rect width="200" height="120" fill="#e5e7eb" />
                   <g style={{ filter: 'grayscale(0.3) saturate(0.72)' }}>
@@ -1876,7 +1874,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   <rect x="131" y="108" width="67" height="10" rx="2" fill="#ffffff" opacity=".9" />
                   <text x="135" y="115" fontSize="5.5" fill={m3.onSurfaceVariant}>© OpenStreetMap</text>
                 </svg>
-                <Box sx={{ position: 'absolute', bottom: 8, left: 8, bgcolor: 'background.paper', border: 1, borderColor: 'divider', borderRadius: 1, px: 2, py: 1 }}>
+                <Box sx={{ position: 'absolute', bottom: 8, left: 8, bgcolor: 'background.paper', border: `1px solid ${PANEL_BORDER}`, borderRadius: `${shape.sm}px`, px: 2, py: 1 }}>
                   <Typography sx={{ fontSize: 9, color: 'text.secondary', fontWeight: 500 }}>Approximate destination · West Godavari</Typography>
                 </Box>
               </Box>
@@ -2072,7 +2070,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   </Box>
                   <Box sx={{ flexShrink: 0 }}>
                     <Typography sx={{ fontSize: 10, fontWeight: 500, color: 'text.secondary', mb: 1 }}>Verification</Typography>
-                    <Box component="span" sx={{ px: 2, py: 1, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', border: 1, borderRadius: '2px' }}>Verified</Box>
+                    <Box component="span" sx={{ px: 2, py: 1, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', border: 1, borderRadius: `${shape.xs}px` }}>Verified</Box>
                   </Box>
                 </Box>
                 <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 4, mb: 4 }}>
@@ -2159,13 +2157,13 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </Box>
               <Box sx={{ textAlign: 'right' }}>
                 <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: 'success.dark' }}>{wk3Pct}%</Typography>
-                <Box component="span" sx={{ px: 2, py: 1, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', border: 1, borderRadius: '2px' }}>
+                <Box component="span" sx={{ px: 2, py: 1, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', border: 1, borderRadius: `${shape.xs}px` }}>
                   Target Met · 95% threshold
                 </Box>
               </Box>
             </Box>
-            <Box sx={{ bgcolor: 'grey.100', borderRadius: '2px', overflow: 'hidden' }}>
-              <Box sx={{ height: '100%', borderRadius: '2px' }} style={{ width: `${wk3Pct}%` }} />
+            <Box sx={{ bgcolor: 'grey.100', borderRadius: `${shape.xs}px`, overflow: 'hidden' }}>
+              <Box sx={{ height: '100%', borderRadius: `${shape.xs}px` }} style={{ width: `${wk3Pct}%` }} />
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <Box component="span" sx={{ fontSize: 10, color: 'text.secondary' }}>0%</Box>
@@ -2410,7 +2408,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   { label: 'Week 3 Coverage', before: '96%', after: '86%', delta: '−10%', bad: true },
                   { label: 'vs. 95% threshold', before: '+10 t buffer', after: '−110 t gap', delta: '', bad: true },
                 ].map(({ label, before, after, delta, bad }) => (
-                  <Box sx={{ px: 4, borderRight: 1 }} key={label}>
+                  <Box sx={{ px: 4, borderRight: `1px solid ${PANEL_BORDER}` }} key={label}>
                     <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 2 }}>{label}</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
                       <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '0.75rem', color: 'text.secondary', textDecoration: 'line-through' }}>{before}</Box>
@@ -2457,15 +2455,15 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <Box sx={{ pr: 4, borderRight: 1, borderColor: 'divider' }}>
                   <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 2 }}>Current</Typography>
                   <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: 'error.dark' }}>1,030 t · 86%</Typography>
-                  <Box sx={{ height: 6, bgcolor: 'grey.100', borderRadius: '2px', mt: 2 }}>
-                    <Box sx={{ height: '100%', borderRadius: '2px', ...{ width: '86%' } }} />
+                  <Box sx={{ height: 6, bgcolor: 'grey.100', borderRadius: `${shape.xs}px`, mt: 2 }}>
+                    <Box sx={{ height: '100%', borderRadius: `${shape.xs}px`, ...{ width: '86%' } }} />
                   </Box>
                 </Box>
                 <Box sx={{ pl: 4 }}>
                   <Typography sx={{ fontSize: 10, color: 'success.dark', mb: 2 }}>After recovery</Typography>
                   <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: 'success.dark' }}>1,140 t · 95%</Typography>
-                  <Box sx={{ height: 6, bgcolor: 'grey.100', borderRadius: '2px', mt: 2 }}>
-                    <Box sx={{ height: '100%', borderRadius: '2px', ...{ width: '95%' } }} />
+                  <Box sx={{ height: 6, bgcolor: 'grey.100', borderRadius: `${shape.xs}px`, mt: 2 }}>
+                    <Box sx={{ height: '100%', borderRadius: `${shape.xs}px`, ...{ width: '95%' } }} />
                   </Box>
                   <Typography sx={{ fontSize: 9, fontWeight: 700, color: 'success.dark', mt: 1 }}>Target Met</Typography>
                 </Box>
@@ -2480,7 +2478,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   { icon: '⚑', color: 'warning.dark', bg: semantic.warnSoft, label: 'Geographic impact', detail: 'East Godavari concentration: 8% → 17%' },
                 ].map(({ icon, color, bg, label, detail }) => (
                   <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 4 }} key={label}>
-                    <Box sx={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, color, bgcolor: bg, borderRadius: 0.5 }}>{icon}</Box>
+                    <Box sx={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, color, bgcolor: bg, borderRadius: `${shape.xs}px` }}>{icon}</Box>
                     <Box>
                       <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.primary' }}>{label}</Typography>
                       <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>{detail}</Typography>
@@ -2610,7 +2608,7 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
           boxSizing: 'border-box',
           bgcolor: m3.surfaceContainerLow,
           color: m3.onSurface,
-          borderRight: `1px solid ${PANEL_BORDER}`,
+          ...paneEdgeRight,
           display: 'flex',
           flexDirection: 'column',
         },
@@ -2757,7 +2755,7 @@ function TopBar({ screen }: { screen: Screen }) {
               bgcolor: m3.surfaceContainerHigh,
               color: m3.onSurfaceVariant,
               fontWeight: 600,
-              borderRadius: 2,
+              borderRadius: `${shape.sm}px`,
             }}
           />
         ))}

@@ -72,11 +72,54 @@ export const SURFACE = m3.surface
 export const PAPER = m3.surfaceContainerLowest
 export const INK = m3.onSurface
 export const INK_MUTED = m3.onSurfaceVariant
-export const RULE = m3.outlineVariant
-/** Very light panel chrome — drawers, side panes, cards */
+
+/**
+ * MD3 shape scale (dp). Cards/panels use `lg` (16).
+ * @see https://m3.material.io/styles/shape/corner-radius-scale
+ */
+export const shape = {
+  /** 4 — extra-small */
+  xs: 4,
+  /** 8 — small (chips, dense embeds) */
+  sm: 8,
+  /** 12 — medium (text fields, default theme) */
+  md: 12,
+  /** 16 — large (cards, section panels) */
+  lg: 16,
+  /** 28 — extra-large (dialogs, sheets) */
+  xl: 28,
+  /** Full pill */
+  full: 9999,
+} as const
+
+/** Single hairline for panel chrome + internal panel dividers */
 export const PANEL_BORDER = 'rgba(22, 29, 29, 0.08)'
+export const PANEL_BORDER_WIDTH = 1
+/** @deprecated alias — use PANEL_BORDER for all panel hairlines */
+export const RULE = PANEL_BORDER
 export const ACCENT_SOFT = m3.primaryContainer
 export const ACCENT_DARK = m3.primaryBrandDark
+
+/** Shared card/section panel surface chrome (px strings — safe in MUI `sx`) */
+export const panelSurface = {
+  border: `${PANEL_BORDER_WIDTH}px solid ${PANEL_BORDER}`,
+  borderRadius: `${shape.lg}px`,
+  bgcolor: m3.surfaceContainerLowest,
+} as const
+
+/** Full-height side pane edge (no radius — flush to viewport) */
+export const paneEdgeLeft = {
+  borderLeft: `${PANEL_BORDER_WIDTH}px solid ${PANEL_BORDER}`,
+} as const
+export const paneEdgeRight = {
+  borderRight: `${PANEL_BORDER_WIDTH}px solid ${PANEL_BORDER}`,
+} as const
+export const paneHairlineTop = {
+  borderTop: `${PANEL_BORDER_WIDTH}px solid ${PANEL_BORDER}`,
+} as const
+export const paneHairlineBottom = {
+  borderBottom: `${PANEL_BORDER_WIDTH}px solid ${PANEL_BORDER}`,
+} as const
 
 /**
  * Material Design 3 spacing — theme.spacing unit = 4dp.
