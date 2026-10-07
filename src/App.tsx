@@ -737,24 +737,18 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
     <MainPane
       header={
-        <>
-          <Box>
-            <SectionLabel>Procurement Command Centre</SectionLabel>
-            <Typography
-              variant="h1"
-              sx={{ color: INK, fontSize: { xs: '1.75rem', md: '2rem' } }}
-            >
-              4,000 t Eucalyptus
-            </Typography>
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              4-week procurement window · AP Region · Satellite + field evidence
-            </Typography>
-          </Box>
-          <Stack spacing={2} sx={{ alignItems: 'flex-end', flexShrink: 0 }}>
-            <PrimaryBtn onClick={() => onNavigate('farms')}>Investigate farms →</PrimaryBtn>
-            <GhostBtn onClick={() => onNavigate('farms')}>View candidates on map</GhostBtn>
-          </Stack>
-        </>
+        <Box>
+          <SectionLabel>Procurement Command Centre</SectionLabel>
+          <Typography
+            variant="h1"
+            sx={{ color: INK, fontSize: { xs: '1.75rem', md: '2rem' } }}
+          >
+            4,000 t Eucalyptus
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            4-week procurement window · AP Region · Satellite + field evidence
+          </Typography>
+        </Box>
       }
       footer={
         <>
@@ -768,14 +762,9 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         <MapPane
           variant="coverage"
           footer={
-            <Box>
-              <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.tight }}>
-                620 t gap · candidates highlighted for investigation
-              </Typography>
-              <PrimaryBtn fullWidth onClick={() => onNavigate('farms')}>
-                Close the 620 t gap →
-              </PrimaryBtn>
-            </Box>
+            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+              620 t gap · candidates highlighted for investigation
+            </Typography>
           }
         />
       }
@@ -790,26 +779,18 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             backgroundImage: `linear-gradient(135deg, rgba(209,67,58,0.08) 0%, ${PAPER} 42%)`,
           }}
         >
-          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', gap: 4, flexWrap: 'wrap' }}>
-            <Box sx={{ flex: 1, minWidth: 200 }}>
-              <Typography variant="overline" sx={{ color: semantic.alert, display: 'block', mb: 1 }}>
-                Operational focus · Week 3
-              </Typography>
-              <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '2.75rem', fontWeight: 700, letterSpacing: '-0.03em', color: INK, lineHeight: 1 }}>
-                620 t
-              </Typography>
-              <Typography variant="subtitle2" sx={{ color: INK, mt: 2 }}>
-                Supply gap still uncovered
-              </Typography>
-              <Typography variant="body2" sx={{ mt: 1, maxWidth: 360 }}>
-                1,200 t needed · 580 t committed. This is the most constrained delivery window in the procurement plan.
-              </Typography>
-            </Box>
-            <Stack spacing={2} sx={{ alignItems: 'flex-end' }}>
-              <PrimaryBtn onClick={() => onNavigate('farms')}>Investigate farms →</PrimaryBtn>
-              <GhostBtn onClick={() => onNavigate('farms')}>View candidates on map</GhostBtn>
-            </Stack>
-          </Stack>
+          <Typography variant="overline" sx={{ color: semantic.alert, display: 'block', mb: 1 }}>
+            Operational focus · Week 3
+          </Typography>
+          <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '2.75rem', fontWeight: 700, letterSpacing: '-0.03em', color: INK, lineHeight: 1 }}>
+            620 t
+          </Typography>
+          <Typography variant="subtitle2" sx={{ color: INK, mt: 2 }}>
+            Supply gap still uncovered
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1, maxWidth: 360 }}>
+            1,200 t needed · 580 t committed. This is the most constrained delivery window in the procurement plan.
+          </Typography>
         </Box>
 
         {/* Target as open strip — not a KPI card wall */}
@@ -848,19 +829,14 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           <SectionLabel>Needs a decision</SectionLabel>
           <Stack spacing={0} sx={{ ...panelSurface, overflow: 'hidden' }}>
             <Box sx={{ p: space.related, bgcolor: CARD_SELECTION_BG, color: m3.onSurface }}>
-              <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 4, alignItems: 'flex-start' }}>
-                <Box>
-                  <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 1 }}>
-                    <StatusChip kind="primary-issue" />
-                    <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>Closes via GIS investigation</Typography>
-                  </Stack>
-                  <Typography variant="subtitle1" sx={{ color: m3.onSurface }}>Week 3 supply gap: 620 t</Typography>
-                  <Typography variant="body2" sx={{ mt: 1, color: m3.onSurfaceVariant }}>
-                    Candidate farms identified on the Week 3 map. Resolve before committing the coverage strategy.
-                  </Typography>
-                </Box>
-                <PrimaryBtn onClick={() => onNavigate('farms')}>Resolve gap</PrimaryBtn>
+              <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 1 }}>
+                <StatusChip kind="primary-issue" />
+                <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>Closes via GIS investigation</Typography>
               </Stack>
+              <Typography variant="subtitle1" sx={{ color: m3.onSurface }}>Week 3 supply gap: 620 t</Typography>
+              <Typography variant="body2" sx={{ mt: 1, color: m3.onSurfaceVariant }}>
+                Candidate farms identified on the Week 3 map. Resolve before committing the coverage strategy.
+              </Typography>
             </Box>
             {[
               { title: '3 procurement commitments at risk', sub: '570 t delivery risk · Narsapur + Avanigadda', cta: 'Review risks' },
@@ -1061,24 +1037,21 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     <>
       <MainPane
         header={
-          <>
-            <Box>
-              <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>Week 3 Supply Gap</Typography>
-              <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>620 t still needed</Typography>
-              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>1,200 t required · 580 t committed</Typography>
-            </Box>
-            <Stack direction="row" spacing={2} sx={{ flexShrink: 0 }}>
-              <SecondaryBtn onClick={() => setComparison(['mach', 'reddy', 'bhim', 'tanuku'])}>Use recommended set</SecondaryBtn>
-              <PrimaryBtn onClick={() => onNavigate('compare')} disabled={comparison.length < 2}>Compare selected →</PrimaryBtn>
-            </Stack>
-          </>
+          <Box>
+            <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>Week 3 Supply Gap</Typography>
+            <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>620 t still needed</Typography>
+            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>1,200 t required · 580 t committed</Typography>
+          </Box>
         }
         footer={
           <>
             <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', flex: 1 }}>
               {comparison.length} farms selected for comparison
             </Typography>
-            <PrimaryBtn onClick={() => onNavigate('compare')} disabled={comparison.length < 2}>Compare selected →</PrimaryBtn>
+            <Stack direction="row" spacing={2} sx={{ flexShrink: 0 }}>
+              <SecondaryBtn onClick={() => setComparison(['mach', 'reddy', 'bhim', 'tanuku'])}>Use recommended set</SecondaryBtn>
+              <PrimaryBtn onClick={() => onNavigate('compare')} disabled={comparison.length < 2}>Compare selected →</PrimaryBtn>
+            </Stack>
           </>
         }
         map={
@@ -1090,18 +1063,9 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             onFarmSelect={setFocusedId}
             onViewEvidence={setEvidenceFarm}
             footer={
-              <Box>
-                <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.tight }}>
-                  {comparison.length} farms selected for comparison
-                </Typography>
-                <PrimaryBtn
-                  onClick={() => onNavigate('compare')}
-                  disabled={comparison.length < 2}
-                  fullWidth
-                >
-                  Compare selected →
-                </PrimaryBtn>
-              </Box>
+              <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+                {comparison.length} farms selected for comparison
+              </Typography>
             }
           />
         }
@@ -1211,14 +1175,11 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
     <MainPane
       header={
-        <>
-          <Box>
-            <SectionLabel>Candidate Comparison</SectionLabel>
-            <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>4 farms · Week 3</Typography>
-            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Scenario planning can add or substitute farms from the full eligible pool.</Typography>
-          </Box>
-          <PrimaryBtn onClick={() => onNavigate('scenarios')} sx={{ flexShrink: 0 }}>Plan a scenario →</PrimaryBtn>
-        </>
+        <Box>
+          <SectionLabel>Candidate Comparison</SectionLabel>
+          <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>4 farms · Week 3</Typography>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Scenario planning can add or substitute farms from the full eligible pool.</Typography>
+        </Box>
       }
       footer={
         <>
@@ -1420,20 +1381,13 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     <>
     <MainPane
       header={
-        <>
-          <Box>
-            <SectionLabel>Scenario Planning</SectionLabel>
-            <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Week 3 · 620 t gap</Typography>
-            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>
-              Set constraints, then select a feasible strategy for Week 3 coverage.
-            </Typography>
-          </Box>
-          {selected && (
-            <PrimaryBtn onClick={() => onNavigate('verification')} disabled={!canProceed} sx={{ flexShrink: 0 }}>
-              Proceed with {selectedStrategy?.name} →
-            </PrimaryBtn>
-          )}
-        </>
+        <Box>
+          <SectionLabel>Scenario Planning</SectionLabel>
+          <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Week 3 · 620 t gap</Typography>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>
+            Set constraints, then select a feasible strategy for Week 3 coverage.
+          </Typography>
+        </Box>
       }
       footer={
         selected ? (
@@ -1832,26 +1786,20 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
   return (
     <MainPane
       header={
-        <>
-          <Box>
-            <SectionLabel>Selective Field Verification</SectionLabel>
-            <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Coverage-First · Farms requiring verification</Typography>
-            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>2 selected · 0 remaining</Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
-            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', textAlign: 'right', maxWidth: 220, lineHeight: 1.6 }}>
-              Only farms with missing, insufficient, or conflicting evidence appear here.
-            </Typography>
-            <PrimaryBtn onClick={() => onNavigate('field')}>Assign 2 farms to Ravi →</PrimaryBtn>
-          </Box>
-        </>
+        <Box>
+          <SectionLabel>Selective Field Verification</SectionLabel>
+          <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Coverage-First · Farms requiring verification</Typography>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>
+            2 selected · 0 remaining · Only farms with missing, insufficient, or conflicting evidence appear here.
+          </Typography>
+        </Box>
       }
       footer={
         <>
           <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', flex: 1 }}>
             2 farms will be assigned to Ravi for field verification. Only the listed evidence items are needed.
           </Typography>
-          <PrimaryBtn onClick={() => onNavigate('field')} sx={{ flexShrink: 0 }}>Assign to Ravi →</PrimaryBtn>
+          <PrimaryBtn onClick={() => onNavigate('field')} sx={{ flexShrink: 0 }}>Assign 2 farms to Ravi →</PrimaryBtn>
         </>
       }
       map={
@@ -2332,12 +2280,17 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
     <MainPane
       header={
+        <Box>
+          <SectionLabel>Active Procurement Plan</SectionLabel>
+          <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Coverage-First · Week 3 Active</Typography>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Monitoring active · 1 open alert</Typography>
+        </Box>
+      }
+      footer={
         <>
-          <Box>
-            <SectionLabel>Active Procurement Plan</SectionLabel>
-            <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Coverage-First · Week 3 Active</Typography>
-            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Monitoring active · 1 open alert</Typography>
-          </Box>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', flex: 1 }}>
+            Active plan monitoring · open the alert when supply is revised.
+          </Typography>
           <Stack direction="row" spacing={2} sx={{ flexShrink: 0 }}>
             <SecondaryBtn onClick={() => document.getElementById('active-farm-mix')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>View full plan</SecondaryBtn>
             <Button
@@ -2349,21 +2302,6 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               1 monitoring alert
             </Button>
           </Stack>
-        </>
-      }
-      footer={
-        <>
-          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', flex: 1 }}>
-            Active plan monitoring · open the alert when supply is revised.
-          </Typography>
-          <Button
-            onClick={() => onNavigate('alert')}
-            color="error"
-            variant="outlined"
-            sx={{ bgcolor: m3.errorContainer, color: m3.onErrorContainer, borderColor: m3.error, flexShrink: 0 }}
-          >
-            1 monitoring alert
-          </Button>
         </>
       }
       map={
@@ -2490,14 +2428,11 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     return (
       <MainPane
         header={
-          <>
-            <Box>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'success.dark', mb: 1 }}>Recovery accepted · Monitoring resumed</Typography>
-              <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Rajahmundry Block added to recovery plan</Typography>
-              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Week 3 coverage restored to 95%. The monitoring exception is resolved.</Typography>
-            </Box>
-            <PrimaryBtn onClick={() => onNavigate('plan')} sx={{ flexShrink: 0 }}>Return to active plan →</PrimaryBtn>
-          </>
+          <Box>
+            <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'success.dark', mb: 1 }}>Recovery accepted · Monitoring resumed</Typography>
+            <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Rajahmundry Block added to recovery plan</Typography>
+            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Week 3 coverage restored to 95%. The monitoring exception is resolved.</Typography>
+          </Box>
         }
         footer={
           <>
@@ -2550,19 +2485,16 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         borderBottom: `3px solid ${m3.error}`,
       }}
       header={
-        <>
-          <Box>
-            <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 2 }}>
-              <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m3.error }} />
-              <Typography variant="overline" sx={{ color: m3.onErrorContainer }}>Severity · Week 3 below 95% threshold</Typography>
-            </Stack>
-            <Typography variant="h2" sx={{ color: m3.onErrorContainer }}>Godavari Combined Block — supply revised</Typography>
-            <Typography variant="body2" sx={{ mt: 1, color: m3.onErrorContainer, fontWeight: 600 }}>
-              Cause: new satellite NDVI · Impact: −120 t · Recovery required
-            </Typography>
-          </Box>
-          <PrimaryBtn onClick={() => setRecovering(true)} sx={{ flexShrink: 0 }}>Add to recovery plan</PrimaryBtn>
-        </>
+        <Box>
+          <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 2 }}>
+            <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m3.error }} />
+            <Typography variant="overline" sx={{ color: m3.onErrorContainer }}>Severity · Week 3 below 95% threshold</Typography>
+          </Stack>
+          <Typography variant="h2" sx={{ color: m3.onErrorContainer }}>Godavari Combined Block — supply revised</Typography>
+          <Typography variant="body2" sx={{ mt: 1, color: m3.onErrorContainer, fontWeight: 600 }}>
+            Cause: new satellite NDVI · Impact: −120 t · Recovery required
+          </Typography>
+        </Box>
       }
       footer={
         <>
