@@ -2745,16 +2745,10 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
         },
       }}
     >
-      {/* MD3 drawer header — on-surface roles only */}
+      {/* MD3 drawer header */}
       <Box sx={{ px: space.related, pt: space.section, pb: space.related }}>
-        <Typography variant="overline" component="p" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.xs }}>
-          ITC Procurement
-        </Typography>
         <Typography variant="h6" sx={{ color: m3.onSurface, lineHeight: 1.25 }}>
-          Decision Support
-        </Typography>
-        <Typography variant="body2" sx={{ color: m3.onSurfaceVariant, display: 'block', mt: space.xs }}>
-          Eucalyptus · 4,000 t
+          ITC Procurement
         </Typography>
       </Box>
 
