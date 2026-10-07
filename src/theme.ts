@@ -75,7 +75,8 @@ export const theme = createTheme({
     // Match panel hairlines so borderColor: 'divider' stays consistent
     divider: PANEL_BORDER,
     action: {
-      hover: alpha(m3.onSurface, 0.08),
+      // Prefer white over grey overlays on light accent surfaces
+      hover: m3.surfaceContainerLowest,
       selected: CARD_SELECTION_BG,
       disabled: alpha(m3.onSurface, 0.38),
       disabledBackground: alpha(m3.onSurface, 0.12),
@@ -281,12 +282,13 @@ export const theme = createTheme({
           '&.Mui-selected': {
             backgroundColor: CARD_SELECTION_BG,
             color: m3.onSurface,
-            '&:hover': { backgroundColor: CARD_SELECTION_BG },
+            // White on light accent - grey wash on teal selection fails contrast
+            '&:hover': { backgroundColor: m3.surfaceContainerLowest },
             '& .MuiListItemIcon-root': { color: m3.primaryInk },
             '& .MuiListItemText-primary': { color: m3.onSurface, fontWeight: 700 },
           },
           '&:hover': {
-            backgroundColor: alpha(m3.onSurface, 0.08),
+            backgroundColor: m3.surfaceContainerLowest,
           },
           '&.Mui-disabled': {
             opacity: 1,
@@ -381,8 +383,13 @@ export const theme = createTheme({
     MuiTableRow: {
       styleOverrides: {
         root: {
+          // Full-row hover: paint every cell (including sticky) so the row reads as one surface.
+          // Soft brand wash - not grey - so it stays clear on white and light accent tables.
           '&.MuiTableRow-hover:hover': {
-            backgroundColor: alpha(m3.onSurface, 0.04),
+            backgroundColor: m3.primaryContainer,
+          },
+          '&.MuiTableRow-hover:hover > .MuiTableCell-root': {
+            backgroundColor: `${m3.primaryContainer} !important`,
           },
         },
       },

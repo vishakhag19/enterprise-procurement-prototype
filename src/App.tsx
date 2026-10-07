@@ -1112,8 +1112,11 @@ function FarmCard({
   onHover: (id: string | null) => void
 }) {
   const isHovered = hoverId === farm.id
+  // Selected = light accent; hover on accent uses white (not grey) for contrast
   const cardBg = inComparison
-    ? CARD_SELECTION_BG
+    ? isHovered
+      ? m3.surfaceContainerLowest
+      : CARD_SELECTION_BG
     : isHovered
       ? CARD_HOVER_BG
       : 'background.paper'
@@ -1832,6 +1835,10 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       border: failCount > 0 && !isSelected
                         ? `2px solid ${m3.error}`
                         : `1px solid ${PANEL_BORDER}`,
+                      transition: 'background-color 0.15s',
+                      '&:hover': {
+                        bgcolor: isSelected ? m3.surfaceContainerLowest : CARD_HOVER_BG,
+                      },
                     }}
                   >
                     {/* Header */}
@@ -1845,7 +1852,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                               mt: 0.5,
                               borderRadius: '50%',
                               border: isSelected ? `6px solid ${m3.primary}` : `2px solid ${m3.outline}`,
-                              bgcolor: isSelected ? CARD_SELECTION_BG : m3.surfaceContainerLowest,
+                              bgcolor: m3.surfaceContainerLowest,
                               flexShrink: 0,
                             }}
                           />
