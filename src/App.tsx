@@ -982,12 +982,11 @@ function FarmCard({
       onMouseLeave={() => onHover(null)}
       sx={{
         cursor: 'pointer',
-        transition: 'background-color 0.15s, border-color 0.15s, box-shadow 0.15s',
+        transition: 'background-color 0.15s, border-color 0.15s',
         bgcolor: cardBg,
         border: inComparison
           ? `1px solid ${alpha(m3.primary, 0.35)}`
           : `1px solid ${PANEL_BORDER}`,
-        boxShadow: inComparison ? `inset 3px 0 0 ${m3.primary}` : 'none',
       }}
     >
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: space.tight }}>
@@ -1584,11 +1583,6 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                         : failCount > 0
                           ? `2px solid ${m3.error}`
                           : `1px solid ${PANEL_BORDER}`,
-                      boxShadow: isSelected
-                        ? `inset 4px 0 0 ${m3.primary}`
-                        : failCount > 0
-                          ? `inset 4px 0 0 ${m3.error}`
-                          : 'none',
                     }}
                   >
                     {/* Header */}
