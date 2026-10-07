@@ -169,22 +169,22 @@ export function WeekRail({
           >
             <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: space.tight }}>
               <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
-                <Typography variant="subtitle2" sx={{ color: INK }}>
+                <Typography variant="subtitle2" sx={{ color: w.issue ? m3.onErrorContainer : m3.onSurface }}>
                   Week {w.n}
                 </Typography>
                 {w.issue && <StatusChip kind="primary-issue" />}
               </Stack>
               <Stack direction="row" spacing={space.compact} sx={{ alignItems: 'baseline' }}>
-                <Typography variant="subtitle2" sx={{ color: INK, fontVariantNumeric: 'tabular-nums' }}>
+                <Typography variant="subtitle2" sx={{ color: w.issue ? m3.onErrorContainer : m3.onSurface, fontVariantNumeric: 'tabular-nums' }}>
                   {w.committed.toLocaleString()}
                 </Typography>
-                <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums' }}>
+                <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums', color: w.issue ? m3.onErrorContainer : m3.onSurfaceVariant }}>
                   / {w.target.toLocaleString()} t
                 </Typography>
                 <Typography
                   variant="caption"
                   sx={{
-                    color: w.delta >= 0 ? m3.success : m3.error,
+                    color: w.issue ? m3.error : w.delta >= 0 ? m3.success : m3.error,
                     fontWeight: 700,
                     fontVariantNumeric: 'tabular-nums',
                   }}
@@ -253,20 +253,20 @@ export function ThresholdControl({
       }}
     >
       <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1 }}>
-        <Typography variant="body2" sx={{ color: INK, fontWeight: 600 }}>
+        <Typography variant="body2" sx={{ color: modified ? m3.onWarningContainer : m3.onSurface, fontWeight: 600 }}>
           {label}
         </Typography>
         <Typography
           variant="subtitle2"
-          sx={{ color: modified ? m3.warning : INK, fontVariantNumeric: 'tabular-nums' }}
+          sx={{ color: modified ? m3.onWarningContainer : m3.onSurface, fontVariantNumeric: 'tabular-nums' }}
         >
           {display}
         </Typography>
       </Stack>
       <Slider min={min} max={max} value={value} onChange={(_: Event, v: number | number[]) => onChange(v as number)} />
       <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-        <Typography variant="caption">{marks[0]}</Typography>
-        <Typography variant="caption">{marks[1]}</Typography>
+        <Typography variant="caption" sx={{ color: modified ? m3.onWarningContainer : m3.onSurfaceVariant }}>{marks[0]}</Typography>
+        <Typography variant="caption" sx={{ color: modified ? m3.onWarningContainer : m3.onSurfaceVariant }}>{marks[1]}</Typography>
       </Stack>
     </Box>
   )

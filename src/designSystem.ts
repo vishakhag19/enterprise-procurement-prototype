@@ -66,7 +66,6 @@ export const m3 = {
   inversePrimary: '#80D5D4',
 } as const
 
-// Fix typo above - I accidentally broke tertiaryContainer
 export const SIDEBAR_BG = m3.surfaceContainerLow
 export const SURFACE = m3.surface
 export const PAPER = m3.surfaceContainerLowest
