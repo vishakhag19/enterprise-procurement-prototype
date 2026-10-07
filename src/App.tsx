@@ -1112,11 +1112,10 @@ function FarmCard({
   onHover: (id: string | null) => void
 }) {
   const isHovered = hoverId === farm.id
-  // Selected = light accent; hover on accent uses white (not grey) for contrast
+  // Selected cards always keep the accent wash. Hover wash only applies to unselected cards
+  // (do not treat map focus as hover - that made Machilipatnam look unselected).
   const cardBg = inComparison
-    ? isHovered
-      ? m3.surfaceContainerLowest
-      : CARD_SELECTION_BG
+    ? CARD_SELECTION_BG
     : isHovered
       ? CARD_HOVER_BG
       : 'background.paper'
@@ -1241,7 +1240,7 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   inComparison={comparison.includes(f.id)}
                   onToggle={toggle}
                   onViewEvidence={setEvidenceFarm}
-                  hoverId={activeFarmId}
+                  hoverId={hoverId}
                   onHover={setHoverId}
                 />
               ))}
@@ -1258,7 +1257,7 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   inComparison={comparison.includes(f.id)}
                   onToggle={toggle}
                   onViewEvidence={setEvidenceFarm}
-                  hoverId={activeFarmId}
+                  hoverId={hoverId}
                   onHover={setHoverId}
                 />
               ))}
