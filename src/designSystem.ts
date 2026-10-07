@@ -73,6 +73,8 @@ export const PAPER = m3.surfaceContainerLowest
 export const INK = m3.onSurface
 export const INK_MUTED = m3.onSurfaceVariant
 export const RULE = m3.outlineVariant
+/** Very light panel chrome — drawers, side panes, cards */
+export const PANEL_BORDER = 'rgba(22, 29, 29, 0.08)'
 export const ACCENT_SOFT = m3.primaryContainer
 export const ACCENT_DARK = m3.primaryBrandDark
 

@@ -7,7 +7,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { STATUS_META, StatusKind, space, INK, m3 } from './designSystem'
+import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, m3 } from './designSystem'
 
 export function StatusChip({ kind }: { kind: StatusKind }) {
   const meta = STATUS_META[kind]
@@ -66,11 +66,11 @@ export function DashPaper({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       sx={{
-        // MD3 card: 16dp content padding
+        // MD3 card: 16dp content padding + light panel chrome
         p: space.related,
         bgcolor: m3.surfaceContainerLowest,
         borderRadius: '16px',
-        border: 'none',
+        border: `1px solid ${PANEL_BORDER}`,
         boxShadow: 'none',
         ...sx,
       }}

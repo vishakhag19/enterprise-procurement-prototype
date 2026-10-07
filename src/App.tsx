@@ -63,7 +63,7 @@ import {
   DataStrip,
 } from './ui'
 import type { StatusKind } from './designSystem'
-import { INK, INK_MUTED, PAPER, RULE, ACCENT_SOFT } from './designSystem'
+import { INK, INK_MUTED, PAPER, RULE, ACCENT_SOFT, PANEL_BORDER } from './designSystem'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 'field' | 'findings' | 'plan' | 'alert'
@@ -599,7 +599,7 @@ function EvidenceModal({ farmId, onClose, recovery = false }: { farmId: string; 
 
 function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   const [mapExpanded, setMapExpanded] = useState(false)
-  const [geoPanelWidth, setGeoPanelWidth] = useState(288)
+  const [geoPanelWidth, setGeoPanelWidth] = useState(400)
   const weeks = [
     { n: 1, committed: 918,  target: 900,  delta: +18,   issue: false },
     { n: 2, committed: 960,  target: 1000, delta: -40,   issue: false },
@@ -612,7 +612,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     const startX = event.clientX
     const startWidth = geoPanelWidth
     const onMove = (moveEvent: PointerEvent) => {
-      setGeoPanelWidth(Math.min(420, Math.max(248, startWidth + startX - moveEvent.clientX)))
+      setGeoPanelWidth(Math.min(560, Math.max(320, startWidth + startX - moveEvent.clientX)))
     }
     const onEnd = () => {
       window.removeEventListener('pointermove', onMove)
@@ -649,6 +649,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               p: space.section,
               bgcolor: m3.surfaceContainerLowest,
               borderRadius: '16px',
+              border: `1px solid ${PANEL_BORDER}`,
               backgroundImage: `linear-gradient(135deg, rgba(209,67,58,0.08) 0%, ${PAPER} 42%)`,
             }}
           >
@@ -700,7 +701,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Weekly rail — one composition with map relationship */}
           <Box sx={{ mb: space.section }}>
             <SectionLabel>Weekly position · linked to Week 3 geography</SectionLabel>
-            <Box sx={{ bgcolor: m3.surfaceContainerLowest, borderRadius: '16px', overflow: 'hidden' }}>
+            <Box sx={{ bgcolor: m3.surfaceContainerLowest, borderRadius: '16px', overflow: 'hidden', border: `1px solid ${PANEL_BORDER}` }}>
               <WeekRail weeks={weeks} />
             </Box>
           </Box>
@@ -708,7 +709,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Decision queue — primary elevated, rest as strips */}
           <Box>
             <SectionLabel>Needs a decision</SectionLabel>
-            <Stack spacing={0} sx={{ bgcolor: m3.surfaceContainerLowest, borderRadius: '16px', overflow: 'hidden' }}>
+            <Stack spacing={0} sx={{ bgcolor: m3.surfaceContainerLowest, borderRadius: '16px', overflow: 'hidden', border: `1px solid ${PANEL_BORDER}` }}>
               <Box sx={{ p: space.related, bgcolor: m3.primaryContainer }}>
                 <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 4, alignItems: 'flex-start' }}>
                   <Box>
@@ -745,7 +746,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       </Box>
 
       {/* Right geo panel */}
-      <Box sx={{ position: 'relative', display: 'flex', flexDirection: 'column', flexShrink: 0 }} style={{ width: geoPanelWidth, minWidth: 280, maxWidth: 440, background: PAPER, borderLeft: `1px solid ${RULE}` }}>
+      <Box sx={{ position: 'relative', display: 'flex', flexDirection: 'column', flexShrink: 0, borderLeft: `1px solid ${PANEL_BORDER}` }} style={{ width: geoPanelWidth, minWidth: 320, maxWidth: 560, background: PAPER }}>
         <Box sx={{ position: 'absolute', left: -4, top: 0, bottom: 0, width: 8, cursor: 'col-resize', touchAction: 'none', zIndex: 10 }} onPointerDown={startGeoPanelResize} role="separator" aria-orientation="vertical" aria-label="Resize supply geography panel">
           <Box sx={{ width: '1px', height: '100%', mx: 'auto', bgcolor: 'transparent', transition: 'background-color 0.15s' }} />
         </Box>
@@ -957,8 +958,8 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   return (
     <Box sx={{ display: 'flex', height: '100%', position: 'relative' }}>
-      {/* Map panel */}
-      <Box sx={{ width: '34%', minWidth: 384, maxWidth: 440, flexShrink: 0, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper' }}>
+      {/* Map stays compact so the farm list (right) keeps primary width */}
+      <Box sx={{ width: '30%', minWidth: 300, maxWidth: 380, flexShrink: 0, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', borderRight: `1px solid ${PANEL_BORDER}` }}>
         <Box sx={{ p: 4, borderBottom: 1, borderColor: 'divider' }}>
           <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>GIS Workspace · Week 3</Typography>
           <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>Hover a farm card to highlight on map</Typography>
@@ -1560,7 +1561,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       </Box>
 
       {/* Right panel */}
-      <Box sx={{ width: 288, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', flexShrink: 0 }}>
+      <Box sx={{ width: 400, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', flexShrink: 0, borderLeft: `1px solid ${PANEL_BORDER}` }}>
         <Box sx={{ p: 4, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 4 }}>
           <SectionLabel>Select a Strategy</SectionLabel>
           <ExpandMapButton onClick={() => {
@@ -2593,7 +2594,7 @@ const NAV_ITEMS: NavItem[] = [
 ]
 
 const FLOW_ORDER: Screen[] = ['coverage', 'farms', 'compare', 'scenarios', 'verification', 'field', 'findings', 'plan', 'alert']
-const DRAWER_WIDTH = 360
+const DRAWER_WIDTH = 240
 
 function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Screen) => void }) {
   const currentIdx = FLOW_ORDER.indexOf(current)
@@ -2609,7 +2610,7 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
           boxSizing: 'border-box',
           bgcolor: m3.surfaceContainerLow,
           color: m3.onSurface,
-          borderRight: 'none',
+          borderRight: `1px solid ${PANEL_BORDER}`,
           display: 'flex',
           flexDirection: 'column',
         },

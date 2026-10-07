@@ -1,7 +1,7 @@
 import { createTheme, alpha } from '@mui/material/styles'
-import { PAPER, SIDEBAR_BG, SURFACE, m3, semantic, space } from './designSystem'
+import { PANEL_BORDER, PAPER, SIDEBAR_BG, SURFACE, m3, semantic, space } from './designSystem'
 
-export { ACCENT, SIDEBAR_BG, SURFACE, PAPER, space, semantic, m3 } from './designSystem'
+export { ACCENT, SIDEBAR_BG, SURFACE, PAPER, PANEL_BORDER, space, semantic, m3 } from './designSystem'
 
 /** Material Design 3 theme — tonal surfaces, MD3 shape, type roles */
 export const theme = createTheme({
@@ -176,7 +176,7 @@ export const theme = createTheme({
         root: {
           backgroundImage: 'none',
           backgroundColor: m3.surfaceContainerLowest,
-          border: 'none',
+          border: `1px solid ${PANEL_BORDER}`,
           borderRadius: 16, // MD3 medium shape
         },
       },
@@ -187,6 +187,7 @@ export const theme = createTheme({
         root: {
           backgroundColor: m3.surfaceContainerLowest,
           borderRadius: 16,
+          border: `1px solid ${PANEL_BORDER}`,
           boxShadow: 'none',
         },
       },
@@ -197,7 +198,7 @@ export const theme = createTheme({
         root: {
           backgroundColor: m3.surface,
           color: m3.onSurface,
-          borderBottom: 'none',
+          borderBottom: `1px solid ${PANEL_BORDER}`,
           boxShadow: 'none',
         },
       },
@@ -211,11 +212,11 @@ export const theme = createTheme({
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          // MD3 standard navigation drawer
-          width: 360,
+          // Compact permanent nav — frees width for content/right panes
+          width: 240,
           backgroundColor: m3.surfaceContainerLow,
           color: m3.onSurface,
-          borderRight: 'none',
+          borderRight: `1px solid ${PANEL_BORDER}`,
         },
       },
     },
@@ -223,14 +224,14 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 28,
-          // MD3 nav drawer destination: 56dp tall, 12dp side inset, 16dp item padding
-          minHeight: 56,
-          marginInline: 12,
+          // Compact nav destination: 48dp tall, tight insets for 240dp drawer
+          minHeight: 48,
+          marginInline: 8,
           marginBlock: 0,
           paddingTop: 4,
           paddingBottom: 4,
-          paddingLeft: 16,
-          paddingRight: 24,
+          paddingLeft: 12,
+          paddingRight: 12,
           '&.Mui-selected': {
             backgroundColor: m3.secondaryContainer,
             color: m3.onSecondaryContainer,
@@ -252,7 +253,7 @@ export const theme = createTheme({
     MuiListItemIcon: {
       styleOverrides: {
         root: {
-          minWidth: 40,
+          minWidth: 36,
           color: m3.onSurfaceVariant,
         },
       },
