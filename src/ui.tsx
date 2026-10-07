@@ -282,29 +282,29 @@ export function TradeoffBars({
   maxVisits?: number
 }) {
   return (
-    <Stack spacing={2} sx={{ mt: 2 }}>
+    <Stack spacing={space.related} sx={{ mt: 0 }}>
       <Box>
-        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1 }}>
-          <Typography variant="caption">Week 3 coverage</Typography>
-          <Typography variant="caption" sx={{ fontWeight: 700, color: INK, fontVariantNumeric: 'tabular-nums' }}>
+        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: space.tight }}>
+          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>Week 3 coverage</Typography>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: m3.onSurface, fontVariantNumeric: 'tabular-nums' }}>
             {coverage}%
           </Typography>
         </Stack>
-        <Box sx={{ height: 6, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px` }}>
-          <Box sx={{ width: `${coverage}%`, height: '100%', bgcolor: m3.primary, borderRadius: `${shape.xs}px` }} />
+        <Box sx={{ height: 8, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px`, overflow: 'hidden' }}>
+          <Box sx={{ width: `${Math.min(coverage, 100)}%`, height: '100%', bgcolor: m3.primary, borderRadius: `${shape.xs}px` }} />
         </Box>
       </Box>
       <Box>
-        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1 }}>
-          <Typography variant="caption">Verification load</Typography>
-          <Typography variant="caption" sx={{ fontWeight: 700, color: INK, fontVariantNumeric: 'tabular-nums' }}>
+        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: space.tight }}>
+          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>Verification load</Typography>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: m3.onSurface, fontVariantNumeric: 'tabular-nums' }}>
             {visits} visit{visits === 1 ? '' : 's'}
           </Typography>
         </Stack>
-        <Box sx={{ height: 6, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px` }}>
+        <Box sx={{ height: 8, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px`, overflow: 'hidden' }}>
           <Box
             sx={{
-              width: `${(visits / maxVisits) * 100}%`,
+              width: `${Math.min((visits / maxVisits) * 100, 100)}%`,
               height: '100%',
               bgcolor: m3.warning,
               borderRadius: `${shape.xs}px`,

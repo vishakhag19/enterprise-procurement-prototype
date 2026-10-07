@@ -1540,64 +1540,153 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     key={s.key}
                     onClick={() => setSelected(s.key === selected ? null : s.key)}
                     sx={{
-                      p: space.section,
+                      p: 0,
                       cursor: 'pointer',
-                      bgcolor: isSelected ? ACCENT_SOFT : failCount > 0 ? semantic.alertSoft : PAPER,
-                      outline: isSelected ? `2px solid ${m3.primary}` : '2px solid transparent',
-                      outlineOffset: -2,
+                      overflow: 'hidden',
+                      bgcolor: isSelected
+                        ? m3.primaryContainer
+                        : failCount > 0
+                          ? m3.errorContainer
+                          : m3.surfaceContainerLowest,
+                      border: isSelected
+                        ? `2px solid ${m3.primary}`
+                        : `1px solid ${PANEL_BORDER}`,
                     }}
                   >
-                    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                      <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
-                        <Box
-                          sx={{
-                            width: 18,
-                            height: 18,
-                            borderRadius: '50%',
-                            border: isSelected ? `5px solid ${m3.primary}` : `2px solid ${RULE}`,
-                            bgcolor: PAPER,
-                            flexShrink: 0,
-                          }}
-                        />
-                        <Box>
-                          <Typography variant="subtitle1" sx={{ color: INK }}>{s.name}</Typography>
-                          {isSelected && (
-                            <Typography variant="caption" sx={{ color: m3.primary, fontWeight: 700 }}>Selected strategy</Typography>
-                          )}
-                        </Box>
+                    {/* Header */}
+                    <Box sx={{ p: space.related }}>
+                      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: space.tight, gap: space.related }}>
+                        <Stack direction="row" spacing={space.related} sx={{ alignItems: 'flex-start', minWidth: 0, flex: 1 }}>
+                          <Box
+                            sx={{
+                              width: 20,
+                              height: 20,
+                              mt: 0.5,
+                              borderRadius: '50%',
+                              border: isSelected ? `6px solid ${m3.primary}` : `2px solid ${m3.outline}`,
+                              bgcolor: m3.surfaceContainerLowest,
+                              flexShrink: 0,
+                            }}
+                          />
+                          <Box sx={{ minWidth: 0, flex: 1 }}>
+                            <Typography
+                              variant="subtitle1"
+                              sx={{
+                                color: isSelected ? m3.onPrimaryContainer : failCount > 0 ? m3.onErrorContainer : m3.onSurface,
+                                fontWeight: 700,
+                              }}
+                            >
+                              {s.name}
+                            </Typography>
+                            {isSelected && (
+                              <Typography variant="caption" sx={{ color: m3.primary, fontWeight: 700, display: 'block', mb: space.xs }}>
+                                Selected strategy
+                              </Typography>
+                            )}
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: isSelected ? m3.onPrimaryContainer : failCount > 0 ? m3.onErrorContainer : m3.onSurfaceVariant,
+                                mt: space.xs,
+                                opacity: 0.9,
+                              }}
+                            >
+                              {rationale}
+                            </Typography>
+                          </Box>
+                        </Stack>
+                        <StatusChip kind={failCount === 0 ? 'constraint-pass' : 'constraint-fail'} />
                       </Stack>
-                      <StatusChip kind={failCount === 0 ? 'constraint-pass' : 'constraint-fail'} />
-                    </Stack>
-                    <Typography variant="body2" sx={{ mb: space.related, pl: 8.5 }}>{rationale}</Typography>
+                    </Box>
 
-                    <TradeoffBars coverage={wk3} visits={verif} />
+                    {/* Tradeoff bars */}
+                    <Box sx={{ px: space.related, pb: space.related }}>
+                      <TradeoffBars coverage={wk3} visits={verif} />
+                    </Box>
 
-                    {/* Constraint metrics */}
-                    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, mt: space.related, borderTop: `1px solid ${RULE}` }}>
+                    {/* Constraint metrics — equal 16dp padding in each cell */}
+                    <Box
+                      sx={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(4, 1fr)',
+                        gap: 0,
+                        mx: space.related,
+                        mb: space.related,
+                        borderRadius: `${shape.sm}px`,
+                        overflow: 'hidden',
+                        bgcolor: m3.surfaceContainerLowest,
+                        border: `1px solid ${PANEL_BORDER}`,
+                      }}
+                    >
                       {[
                         { label: 'Week 3', value: wk3 === 100 ? `100% · +30 t` : `${wk3}%`, fail: wk3Fails },
                         { label: 'Verification', value: String(verif), fail: verif > maxVisits },
                         { label: 'High conf.', value: `${hiconf}%`, fail: hiconf < minHighConf },
                         { label: 'Max district', value: `${dist}%`, fail: dist > maxDistConc },
-                      ].map(({ label, value, fail }) => (
-                        <Box key={label} sx={{ py: 3, pr: 3, borderRight: `1px solid ${RULE}`, '&:last-child': { borderRight: 'none' } }}>
-                          <Typography variant="caption" sx={{ display: 'block' }}>{label}</Typography>
-                          <Typography variant="subtitle2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: fail ? semantic.alert : INK }}>{value}</Typography>
+                      ].map(({ label, value, fail }, i) => (
+                        <Box
+                          key={label}
+                          sx={{
+                            p: space.related,
+                            borderRight: i < 3 ? `1px solid ${PANEL_BORDER}` : 'none',
+                            bgcolor: fail ? m3.errorContainer : 'transparent',
+                            minWidth: 0,
+                          }}
+                        >
+                          <Typography
+                            variant="caption"
+                            sx={{ display: 'block', mb: space.xs, color: fail ? m3.onErrorContainer : m3.onSurfaceVariant }}
+                          >
+                            {label}
+                          </Typography>
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              fontVariantNumeric: 'tabular-nums',
+                              fontWeight: 700,
+                              color: fail ? m3.onErrorContainer : m3.onSurface,
+                              mb: fail ? space.tight : 0,
+                            }}
+                          >
+                            {value}
+                          </Typography>
                           {fail && <StatusChip kind="constraint-fail" />}
                         </Box>
                       ))}
                     </Box>
 
                     {/* Farm mix */}
-                    <Box sx={{ ml: 6 }}>
-                      <Typography sx={{ fontSize: 10, fontWeight: 500, color: 'text.secondary', mb: 2 }}>Farm mix</Typography>
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', columnGap: 3, rowGap: 1 }}>
-                      {farms.map(f => {
-                        const needsVerif = f.includes('✶')
-                        return (
-                          <Button key={f} size="small" color="primary" onClick={e => { e.stopPropagation(); setInspectedFarm(f.replace(' ✶', '').split(' · ')[0]) }} sx={{ display: 'block', px: 0, minWidth: 0, textAlign: 'left' }}>{f}</Button>
-                        )
-                      })}
+                    <Box
+                      sx={{
+                        px: space.related,
+                        py: space.related,
+                        borderTop: `1px solid ${PANEL_BORDER}`,
+                        bgcolor: m3.surfaceContainerLowest,
+                      }}
+                    >
+                      <Typography variant="caption" sx={{ display: 'block', mb: space.tight, color: m3.onSurfaceVariant, fontWeight: 650 }}>
+                        Farm mix
+                      </Typography>
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: space.tight }}>
+                        {farms.map(f => (
+                          <Chip
+                            key={f}
+                            size="small"
+                            label={f}
+                            onClick={e => {
+                              e.stopPropagation()
+                              setInspectedFarm(f.replace(' ✶', '').split(' · ')[0])
+                            }}
+                            sx={{
+                              bgcolor: f.includes('✶') ? m3.tertiaryContainer : m3.surfaceContainerHigh,
+                              color: f.includes('✶') ? m3.onTertiaryContainer : m3.onSurfaceVariant,
+                              fontWeight: 600,
+                              borderRadius: `${shape.sm}px`,
+                              height: 28,
+                              '& .MuiChip-label': { px: 2.5 },
+                            }}
+                          />
+                        ))}
                       </Box>
                     </Box>
                   </DashPaper>
