@@ -112,6 +112,9 @@ const FARM_COORDS: Record<string, { x: number; y: number }> = {
   avanigadda: { x: 185, y: 145 },
 }
 
+type CanopyKind = 'healthy' | 'moderate' | 'weak' | 'inconclusive'
+type EvidenceAgeKind = 'current' | 'aging' | 'missing'
+
 type FarmMapMeta = {
   name: string
   district: string
@@ -119,22 +122,56 @@ type FarmMapMeta = {
   harvest: string
   confidence: Conf
   evidence: string
+  ndvi: number | null
+  canopy: CanopyKind
+  evidenceAge: EvidenceAgeKind
+  evidenceAgeLabel: string
+  /** Deterministic parcel shape seed (0-1) */
+  parcelSeed: number
 }
 
 const FARM_MAP_META: Record<string, FarmMapMeta> = {
-  mach: { name: 'Machilipatnam Edge', district: 'Krishna', supply: 90, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Satellite and field evidence aligned' },
-  reddy: { name: 'Reddy Plot', district: 'Krishna', supply: 70, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Recent evidence aligned' },
-  bhim: { name: 'Bhimavaram Lot', district: 'West Godavari', supply: 250, harvest: 'Week 3', confidence: 'LOW', evidence: 'Current field evidence missing' },
-  tanuku: { name: 'Tanuku Plot', district: 'West Godavari', supply: 160, harvest: 'Week 3', confidence: 'MEDIUM', evidence: 'Field confirmation is 6 weeks old' },
-  kv: { name: 'Krishna Valley', district: 'Krishna', supply: 55, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Evidence current' },
-  eluru: { name: 'Eluru Farm', district: 'West Godavari', supply: 65, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Evidence current' },
-  guntur: { name: 'Guntur Strip', district: 'Guntur', supply: 80, harvest: 'Wk 3-4', confidence: 'MEDIUM', evidence: 'Harvest window outside ideal range' },
-  kovvur: { name: 'Kovvur Fields', district: 'West Godavari', supply: 75, harvest: 'Week 3', confidence: 'MEDIUM', evidence: 'Recent field evidence needed' },
-  raj: { name: 'Rajahmundry Block', district: 'East Godavari', supply: 110, harvest: 'Week 3', confidence: 'MEDIUM', evidence: 'Field verification required' },
-  godavari: { name: 'Godavari Combined Block', district: 'East Godavari', supply: 200, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Monitored by satellite' },
-  narsapur: { name: 'Narsapur Farms', district: 'West Godavari', supply: 180, harvest: 'Week 3', confidence: 'MEDIUM', evidence: 'Logistics risk flagged' },
-  palakol: { name: 'Palakol Holdings', district: 'West Godavari', supply: 120, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Evidence current' },
-  avanigadda: { name: 'Avanigadda Block', district: 'Krishna', supply: 80, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Evidence current' },
+  mach: { name: 'Machilipatnam Edge', district: 'Krishna', supply: 90, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Satellite and field evidence aligned', ndvi: 0.74, canopy: 'healthy', evidenceAge: 'current', evidenceAgeLabel: '6d', parcelSeed: 0.12 },
+  reddy: { name: 'Reddy Plot', district: 'Krishna', supply: 70, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Recent evidence aligned', ndvi: 0.71, canopy: 'healthy', evidenceAge: 'current', evidenceAgeLabel: '4d', parcelSeed: 0.28 },
+  bhim: { name: 'Bhimavaram Lot', district: 'West Godavari', supply: 250, harvest: 'Week 3', confidence: 'LOW', evidence: 'Current field evidence missing', ndvi: null, canopy: 'inconclusive', evidenceAge: 'missing', evidenceAgeLabel: 'None', parcelSeed: 0.61 },
+  tanuku: { name: 'Tanuku Plot', district: 'West Godavari', supply: 160, harvest: 'Week 3', confidence: 'MEDIUM', evidence: 'Field confirmation is 6 weeks old', ndvi: 0.63, canopy: 'moderate', evidenceAge: 'aging', evidenceAgeLabel: '42d', parcelSeed: 0.44 },
+  kv: { name: 'Krishna Valley', district: 'Krishna', supply: 55, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Evidence current', ndvi: 0.72, canopy: 'healthy', evidenceAge: 'current', evidenceAgeLabel: '9d', parcelSeed: 0.19 },
+  eluru: { name: 'Eluru Farm', district: 'West Godavari', supply: 65, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Evidence current', ndvi: 0.70, canopy: 'healthy', evidenceAge: 'current', evidenceAgeLabel: '11d', parcelSeed: 0.33 },
+  guntur: { name: 'Guntur Strip', district: 'Guntur', supply: 80, harvest: 'Wk 3-4', confidence: 'MEDIUM', evidence: 'Harvest window outside ideal range', ndvi: 0.66, canopy: 'moderate', evidenceAge: 'aging', evidenceAgeLabel: '28d', parcelSeed: 0.52 },
+  kovvur: { name: 'Kovvur Fields', district: 'West Godavari', supply: 75, harvest: 'Week 3', confidence: 'MEDIUM', evidence: 'Recent field evidence needed', ndvi: 0.64, canopy: 'moderate', evidenceAge: 'aging', evidenceAgeLabel: '35d', parcelSeed: 0.71 },
+  raj: { name: 'Rajahmundry Block', district: 'East Godavari', supply: 110, harvest: 'Week 3', confidence: 'MEDIUM', evidence: 'Field verification required', ndvi: 0.67, canopy: 'moderate', evidenceAge: 'aging', evidenceAgeLabel: '21d', parcelSeed: 0.38 },
+  godavari: { name: 'Godavari Combined Block', district: 'East Godavari', supply: 200, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Monitored by satellite', ndvi: 0.41, canopy: 'weak', evidenceAge: 'current', evidenceAgeLabel: '2d', parcelSeed: 0.57 },
+  narsapur: { name: 'Narsapur Farms', district: 'West Godavari', supply: 180, harvest: 'Week 3', confidence: 'MEDIUM', evidence: 'Logistics risk flagged', ndvi: 0.68, canopy: 'moderate', evidenceAge: 'aging', evidenceAgeLabel: '18d', parcelSeed: 0.81 },
+  palakol: { name: 'Palakol Holdings', district: 'West Godavari', supply: 120, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Evidence current', ndvi: 0.73, canopy: 'healthy', evidenceAge: 'current', evidenceAgeLabel: '7d', parcelSeed: 0.25 },
+  avanigadda: { name: 'Avanigadda Block', district: 'Krishna', supply: 80, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Evidence current', ndvi: 0.75, canopy: 'healthy', evidenceAge: 'current', evidenceAgeLabel: '5d', parcelSeed: 0.47 },
+}
+
+const CANOPY_FILL: Record<CanopyKind, string> = {
+  healthy: alpha(m3.success, 0.38),
+  moderate: alpha(m3.warning, 0.42),
+  weak: alpha(m3.error, 0.38),
+  inconclusive: alpha(m3.outline, 0.28),
+}
+
+const CANOPY_STROKE: Record<CanopyKind, string> = {
+  healthy: m3.success,
+  moderate: m3.warning,
+  weak: m3.error,
+  inconclusive: m3.outline,
+}
+
+/** Irregular parcel polygon around a farm center; size scales with supply. */
+function parcelPolygon(x: number, y: number, supply: number, seed: number): string {
+  const s = 7 + Math.min(supply / 35, 14)
+  const skew = (seed - 0.5) * 0.55
+  const pts: [number, number][] = [
+    [x - s * (0.95 + skew * 0.2), y - s * (0.55 - skew * 0.15)],
+    [x + s * (0.65 - skew * 0.25), y - s * (0.9 + skew * 0.1)],
+    [x + s * (1.15 + skew * 0.15), y + s * (0.25 + skew * 0.2)],
+    [x + s * (0.35 - skew * 0.1), y + s * (1.05 - skew * 0.15)],
+    [x - s * (0.8 + skew * 0.2), y + s * (0.6 + skew * 0.1)],
+  ]
+  return `M ${pts.map(([px, py]) => `${px.toFixed(1)} ${py.toFixed(1)}`).join(' L ')} Z`
 }
 
 const DEFAULT_FARM_ROLES: Record<string, FarmRole> = {
@@ -175,49 +212,128 @@ function RegionMap({
   const tooltipMeta = tooltipId ? FARM_MAP_META[tooltipId] : null
   const tooltipPoint = tooltipId ? FARM_COORDS[tooltipId] : null
 
-  function marker(x: number, y: number, role: FarmRole, highlighted: boolean) {
-    const hi = highlighted ? 2.25 : undefined
-    if (role === 'committed') {
-      return <circle cx={x} cy={y} r="4.5" fill={m3.primary} stroke={m3.onSurface} strokeWidth={hi ?? 0.75} />
-    }
-    if (role === 'needs-verification') {
-      return <circle cx={x} cy={y} r="5.5" fill={m3.surfaceContainerLowest} stroke={m3.warning} strokeWidth={hi ?? 1.5} strokeDasharray="2 1.5" />
-    }
-    if (role === 'recommended') {
-      return <circle cx={x} cy={y} r="5" fill={m3.surfaceContainerLowest} stroke={m3.primary} strokeWidth={hi ?? 1.5} />
-    }
-    if (role === 'alert') {
-      return (
-        <g>
-          <circle cx={x} cy={y} r="7" fill={m3.error} stroke={m3.onSurface} strokeWidth={hi ?? 1} />
-          <text x={x} y={y + 3} textAnchor="middle" fontSize="8" fontWeight="700" fill={m3.onError}>!</text>
-        </g>
-      )
-    }
+  function roleStroke(role: FarmRole, highlighted: boolean): { stroke: string; width: number; dash?: string } {
+    if (highlighted) return { stroke: m3.onSurface, width: 2.1 }
+    if (role === 'selected') return { stroke: m3.primary, width: 1.6, dash: '2.5 1.2' }
+    if (role === 'committed') return { stroke: m3.primary, width: 1.5 }
+    if (role === 'needs-verification') return { stroke: m3.warning, width: 1.6, dash: '2.5 1.5' }
+    if (role === 'recommended') return { stroke: m3.primaryInk, width: 1.35 }
+    if (role === 'alert') return { stroke: m3.error, width: 1.85 }
+    return { stroke: semantic.mapOther, width: 1 }
+  }
+
+  function evidenceAgeColor(age: EvidenceAgeKind): string {
+    if (age === 'current') return semantic.evidenceFresh
+    if (age === 'aging') return semantic.evidenceAging
+    return semantic.evidenceMissing
+  }
+
+  /** Parcel + canopy fill + harvest/evidence cues (not a pin). */
+  function farmParcel(id: string, x: number, y: number, role: FarmRole, highlighted: boolean) {
+    const meta = FARM_MAP_META[id]
+    if (!meta) return null
+    const path = parcelPolygon(x, y, meta.supply, meta.parcelSeed)
+    const rim = roleStroke(role, highlighted)
+    const outsideHarvest = meta.harvest.includes('4') || meta.harvest.toLowerCase().includes('wk 3-4')
+    const ageColor = evidenceAgeColor(meta.evidenceAge)
+    const hitR = 8 + Math.min(meta.supply / 35, 14)
+
     return (
       <g>
-        {role === 'selected' && (
-          <rect
-            x={x - 7}
-            y={y - 7}
-            width="14"
-            height="14"
-            fill={m3.primaryContainer}
-            fillOpacity={0.55}
-            stroke={m3.primary}
-            strokeWidth="0.75"
-            strokeDasharray="2 1"
-            transform={`rotate(12 ${x} ${y})`}
-          />
+        {/* Soft selection halo */}
+        {highlighted && (
+          <path d={path} fill={alpha(m3.primary, 0.12)} stroke={m3.primary} strokeWidth="3.5" opacity="0.55" />
         )}
-        <circle
-          cx={x}
-          cy={y}
-          r={role === 'selected' ? 5.5 : 3.5}
-          fill={role === 'selected' ? m3.primary : semantic.mapOtherFill}
-          stroke={highlighted ? m3.primary : role === 'selected' ? m3.primaryPressed : semantic.mapOther}
-          strokeWidth={hi ?? (role === 'selected' ? 1.25 : 0.75)}
+        {/* Canopy / satellite NDVI proxy fill */}
+        <path
+          d={path}
+          fill={CANOPY_FILL[meta.canopy]}
+          stroke={CANOPY_STROKE[meta.canopy]}
+          strokeWidth="0.6"
+          strokeOpacity="0.55"
         />
+        {/* Parcel boundary — procurement role */}
+        <path
+          d={path}
+          fill="none"
+          stroke={rim.stroke}
+          strokeWidth={rim.width}
+          strokeDasharray={rim.dash}
+          strokeLinejoin="round"
+        />
+        {/* Inconclusive canopy hatch (cloud / missing satellite) */}
+        {meta.canopy === 'inconclusive' && (
+          <g pointerEvents="none" opacity="0.55">
+            <path d={path} fill="none" stroke={m3.outline} strokeWidth="0.7" strokeDasharray="1.2 1.4" />
+            <line x1={x - 5} y1={y - 4} x2={x + 4} y2={y + 5} stroke={m3.outline} strokeWidth="0.85" />
+            <line x1={x - 2} y1={y - 6} x2={x + 6} y2={y + 2} stroke={m3.outline} strokeWidth="0.85" />
+          </g>
+        )}
+        {/* Harvest window cue */}
+        <g pointerEvents="none">
+          <rect
+            x={x - 9}
+            y={y - hitR * 0.55 - 8}
+            width="18"
+            height="7"
+            rx="1.5"
+            fill={outsideHarvest ? m3.warningContainer : m3.surfaceContainerLowest}
+            stroke={outsideHarvest ? m3.warning : m3.outlineVariant}
+            strokeWidth="0.6"
+            opacity="0.95"
+          />
+          <text
+            x={x}
+            y={y - hitR * 0.55 - 2.8}
+            textAnchor="middle"
+            fontSize="5"
+            fontWeight="700"
+            fill={outsideHarvest ? m3.onWarningContainer : m3.onSurfaceVariant}
+          >
+            {outsideHarvest ? 'W3-4' : 'W3'}
+          </text>
+        </g>
+        {/* Evidence age cue */}
+        <g pointerEvents="none">
+          <circle
+            cx={x + hitR * 0.55}
+            cy={y + hitR * 0.35}
+            r="4.2"
+            fill={m3.surfaceContainerLowest}
+            stroke={ageColor}
+            strokeWidth={meta.evidenceAge === 'missing' ? 1.4 : 1.1}
+            strokeDasharray={meta.evidenceAge === 'missing' ? '1.5 1.2' : undefined}
+          />
+          <text
+            x={x + hitR * 0.55}
+            y={y + hitR * 0.35 + 1.6}
+            textAnchor="middle"
+            fontSize="4.5"
+            fontWeight="700"
+            fill={ageColor}
+          >
+            {meta.evidenceAge === 'missing' ? '—' : meta.evidenceAgeLabel.replace('d', '')}
+          </text>
+        </g>
+        {/* Alert glyph on weak / alert parcels */}
+        {(role === 'alert' || meta.canopy === 'weak') && (
+          <text
+            x={x}
+            y={y + 2.5}
+            textAnchor="middle"
+            fontSize="7"
+            fontWeight="800"
+            fill={m3.error}
+            stroke={m3.surfaceContainerLowest}
+            strokeWidth="2"
+            paintOrder="stroke"
+            pointerEvents="none"
+          >
+            !
+          </text>
+        )}
+        {/* Invisible hit target sized to parcel */}
+        <circle cx={x} cy={y} r={hitR} fill="transparent" />
       </g>
     )
   }
@@ -296,7 +412,7 @@ function RegionMap({
         <rect x={attributionPosition.x} y={attributionPosition.y - 12} width="116" height="13" rx="2" fill={m3.surfaceContainerLowest} opacity=".9" />
         <text x={attributionPosition.x + 4} y={attributionPosition.y - 3} fontSize="6.5" fill={semantic.mapAttribution}>© OpenStreetMap contributors · Approx.</text>
       </g>
-      {/* Farm dots */}
+      {/* Parcels: canopy fill, role boundary, harvest + evidence cues */}
       {Object.entries(FARM_COORDS).map(([id, { x, y }]) => {
         const role = roles[id] ?? 'other'
         const displayRole = variant === 'recovery' && id !== 'godavari' && id !== 'raj' ? 'other' : role
@@ -309,18 +425,17 @@ function RegionMap({
             onMouseLeave={() => onFarmHover?.(null)}
             onClick={() => onFarmSelect?.(id)}
           >
-            <circle cx={x} cy={y} r="11" fill="transparent" />
-            {marker(x, y, displayRole, isHighlighted)}
+            {farmParcel(id, x, y, displayRole, isHighlighted)}
             {addedIds.includes(id) && (
               <g pointerEvents="none">
-                <circle cx={x} cy={y} r="9" fill="none" stroke={m3.primary} strokeWidth="1.5" />
-                <text x={x - 21} y={y - 10} fontSize="6.5" fontWeight="700" fill={m3.primary} stroke={m3.surfaceContainerLowest} strokeWidth="2" paintOrder="stroke">ADDED</text>
+                <circle cx={x} cy={y} r="14" fill="none" stroke={m3.primary} strokeWidth="1.5" strokeDasharray="3 2" />
+                <text x={x - 21} y={y - 14} fontSize="6.5" fontWeight="700" fill={m3.primary} stroke={m3.surfaceContainerLowest} strokeWidth="2" paintOrder="stroke">ADDED</text>
               </g>
             )}
             {removedIds.includes(id) && (
               <g pointerEvents="none">
-                <path d={`M ${x - 6} ${y - 6} L ${x + 6} ${y + 6} M ${x + 6} ${y - 6} L ${x - 6} ${y + 6}`} stroke={m3.outline} strokeWidth="1.75" />
-                <text x={x + 8} y={y - 7} fontSize="6.5" fontWeight="700" fill={m3.onSurfaceVariant} stroke={m3.surfaceContainerLowest} strokeWidth="2" paintOrder="stroke">REMOVED</text>
+                <path d={`M ${x - 8} ${y - 8} L ${x + 8} ${y + 8} M ${x + 8} ${y - 8} L ${x - 8} ${y + 8}`} stroke={m3.outline} strokeWidth="1.75" />
+                <text x={x + 10} y={y - 9} fontSize="6.5" fontWeight="700" fill={m3.onSurfaceVariant} stroke={m3.surfaceContainerLowest} strokeWidth="2" paintOrder="stroke">REMOVED</text>
               </g>
             )}
           </g>
@@ -329,31 +444,36 @@ function RegionMap({
       {variant === 'recovery' && (
         <g pointerEvents="none">
           <text x="185" y="45" fontSize="7" fontWeight="700" fill={m3.onSurface} stroke={m3.surfaceContainerLowest} strokeWidth="2" paintOrder="stroke">Rajahmundry recovery</text>
-          <text x="280" y="79" fontSize="7" fontWeight="700" fill={m3.error} stroke={m3.surfaceContainerLowest} strokeWidth="2" paintOrder="stroke">Godavari revised</text>
+          <text x="280" y="79" fontSize="7" fontWeight="700" fill={m3.error} stroke={m3.surfaceContainerLowest} strokeWidth="2" paintOrder="stroke">Godavari canopy decline</text>
         </g>
       )}
       {tooltipMeta && tooltipPoint && !compact && (
-        <g transform={`translate(${variant === 'investigation' ? Math.min(Math.max(tooltipPoint.x + 8, 130), 188) : Math.min(tooltipPoint.x + 12, 224)} ${Math.max(tooltipPoint.y - 58, variant === 'investigation' ? 22 : 8)})`}>
-          <rect width="108" height="55" rx={shape.md} fill={m3.surfaceContainerLowest} stroke={PANEL_BORDER} />
+        <g transform={`translate(${variant === 'investigation' ? Math.min(Math.max(tooltipPoint.x + 8, 130), 188) : Math.min(tooltipPoint.x + 12, 208)} ${Math.max(tooltipPoint.y - 72, variant === 'investigation' ? 22 : 8)})`}>
+          <rect width="124" height="70" rx={shape.md} fill={m3.surfaceContainerLowest} stroke={PANEL_BORDER} />
           <text x="7" y="12" fontSize="7.5" fontWeight="700" fill={m3.onSurface}>{tooltipMeta.name}</text>
-          <text x="7" y="22" fontSize="6.5" fill={m3.onSurfaceVariant}>{tooltipMeta.district}</text>
-          <text x="7" y="34" fontSize="7" fontWeight="600" fill={m3.onSurface}>{tooltipMeta.supply} t · {tooltipMeta.harvest}</text>
-          <text x="7" y="45" fontSize="6.5" fontWeight="700" fill={m3.onSurfaceVariant}>{tooltipMeta.confidence} confidence</text>
+          <text x="7" y="22" fontSize="6.5" fill={m3.onSurfaceVariant}>{tooltipMeta.district} · {tooltipMeta.supply} t</text>
+          <text x="7" y="34" fontSize="6.5" fontWeight="600" fill={m3.onSurface}>
+            NDVI {tooltipMeta.ndvi == null ? 'n/a' : tooltipMeta.ndvi.toFixed(2)} · {tooltipMeta.canopy}
+          </text>
+          <text x="7" y="44" fontSize="6.5" fill={m3.onSurfaceVariant}>
+            Harvest {tooltipMeta.harvest} · Evidence {tooltipMeta.evidenceAgeLabel}
+          </text>
+          <text x="7" y="54" fontSize="6.5" fontWeight="700" fill={m3.onSurfaceVariant}>{tooltipMeta.confidence} confidence</text>
           {onViewEvidence ? (
             <text
-              x="103"
-              y="51"
+              x="117"
+              y="64"
               textAnchor="end"
               fontSize="6.5"
               fontWeight="600"
-              fill={m3.primary}
+              fill={m3.primaryInk}
               style={{ cursor: 'pointer' }}
               onClick={() => tooltipId && onViewEvidence(tooltipId)}
             >
               View evidence
             </text>
           ) : (
-            <text x="7" y="52" fontSize="6" fill={m3.onSurfaceVariant}>{tooltipMeta.evidence}</text>
+            <text x="7" y="64" fontSize="5.5" fill={m3.onSurfaceVariant}>{tooltipMeta.evidence}</text>
           )}
         </g>
       )}
@@ -363,31 +483,60 @@ function RegionMap({
 
 type LegendItem = { role: FarmRole; label: string }
 
-const DOT_STYLE: Record<FarmRole, React.CSSProperties> = {
-  selected: { background: m3.primary, border: `2px solid ${m3.primary}`, boxShadow: `0 0 0 3px ${alpha(m3.primary, 0.1)}` },
-  committed: { background: m3.primary, border: `2px solid ${m3.primary}` },
-  'needs-verification': { background: m3.surfaceContainerLowest, border: `2px dashed ${m3.warning}` },
-  recommended: { background: m3.surfaceContainerLowest, border: `2px solid ${alpha(m3.primary, 0.35)}` },
+const PARCEL_SWATCH: Record<FarmRole, React.CSSProperties> = {
+  selected: { background: alpha(m3.primary, 0.18), border: `2px dashed ${m3.primary}` },
+  committed: { background: alpha(m3.primary, 0.22), border: `2px solid ${m3.primary}` },
+  'needs-verification': { background: alpha(m3.warning, 0.2), border: `2px dashed ${m3.warning}` },
+  recommended: { background: alpha(m3.primaryInk, 0.12), border: `2px solid ${m3.primaryInk}` },
   other: { background: semantic.mapOtherFill, border: `1px solid ${semantic.mapOther}` },
-  alert: { background: m3.error, border: `2px solid ${m3.error}` },
+  alert: { background: alpha(m3.error, 0.2), border: `2px solid ${m3.error}` },
 }
+
+const GEO_LAYER_LEGEND: { key: string; label: string; swatch: React.CSSProperties }[] = [
+  { key: 'healthy', label: 'Canopy healthy', swatch: { background: CANOPY_FILL.healthy, border: `1px solid ${CANOPY_STROKE.healthy}` } },
+  { key: 'moderate', label: 'Canopy moderate', swatch: { background: CANOPY_FILL.moderate, border: `1px solid ${CANOPY_STROKE.moderate}` } },
+  { key: 'weak', label: 'Canopy weak', swatch: { background: CANOPY_FILL.weak, border: `1px solid ${CANOPY_STROKE.weak}` } },
+  { key: 'inconclusive', label: 'Satellite inconclusive', swatch: { background: CANOPY_FILL.inconclusive, border: `1px dashed ${CANOPY_STROKE.inconclusive}` } },
+  { key: 'evidence', label: 'Evidence age (days)', swatch: { background: m3.surfaceContainerLowest, border: `2px solid ${semantic.evidenceAging}`, borderRadius: '50%' } },
+  { key: 'harvest', label: 'Harvest window (W3)', swatch: { background: m3.surfaceContainerLowest, border: `1px solid ${m3.outlineVariant}` } },
+]
 
 function MapLegend({ items }: { items: LegendItem[] }) {
   return (
-    <Stack spacing={space.tight}>
-      {items.map(({ role, label }) => (
-        <Stack key={label} direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
-          <Box style={DOT_STYLE[role]} sx={{ width: 10, height: 10, flexShrink: 0, borderRadius: '50%' }} />
-          <Typography variant="caption">{label}</Typography>
+    <Stack spacing={space.related}>
+      <Box>
+        <Typography variant="caption" sx={{ display: 'block', mb: 1, fontWeight: 700, color: m3.onSurfaceVariant, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          Geospatial layers
+        </Typography>
+        <Stack spacing={space.tight}>
+          {GEO_LAYER_LEGEND.map(({ key, label, swatch }) => (
+            <Stack key={key} direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
+              <Box style={swatch} sx={{ width: 12, height: 12, flexShrink: 0, borderRadius: '2px' }} />
+              <Typography variant="caption">{label}</Typography>
+            </Stack>
+          ))}
         </Stack>
-      ))}
+      </Box>
+      <Box>
+        <Typography variant="caption" sx={{ display: 'block', mb: 1, fontWeight: 700, color: m3.onSurfaceVariant, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          Parcel status
+        </Typography>
+        <Stack spacing={space.tight}>
+          {items.map(({ role, label }) => (
+            <Stack key={label} direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
+              <Box style={PARCEL_SWATCH[role]} sx={{ width: 12, height: 12, flexShrink: 0, borderRadius: '2px' }} />
+              <Typography variant="caption">{label}</Typography>
+            </Stack>
+          ))}
+        </Stack>
+      </Box>
     </Stack>
   )
 }
 
 const DEFAULT_LEGEND: LegendItem[] = [
-  { role: 'selected',           label: 'Selected' },
-  { role: 'committed',          label: 'Committed' },
+  { role: 'selected',           label: 'Selected parcel' },
+  { role: 'committed',          label: 'Committed parcel' },
   { role: 'needs-verification', label: 'Needs verification' },
   { role: 'recommended',        label: 'Recommended' },
   { role: 'other',              label: 'Other eligible' },
@@ -434,7 +583,7 @@ function ExpandedMap({
       <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: space.related, py: space.related }}>
         <Box>
           <Typography variant="subtitle1">{title}</Typography>
-          <Typography variant="caption">Same procurement geography and current marker state</Typography>
+          <Typography variant="caption">Parcels, canopy, harvest windows, and evidence age</Typography>
         </Box>
         <IconButton onClick={onClose} aria-label="Close expanded map" size="small"><CloseIcon fontSize="small" /></IconButton>
       </DialogTitle>
@@ -526,7 +675,7 @@ function MapPane({
         >
           <Box sx={{ minWidth: 0 }}>
             <SectionLabel>Week 3 · Supply Geography</SectionLabel>
-            <Typography variant="body2">AP region · Satellite + field markers</Typography>
+            <Typography variant="body2">AP region · Parcels, canopy, harvest, evidence age</Typography>
           </Box>
           <ExpandMapButton onClick={() => setMapExpanded(true)} />
         </Box>
