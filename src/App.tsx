@@ -405,6 +405,9 @@ function ExpandMapButton({ onClick }: { onClick: () => void }) {
   )
 }
 
+/** Fixed right-rail width — identical on every desktop tab */
+const MAP_PANE_WIDTH = 400
+
 function ExpandedMap({
   title,
   variant,
@@ -451,6 +454,120 @@ function ExpandedMap({
         <MapLegend items={legend} />
       </Box>
     </Dialog>
+  )
+}
+
+/**
+ * Shared map chrome for every desktop tab:
+ * header (title + subtitle + expand) → map fill → legend → optional footer.
+ * Always docked right at MAP_PANE_WIDTH.
+ */
+function MapPane({
+  variant = 'coverage',
+  legend = DEFAULT_LEGEND,
+  farmRoles,
+  addedIds,
+  removedIds,
+  highlightIds,
+  activeId,
+  onFarmHover,
+  onFarmSelect,
+  onViewEvidence,
+  footer,
+  expandedTitle = 'Week 3 · Supply Geography',
+  expanded,
+  onExpandedChange,
+}: {
+  variant?: MapVariant
+  legend?: LegendItem[]
+  farmRoles?: Record<string, FarmRole>
+  addedIds?: string[]
+  removedIds?: string[]
+  highlightIds?: string[]
+  activeId?: string | null
+  onFarmHover?: (id: string | null) => void
+  onFarmSelect?: (id: string) => void
+  onViewEvidence?: (id: string) => void
+  footer?: React.ReactNode
+  expandedTitle?: string
+  expanded?: boolean
+  onExpandedChange?: (open: boolean) => void
+}) {
+  const [internalExpanded, setInternalExpanded] = useState(false)
+  const mapExpanded = expanded ?? internalExpanded
+  const setMapExpanded = (open: boolean) => {
+    onExpandedChange?.(open)
+    if (expanded === undefined) setInternalExpanded(open)
+  }
+
+  return (
+    <>
+      <Box
+        sx={{
+          width: MAP_PANE_WIDTH,
+          flexShrink: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          ...shellChrome,
+          bgcolor: PAPER,
+        }}
+      >
+        <Box
+          sx={{
+            p: space.related,
+            borderBottom: `1px solid ${PANEL_BORDER}`,
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            gap: space.related,
+          }}
+        >
+          <Box sx={{ minWidth: 0 }}>
+            <SectionLabel>Week 3 · Supply Geography</SectionLabel>
+            <Typography variant="body2">AP region · Satellite + field markers</Typography>
+          </Box>
+          <ExpandMapButton onClick={() => setMapExpanded(true)} />
+        </Box>
+
+        <Box sx={{ flex: 1, minHeight: 0 }}>
+          <RegionMap
+            fullscreen
+            variant={variant}
+            farmRoles={farmRoles}
+            addedIds={addedIds}
+            removedIds={removedIds}
+            highlightIds={highlightIds}
+            activeId={activeId}
+            onFarmHover={onFarmHover}
+            onFarmSelect={onFarmSelect}
+            onViewEvidence={onViewEvidence}
+          />
+        </Box>
+
+        <Box sx={{ p: space.related, borderTop: `1px solid ${PANEL_BORDER}` }}>
+          <MapLegend items={legend} />
+        </Box>
+
+        {footer != null && (
+          <Box sx={{ p: space.related, borderTop: `1px solid ${PANEL_BORDER}` }}>
+            {footer}
+          </Box>
+        )}
+      </Box>
+
+      {mapExpanded && (
+        <ExpandedMap
+          title={expandedTitle}
+          variant={variant}
+          farmRoles={farmRoles}
+          addedIds={addedIds}
+          removedIds={removedIds}
+          activeId={activeId}
+          legend={legend}
+          onClose={() => setMapExpanded(false)}
+        />
+      )}
+    </>
   )
 }
 
@@ -598,33 +715,12 @@ function EvidenceModal({ farmId, onClose, recovery = false }: { farmId: string; 
 // ─── COVERAGE SCREEN ─────────────────────────────────────────────────────────
 
 function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
-  const [mapExpanded, setMapExpanded] = useState(false)
-  const [geoPanelWidth, setGeoPanelWidth] = useState(400)
   const weeks = [
     { n: 1, committed: 918,  target: 900,  delta: +18,   issue: false },
     { n: 2, committed: 960,  target: 1000, delta: -40,   issue: false },
     { n: 3, committed: 580,  target: 1200, delta: -620,  issue: true  },
     { n: 4, committed: 680,  target: 900,  delta: -220,  issue: false },
   ]
-  const maxBar = 1200
-
-  function startGeoPanelResize(event: React.PointerEvent<HTMLDivElement>) {
-    const startX = event.clientX
-    const startWidth = geoPanelWidth
-    const onMove = (moveEvent: PointerEvent) => {
-      setGeoPanelWidth(Math.min(560, Math.max(320, startWidth + startX - moveEvent.clientX)))
-    }
-    const onEnd = () => {
-      window.removeEventListener('pointermove', onMove)
-      window.removeEventListener('pointerup', onEnd)
-      document.body.style.cursor = ''
-      document.body.style.userSelect = ''
-    }
-    document.body.style.cursor = 'col-resize'
-    document.body.style.userSelect = 'none'
-    window.addEventListener('pointermove', onMove)
-    window.addEventListener('pointerup', onEnd)
-  }
 
   return (
     <Box sx={{ display: 'flex', height: '100%', gap: space.tight }}>
@@ -743,46 +839,19 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         </Box>
       </Box>
 
-      {/* Right geo panel */}
-      <Box sx={{ position: 'relative', display: 'flex', flexDirection: 'column', flexShrink: 0, ...shellChrome, bgcolor: PAPER }} style={{ width: geoPanelWidth, minWidth: 320, maxWidth: 560 }}>
-        <Box sx={{ position: 'absolute', left: -4, top: 0, bottom: 0, width: 8, cursor: 'col-resize', touchAction: 'none', zIndex: 10 }} onPointerDown={startGeoPanelResize} role="separator" aria-orientation="vertical" aria-label="Resize supply geography panel">
-          <Box sx={{ width: '1px', height: '100%', mx: 'auto', bgcolor: 'transparent', transition: 'background-color 0.15s' }} />
-        </Box>
-        <Box sx={{ p: 4, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 4 }}>
+      <MapPane
+        variant="coverage"
+        footer={
           <Box>
-            <SectionLabel>Week 3 · Supply Geography</SectionLabel>
-            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>580 t committed across AP region</Typography>
+            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.tight }}>
+              620 t gap · candidates highlighted for investigation
+            </Typography>
+            <PrimaryBtn fullWidth onClick={() => onNavigate('farms')}>
+              Close the 620 t gap →
+            </PrimaryBtn>
           </Box>
-          <ExpandMapButton onClick={() => setMapExpanded(true)} />
-        </Box>
-        <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ flex: 1, minHeight: 0 }}>
-            <RegionMap fullscreen variant="coverage" />
-          </Box>
-          <Box sx={{ p: 4, borderTop: 1, borderColor: 'divider' }}>
-            <MapLegend items={DEFAULT_LEGEND} />
-          </Box>
-        </Box>
-        <Box sx={{ p: space.related, borderTop: `1px solid ${RULE}`, bgcolor: m3.inverseSurface, color: m3.inverseOnSurface }}>
-          <Typography variant="caption" sx={{ color: m3.inversePrimary, display: 'block', mb: 2 }}>
-            Map · Week 3 geography
-          </Typography>
-          <Typography variant="body2" sx={{ color: m3.inverseOnSurface, mb: 3, opacity: 0.85 }}>
-            620 t gap · candidates highlighted for investigation
-          </Typography>
-          <PrimaryBtn fullWidth onClick={() => onNavigate('farms')}>
-            Close the 620 t gap →
-          </PrimaryBtn>
-        </Box>
-      </Box>
-      {mapExpanded && (
-        <ExpandedMap
-          title="Week 3 supply geography"
-          variant="coverage"
-          legend={DEFAULT_LEGEND}
-          onClose={() => setMapExpanded(false)}
-        />
-      )}
+        }
+      />
     </Box>
   )
 }
@@ -956,43 +1025,9 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   return (
     <Box sx={{ display: 'flex', height: '100%', position: 'relative', gap: space.tight }}>
-      {/* Map stays compact so the farm list (right) keeps primary width */}
-      <Box sx={{ width: '30%', minWidth: 300, maxWidth: 380, flexShrink: 0, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', ...shellChrome }}>
-        <Box sx={{ p: 4, borderBottom: 1, borderColor: 'divider' }}>
-          <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>GIS Workspace · Week 3</Typography>
-          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>Hover a farm card to highlight on map</Typography>
-        </Box>
-        <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ flex: 1, minHeight: 0 }}>
-            <RegionMap
-              variant="investigation"
-              highlightIds={highlightIds}
-              activeId={activeFarmId}
-              onFarmHover={setHoverId}
-              onFarmSelect={setFocusedId}
-              onViewEvidence={setEvidenceFarm}
-            />
-          </Box>
-          <Box sx={{ p: 4, borderTop: 1, borderColor: 'divider' }}>
-            <MapLegend items={DEFAULT_LEGEND} />
-          </Box>
-        </Box>
-        <Box sx={{ p: 4, borderTop: 1, borderColor: 'divider' }}>
-          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 4 }}>{comparison.length} farms selected for comparison</Typography>
-          <PrimaryBtn
-            onClick={() => onNavigate('compare')}
-            disabled={comparison.length < 2}
-            fullWidth
-          >
-            Compare selected →
-          </PrimaryBtn>
-        </Box>
-      </Box>
-
-      {/* Farm list — same shell radius as header / nav / map pane */}
+      {/* Farm list */}
       <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
         <Box sx={{ p: 6 }}>
-          {/* Gap header */}
           <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 6 }}>
             <Box>
               <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>Week 3 Supply Gap</Typography>
@@ -1005,7 +1040,6 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             </Box>
           </Box>
 
-          {/* Recommended */}
           <Box sx={{ mb: 6 }}>
             <SectionLabel>Recommended for this gap</SectionLabel>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -1023,7 +1057,6 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             </Box>
           </Box>
 
-          {/* Other eligible */}
           <Box>
             <SectionLabel>Other eligible farms · May close remaining gap or diversify supply</SectionLabel>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -1042,6 +1075,29 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </Box>
         </Box>
       </Box>
+
+      <MapPane
+        variant="investigation"
+        highlightIds={highlightIds}
+        activeId={activeFarmId}
+        onFarmHover={setHoverId}
+        onFarmSelect={setFocusedId}
+        onViewEvidence={setEvidenceFarm}
+        footer={
+          <Box>
+            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.tight }}>
+              {comparison.length} farms selected for comparison
+            </Typography>
+            <PrimaryBtn
+              onClick={() => onNavigate('compare')}
+              disabled={comparison.length < 2}
+              fullWidth
+            >
+              Compare selected →
+            </PrimaryBtn>
+          </Box>
+        }
+      />
       {evidenceFarm && <EvidenceModal farmId={evidenceFarm} onClose={() => setEvidenceFarm(null)} />}
     </Box>
   )
@@ -1111,7 +1167,8 @@ const TABLE_ROWS = [
 
 function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+    <Box sx={{ display: 'flex', height: '100%', gap: space.tight, overflow: 'hidden' }}>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
       {/* Fixed header */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 6, py: 4, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
         <Box>
@@ -1203,6 +1260,21 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mr: 'auto', pt: 1 }}>Scenario planning can consider these candidates and other eligible farms. The manually compared farms do not limit scenario generation.</Typography>
         <PrimaryBtn onClick={() => onNavigate('scenarios')}>Plan a scenario →</PrimaryBtn>
       </Box>
+      </Box>
+      <MapPane
+        variant="investigation"
+        farmRoles={{
+          mach: 'selected',
+          reddy: 'selected',
+          bhim: 'needs-verification',
+          tanuku: 'needs-verification',
+        }}
+        footer={
+          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+            4 farms in comparison · map mirrors candidate set
+          </Typography>
+        }
+      />
     </Box>
   )
 }
@@ -1558,66 +1630,56 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         </Box>
       </Box>
 
-      {/* Right panel */}
-      <Box sx={{ width: 400, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', flexShrink: 0, ...shellChrome }}>
-        <Box sx={{ p: 4, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 4 }}>
-          <SectionLabel>Select a Strategy</SectionLabel>
-          <ExpandMapButton onClick={() => {
-            setMapFocusId(null)
-            setMapExpanded(true)
-          }} />
-        </Box>
-        <Box sx={{ flex: 1, p: 4, display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ minHeight: 0 }}>
-            <RegionMap
-              compact={true}
-              variant="scenario"
-              farmRoles={isModified ? {
-                mach: 'selected',
-                reddy: 'selected',
-                bhim: 'needs-verification',
-                tanuku: 'other',
-                guntur: 'selected',
-              } : {}}
-              addedIds={isModified ? ['guntur'] : []}
-              removedIds={isModified ? ['tanuku'] : []}
-            />
-          </Box>
-          <Box sx={{ mt: 4, mb: 4 }}>
-            <MapLegend items={DEFAULT_LEGEND} />
-          </Box>
-          {selected && selectedStrategy && (
-            <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 4, mt: 'auto' }}>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary', mb: 4 }}>Week 3 summary</Typography>
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
-                {[
-                  { label: 'Coverage', value: `${isModified ? selectedStrategy.wk3Modified : selectedStrategy.wk3Default}%` },
-                  {
-                    label: 'Total Week 3 supply',
-                    value: selectedStrategy.key === 'coverage-first' && !isModified
-                      ? '1,150 t'
-                      : `${(isModified ? selectedStrategy.wk3Modified : selectedStrategy.wk3Default) * 12} t`,
-                  },
-                  {
-                    label: 'Supply added',
-                    value: selectedStrategy.key === 'coverage-first' && !isModified
-                      ? '570 t'
-                      : `${(isModified ? selectedStrategy.farmsModified : selectedStrategy.farmsDefault)
-                        .reduce((sum, farm) => sum + Number(farm.match(/(\d+) t/)?.[1] ?? 0), 0)} t`,
-                  },
-                  { label: 'Verification visits', value: String(isModified ? selectedStrategy.verifModified : selectedStrategy.verifDefault) },
-                  { label: 'High-confidence share', value: `${isModified ? selectedStrategy.hiconfModified : selectedStrategy.hiconfDefault}%` },
-                ].map(({ label, value }) => (
-                  <Box key={label}>
-                    <Typography sx={{ fontSize: 9, color: 'text.secondary', mb: 1 }}>{label}</Typography>
-                    <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1rem', fontWeight: 700, color: 'text.primary' }}>{value}</Typography>
-                  </Box>
-                ))}
-              </Box>
+      <MapPane
+        variant="scenario"
+        farmRoles={isModified ? {
+          mach: 'selected',
+          reddy: 'selected',
+          bhim: 'needs-verification',
+          tanuku: 'other',
+          guntur: 'selected',
+        } : {}}
+        addedIds={isModified ? ['guntur'] : []}
+        removedIds={isModified ? ['tanuku'] : []}
+        activeId={mapFocusId}
+        expanded={mapExpanded}
+        onExpandedChange={setMapExpanded}
+        footer={selected && selectedStrategy ? (
+          <Box>
+            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.tight, fontWeight: 650 }}>
+              Week 3 summary · {selectedStrategy.name}
+            </Typography>
+            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: space.tight }}>
+              {[
+                { label: 'Coverage', value: `${isModified ? selectedStrategy.wk3Modified : selectedStrategy.wk3Default}%` },
+                {
+                  label: 'Total Week 3 supply',
+                  value: selectedStrategy.key === 'coverage-first' && !isModified
+                    ? '1,150 t'
+                    : `${(isModified ? selectedStrategy.wk3Modified : selectedStrategy.wk3Default) * 12} t`,
+                },
+                {
+                  label: 'Supply added',
+                  value: selectedStrategy.key === 'coverage-first' && !isModified
+                    ? '570 t'
+                    : `${(isModified ? selectedStrategy.farmsModified : selectedStrategy.farmsDefault)
+                      .reduce((sum, farm) => sum + Number(farm.match(/(\d+) t/)?.[1] ?? 0), 0)} t`,
+                },
+                { label: 'Verification visits', value: String(isModified ? selectedStrategy.verifModified : selectedStrategy.verifDefault) },
+              ].map(({ label, value }) => (
+                <Box key={label}>
+                  <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>{label}</Typography>
+                  <Typography variant="subtitle2" sx={{ fontVariantNumeric: 'tabular-nums' }}>{value}</Typography>
+                </Box>
+              ))}
             </Box>
-          )}
-        </Box>
-      </Box>
+          </Box>
+        ) : (
+          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+            Select a strategy to see Week 3 map summary
+          </Typography>
+        )}
+      />
       {inspectedFarm && (
         <FarmDecisionPanel
           farmName={inspectedFarm}
@@ -1627,24 +1689,6 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             setMapFocusId(id)
             setMapExpanded(true)
           }}
-        />
-      )}
-      {mapExpanded && (
-        <ExpandedMap
-          title="Scenario farm distribution"
-          variant="scenario"
-          farmRoles={isModified ? {
-            mach: 'selected',
-            reddy: 'selected',
-            bhim: 'needs-verification',
-            tanuku: 'other',
-            guntur: 'selected',
-          } : {}}
-          addedIds={isModified ? ['guntur'] : []}
-          removedIds={isModified ? ['tanuku'] : []}
-          activeId={mapFocusId}
-          legend={DEFAULT_LEGEND}
-          onClose={() => setMapExpanded(false)}
         />
       )}
     </Box>
@@ -1674,7 +1718,8 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
   ]
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+    <Box sx={{ display: 'flex', height: '100%', gap: space.tight, overflow: 'hidden' }}>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 6, py: 4, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
         <Box>
           <SectionLabel>Selective Field Verification</SectionLabel>
@@ -1751,10 +1796,19 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
           </Box>
         </Box>
       </Box>
+      </Box>
+      <MapPane
+        variant="investigation"
+        farmRoles={{ bhim: 'needs-verification', tanuku: 'needs-verification', mach: 'selected', reddy: 'selected' }}
+        footer={
+          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+            2 farms require field verification · assigned next
+          </Typography>
+        }
+      />
     </Box>
   )
 }
-
 // ─── FIELD SCREEN (RAVI MOBILE) ───────────────────────────────────────────────
 
 type FieldFarm = {
@@ -2030,7 +2084,8 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   ]
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+    <Box sx={{ display: 'flex', height: '100%', gap: space.tight, overflow: 'hidden' }}>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 6, py: 4, flexShrink: 0 }}>
         <SectionLabel>Field Officer Findings</SectionLabel>
         <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Review evidence</Typography>
@@ -2103,6 +2158,16 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </Box>
         </Box>
       </Box>
+      </Box>
+      <MapPane
+        variant="investigation"
+        farmRoles={{ bhim: 'selected', tanuku: 'selected', mach: 'selected', reddy: 'selected' }}
+        footer={
+          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+            Field evidence confirmed · farms ready for plan activation
+          </Typography>
+        }
+      />
     </Box>
   )
 }
@@ -2124,10 +2189,10 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   const wk3Supply = 1150
   const wk3Target = 1200
   const wk3Pct = Math.round(wk3Supply / wk3Target * 100)
-  const [mapExpanded, setMapExpanded] = useState(false)
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+    <Box sx={{ display: 'flex', height: '100%', gap: space.tight, overflow: 'hidden' }}>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 6, py: 4, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
         <Box>
           <SectionLabel>Active Procurement Plan</SectionLabel>
@@ -2222,52 +2287,27 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </Table>
             </TableContainer>
           </Box>
-
-          {/* Map */}
-          <DashPaper sx={{ p: space.related, width: 'fit-content', maxWidth: '100%' }}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-              <SectionLabel>Geographic distribution · Week 3</SectionLabel>
-              <ExpandMapButton onClick={() => setMapExpanded(true)} />
-            </Box>
-            <Box sx={{ display: 'flex' }}>
-              <Box>
-                <RegionMap
-                  variant="plan"
-                  farmRoles={{
-                    mach: 'selected', reddy: 'selected', bhim: 'selected', tanuku: 'selected',
-                    godavari: 'selected', narsapur: 'committed', palakol: 'selected', avanigadda: 'selected',
-                    kv: 'other', eluru: 'other', guntur: 'other', kovvur: 'other', raj: 'other',
-                  }}
-                />
-              </Box>
-              <Box sx={{ flexShrink: 0 }}>
-                <MapLegend items={[
-                  { role: 'selected', label: 'In plan' },
-                  { role: 'committed', label: 'At risk' },
-                  { role: 'other', label: 'Not in plan' },
-                ]} />
-              </Box>
-            </Box>
-          </DashPaper>
         </Box>
       </Box>
-      {mapExpanded && (
-        <ExpandedMap
-          title="Active plan geographic distribution"
-          variant="plan"
-          farmRoles={{
-            mach: 'selected', reddy: 'selected', bhim: 'selected', tanuku: 'selected',
-            godavari: 'selected', narsapur: 'committed', palakol: 'selected', avanigadda: 'selected',
-            kv: 'other', eluru: 'other', guntur: 'other', kovvur: 'other', raj: 'other',
-          }}
-          legend={[
-            { role: 'selected', label: 'In plan' },
-            { role: 'committed', label: 'At risk' },
-            { role: 'other', label: 'Not in plan' },
-          ]}
-          onClose={() => setMapExpanded(false)}
-        />
-      )}
+      </Box>
+      <MapPane
+        variant="plan"
+        farmRoles={{
+          mach: 'selected', reddy: 'selected', bhim: 'selected', tanuku: 'selected',
+          godavari: 'selected', narsapur: 'committed', palakol: 'selected', avanigadda: 'selected',
+          kv: 'other', eluru: 'other', guntur: 'other', kovvur: 'other', raj: 'other',
+        }}
+        legend={[
+          { role: 'selected', label: 'In plan' },
+          { role: 'committed', label: 'At risk' },
+          { role: 'other', label: 'Not in plan' },
+        ]}
+        footer={
+          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+            Active plan geographic distribution
+          </Typography>
+        }
+      />
     </Box>
   )
 }
@@ -2297,7 +2337,8 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   if (recovering) {
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+      <Box sx={{ display: 'flex', height: '100%', gap: space.tight, overflow: 'hidden' }}>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
         <Box sx={{ borderBottom: 1, px: 6, py: 4, flexShrink: 0 }}>
           <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'success.dark', mb: 1 }}>Recovery accepted · Monitoring resumed</Typography>
           <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Rajahmundry Block added to recovery plan</Typography>
@@ -2322,39 +2363,29 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <PrimaryBtn onClick={() => onNavigate('plan')}>Return to active plan →</PrimaryBtn>
               </Box>
             </Box>
-            <DashPaper sx={{ p: space.related, width: 'fit-content', maxWidth: '100%' }}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                <SectionLabel>Recovered plan · Geographic context</SectionLabel>
-                <ExpandMapButton onClick={() => {
-                  setMapFocusId(null)
-                  setMapExpanded(true)
-                }} />
-              </Box>
-              <Box sx={{ display: 'flex' }}>
-                <Box>
-                  <RegionMap variant="recovery" farmRoles={recoveryRoles} />
-                </Box>
-                <MapLegend items={recoveryLegend} />
-              </Box>
-            </DashPaper>
           </Box>
         </Box>
-        {mapExpanded && (
-          <ExpandedMap
-            title="Recovered plan geographic context"
-            variant="recovery"
-            farmRoles={recoveryRoles}
-            activeId={mapFocusId}
-            legend={recoveryLegend}
-            onClose={() => setMapExpanded(false)}
-          />
-        )}
       </Box>
+      <MapPane
+        variant="recovery"
+        farmRoles={recoveryRoles}
+        legend={recoveryLegend}
+        activeId={mapFocusId}
+        expanded={mapExpanded}
+        onExpandedChange={setMapExpanded}
+        footer={
+          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+            Recovery geography · coverage restored
+          </Typography>
+        }
+      />
+    </Box>
     )
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', position: 'relative' }}>
+    <Box sx={{ display: 'flex', height: '100%', gap: space.tight, overflow: 'hidden' }}>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
       <Box sx={{ flexShrink: 0, px: space.section, py: space.related, bgcolor: semantic.alertSoft, borderBottom: `3px solid ${semantic.alert}` }}>
         <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 2 }}>
           <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: semantic.alert }} />
@@ -2522,29 +2553,22 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             </Box>
           </DashPaper>
 
-          {/* Map context */}
-          <DashPaper sx={{ p: space.related, width: 'fit-content', maxWidth: '100%' }}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-              <SectionLabel>Recovery · Geographic context</SectionLabel>
-              <ExpandMapButton onClick={() => {
-                setMapFocusId(null)
-                setMapExpanded(true)
-              }} />
-            </Box>
-            <Box sx={{ display: 'flex' }}>
-              <Box>
-                <RegionMap
-                  variant="recovery"
-                  farmRoles={recoveryRoles}
-                />
-              </Box>
-              <Box sx={{ flexShrink: 0 }}>
-                <MapLegend items={recoveryLegend} />
-              </Box>
-            </Box>
-          </DashPaper>
         </Box>
       </Box>
+      </Box>
+      <MapPane
+        variant="recovery"
+        farmRoles={recoveryRoles}
+        legend={recoveryLegend}
+        activeId={mapFocusId}
+        expanded={mapExpanded}
+        onExpandedChange={setMapExpanded}
+        footer={
+          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+            Exception geography · recovery candidates
+          </Typography>
+        }
+      />
       {evidenceOpen && <EvidenceModal farmId="godavari" recovery onClose={() => setEvidenceOpen(false)} />}
       {inspectedFarm && (
         <FarmDecisionPanel
@@ -2555,16 +2579,6 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             setMapFocusId(id)
             setMapExpanded(true)
           }}
-        />
-      )}
-      {mapExpanded && (
-        <ExpandedMap
-          title="Recovery geographic context"
-          variant="recovery"
-          farmRoles={recoveryRoles}
-          activeId={mapFocusId}
-          legend={recoveryLegend}
-          onClose={() => setMapExpanded(false)}
         />
       )}
     </Box>
