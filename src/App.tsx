@@ -972,6 +972,7 @@ function FarmCard({
   onHover: (id: string | null) => void
 }) {
   const isHovered = hoverId === farm.id
+  const isAccented = isHovered || inComparison
   return (
     <DashPaper
       onMouseEnter={() => onHover(farm.id)}
@@ -979,14 +980,14 @@ function FarmCard({
       sx={{
         cursor: 'pointer',
         transition: 'background-color 0.15s',
-        bgcolor: isHovered || inComparison ? m3.primaryContainer : 'background.paper',
-        color: isHovered || inComparison ? m3.onPrimaryContainer : 'inherit',
+        // 10% accent wash — never solid primaryContainer on selected farm cards
+        bgcolor: isAccented ? alpha(m3.primary, 0.1) : 'background.paper',
       }}
     >
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: space.tight }}>
         <Box>
-          <Typography variant="subtitle2" sx={{ color: isHovered || inComparison ? m3.onPrimaryContainer : m3.onSurface }}>{farm.name}</Typography>
-          <Typography variant="caption" sx={{ color: isHovered || inComparison ? m3.onPrimaryContainer : m3.onSurfaceVariant }}>{farm.district}</Typography>
+          <Typography variant="subtitle2" sx={{ color: m3.onSurface }}>{farm.name}</Typography>
+          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>{farm.district}</Typography>
         </Box>
         <Box sx={{ textAlign: 'right' }}>
           <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }} variant="h6">{farm.supply} t</Typography>
@@ -1038,9 +1039,22 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   const highlightIds = activeFarmId ? [activeFarmId] : []
 
   return (
-    <Box sx={{ display: 'flex', height: '100%', position: 'relative', gap: space.tight }}>
-      {/* Farm list */}
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
+    <Box sx={{ display: 'flex', height: '100%', overflow: 'hidden', position: 'relative', gap: space.tight }}>
+      {/* Farm list — shellChrome overflow must not win over overflowY */}
+      <Box
+        sx={{
+          flex: 1,
+          minWidth: 0,
+          minHeight: 0,
+          ...shellChrome,
+          bgcolor: m3.surfaceContainerLowest,
+          overflowX: 'hidden',
+          overflowY: 'auto',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          '&::-webkit-scrollbar': { display: 'none' },
+        }}
+      >
         <Box sx={{ p: 6 }}>
           <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 6 }}>
             <Box>
@@ -1557,8 +1571,8 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       p: 0,
                       cursor: 'pointer',
                       overflow: 'hidden',
-                      // Soft accent wash when selected — much lighter than solid primary
-                      bgcolor: isSelected ? m3.primarySoft : m3.surfaceContainerLowest,
+                      // 10% accent wash when selected
+                      bgcolor: isSelected ? alpha(m3.primary, 0.1) : m3.surfaceContainerLowest,
                       border: isSelected
                         ? `2px solid ${m3.primary}`
                         : failCount > 0
@@ -1582,7 +1596,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                               mt: 0.5,
                               borderRadius: '50%',
                               border: isSelected ? `6px solid ${m3.primary}` : `2px solid ${m3.outline}`,
-                              bgcolor: isSelected ? m3.primarySoft : m3.surfaceContainerLowest,
+                              bgcolor: isSelected ? alpha(m3.primary, 0.1) : m3.surfaceContainerLowest,
                               flexShrink: 0,
                             }}
                           />
@@ -2789,7 +2803,7 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
                     variant: 'body1',
                     sx: {
                       fontWeight: isActive ? 700 : 500,
-                      color: isActive ? m3.onPrimaryContainer : m3.onSurface,
+                      color: m3.onSurface,
                     },
                   },
                 }}

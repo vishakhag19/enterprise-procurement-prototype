@@ -25,7 +25,7 @@ export const theme = createTheme({
   shape: { borderRadius: 12 },
   palette: {
     mode: 'light',
-    // Filled actions use brand accent #0BAFAF + dark onPrimary (AA).
+    // Filled actions use brand accent #0BAFAF + white onPrimary.
     // Text/outlined labels use primaryInk via component overrides.
     primary: {
       main: m3.primary,
@@ -258,11 +258,11 @@ export const theme = createTheme({
           paddingLeft: 12,
           paddingRight: 12,
           '&.Mui-selected': {
-            backgroundColor: m3.primarySoft,
-            color: m3.onPrimaryContainer,
-            '&:hover': { backgroundColor: alpha(m3.primary, 0.16) },
+            backgroundColor: alpha(m3.primary, 0.1),
+            color: m3.onSurface,
+            '&:hover': { backgroundColor: alpha(m3.primary, 0.14) },
             '& .MuiListItemIcon-root': { color: m3.primaryInk },
-            '& .MuiListItemText-primary': { color: m3.onPrimaryContainer, fontWeight: 700 },
+            '& .MuiListItemText-primary': { color: m3.onSurface, fontWeight: 700 },
           },
           '&:hover': {
             backgroundColor: alpha(m3.onSurface, 0.08),

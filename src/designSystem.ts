@@ -8,16 +8,19 @@ export const ACCENT = '#0BAFAF'
 /** M3 tonal palette from accent seed #0BAFAF */
 export const m3 = {
   /**
-   * Brand accent fill — the seed color. Use with `onPrimary` (dark) on filled
-   * controls. Do not use as small body text on white (fails AA); use `primaryInk`.
+   * Brand accent fill — the seed color. Pair with white `onPrimary` on filled
+   * controls. Do not use as small body text on white; use `primaryInk`.
    */
   primary: ACCENT,
-  /** Dark label/icon on accent fills (AA on #0BAFAF) */
-  onPrimary: '#002020',
+  /** White label/icon on solid accent fills */
+  onPrimary: '#FFFFFF',
   primaryContainer: '#9EF2F1',
   onPrimaryContainer: '#002020',
-  /** Very light accent wash — selected cards, soft highlights */
-  primarySoft: '#E6F8F8',
+  /**
+   * ~10% accent wash on white — selected/hover cards and soft chrome.
+   * Prefer `alpha(m3.primary, 0.1)` in sx when blending over other surfaces.
+   */
+  primarySoft: '#E6F7F7',
   /**
    * AA-safe teal for small text / outlined labels on light surfaces.
    * Prefer this over `primary` whenever the accent is used as text color.

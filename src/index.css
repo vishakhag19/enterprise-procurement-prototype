@@ -3,10 +3,10 @@
 :root {
   /* Brand accent #0BAFAF is the primary fill; dark on-primary for AA */
   --md-sys-color-primary: #0BAFAF;
-  --md-sys-color-on-primary: #002020;
+  --md-sys-color-on-primary: #FFFFFF;
   --md-sys-color-primary-container: #9EF2F1;
   --md-sys-color-on-primary-container: #002020;
-  --md-sys-color-primary-soft: #E6F8F8;
+  --md-sys-color-primary-soft: #E6F7F7;
   --md-sys-color-primary-ink: #006A6A;
   --md-sys-color-secondary: #4A6363;
   --md-sys-color-secondary-container: #CCE8E7;
