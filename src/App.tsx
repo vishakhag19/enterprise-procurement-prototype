@@ -2786,14 +2786,16 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       }
       footer={
         <>
-          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', flex: 1 }}>
-            Recovery required to restore Week 3 above the 95% threshold.
-          </Typography>
-          <Stack direction="row" spacing={2} sx={{ flexShrink: 0, flexWrap: 'wrap' }}>
-            <PrimaryBtn onClick={() => setRecovering(true)}>Add to recovery plan</PrimaryBtn>
+          <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexWrap: 'wrap', flex: 1, minWidth: 0 }}>
             <SecondaryBtn onClick={() => onNavigate('compare')}>Compare alternatives</SecondaryBtn>
             <SecondaryBtn onClick={() => onNavigate('scenarios')}>Reopen scenario planning</SecondaryBtn>
+            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', display: { xs: 'none', md: 'block' } }}>
+              Recovery required to restore Week 3 above the 95% threshold.
+            </Typography>
           </Stack>
+          <PrimaryBtn onClick={() => setRecovering(true)} sx={{ flexShrink: 0, ml: 'auto' }}>
+            Add to recovery plan
+          </PrimaryBtn>
         </>
       }
       map={
