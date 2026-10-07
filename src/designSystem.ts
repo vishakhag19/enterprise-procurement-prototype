@@ -229,13 +229,13 @@ export type StatusKind =
   | 'constraint-fail'
 
 /**
- * Chip tones stay off the card accent wash (primaryContainer / CARD_SELECTION_BG).
- * Positive = white + brand ink outline (readable on selected/hover accent cards).
- * Caution = amber, negative = error soft, critical = solid error.
+ * Chip tones stay off card container washes (primary / warning / selection fills).
+ * Positive = white + brand outline; caution = white + amber outline;
+ * negative = white + error outline; critical = solid error (only solid fill).
  */
 const CHIP_POSITIVE = { fg: m3.primaryInk, bg: m3.surfaceContainerLowest, border: m3.primaryInk }
-const CHIP_CAUTION = { fg: m3.onWarningContainer, bg: m3.warningContainer, border: 'transparent' }
-const CHIP_NEGATIVE = { fg: m3.onErrorContainer, bg: m3.errorContainer, border: 'transparent' }
+const CHIP_CAUTION = { fg: m3.warning, bg: m3.surfaceContainerLowest, border: m3.warning }
+const CHIP_NEGATIVE = { fg: m3.error, bg: m3.surfaceContainerLowest, border: m3.error }
 const CHIP_CRITICAL = { fg: m3.onError, bg: m3.error, border: 'transparent' }
 
 export const STATUS_META: Record<
