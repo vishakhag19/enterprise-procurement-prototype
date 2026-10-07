@@ -972,16 +972,24 @@ function FarmCard({
   onHover: (id: string | null) => void
 }) {
   const isHovered = hoverId === farm.id
-  const isAccented = isHovered || inComparison
+  // Distinct washes: hover ~5%, selected ~10%, selected+hover ~14%
+  const cardBg = inComparison
+    ? alpha(m3.primary, isHovered ? 0.14 : 0.1)
+    : isHovered
+      ? alpha(m3.primary, 0.05)
+      : 'background.paper'
   return (
     <DashPaper
       onMouseEnter={() => onHover(farm.id)}
       onMouseLeave={() => onHover(null)}
       sx={{
         cursor: 'pointer',
-        transition: 'background-color 0.15s',
-        // 10% accent wash — never solid primaryContainer on selected farm cards
-        bgcolor: isAccented ? alpha(m3.primary, 0.1) : 'background.paper',
+        transition: 'background-color 0.15s, border-color 0.15s, box-shadow 0.15s',
+        bgcolor: cardBg,
+        border: inComparison
+          ? `1px solid ${alpha(m3.primary, 0.35)}`
+          : `1px solid ${PANEL_BORDER}`,
+        boxShadow: inComparison ? `inset 3px 0 0 ${m3.primary}` : 'none',
       }}
     >
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: space.tight }}>
