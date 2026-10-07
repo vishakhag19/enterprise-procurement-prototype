@@ -7,7 +7,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3, meter, shellChrome, CARD_SELECTION_BG } from './designSystem'
+import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3, meter, shellChrome } from './designSystem'
 
 /** Shared control size - every Primary / Secondary / Ghost button matches */
 const btnBaseSx = {
@@ -410,7 +410,6 @@ export type DashKpi = {
   label: string
   value: string
   sub?: string
-  accent?: boolean
   danger?: boolean
 }
 
