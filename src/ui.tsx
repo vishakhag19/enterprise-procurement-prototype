@@ -431,7 +431,7 @@ export function DashKpiStrip({ items }: { items: DashKpi[] }) {
           key={kpi.label}
           sx={{
             p: space.related,
-            bgcolor: kpi.accent ? CARD_SELECTION_BG : m3.surfaceContainerLowest,
+            bgcolor: m3.surfaceContainerLowest,
             borderRight: {
               md: (i + 1) % cols !== 0 ? `1px solid ${PANEL_BORDER}` : 'none',
             },
@@ -446,7 +446,7 @@ export function DashKpiStrip({ items }: { items: DashKpi[] }) {
             sx={{
               display: 'block',
               mb: 1,
-              color: kpi.accent ? m3.primaryInk : m3.onSurfaceVariant,
+              color: m3.onSurfaceVariant,
               fontWeight: 650,
             }}
           >

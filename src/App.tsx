@@ -925,7 +925,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
         <DashKpiStrip
           items={[
-            { label: 'Week 3 gap', value: '620 t', sub: '1,200 needed · 580 committed', accent: true, danger: true },
+            { label: 'Week 3 gap', value: '620 t', sub: '1,200 needed · 580 committed', danger: true },
             { label: 'Firm supply', value: '2,568 t', sub: '64% of 4,000 t target' },
             { label: 'At risk', value: '570 t', sub: 'Narsapur + Avanigadda' },
             { label: 'Open gap', value: '862 t', sub: '78% committed overall' },
@@ -1223,7 +1223,7 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
           <DashKpiStrip
             items={[
-              { label: 'Week 3 gap', value: '620 t', sub: 'Still uncovered', accent: true, danger: true },
+              { label: 'Week 3 gap', value: '620 t', sub: 'Still uncovered', danger: true },
               { label: 'Selected', value: String(comparison.length), sub: 'Farms in comparison' },
               { label: 'Recommended supply', value: '570 t', sub: '4 candidate farms' },
               { label: 'Need verification', value: '2', sub: 'Bhimavaram + Tanuku' },
@@ -1382,7 +1382,7 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
         <DashKpiStrip
           items={[
-            { label: 'Combined supply', value: '570 t', sub: '4 farms in set', accent: true },
+            { label: 'Combined supply', value: '570 t', sub: '4 farms in set' },
             { label: 'Gap coverage', value: '92%', sub: 'Of 620 t Week 3 gap' },
             { label: 'High confidence', value: '2', sub: 'Evidence current' },
             { label: 'Verif. required', value: '2', sub: 'Before commit' },
@@ -1673,7 +1673,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
           <DashKpiStrip
             items={[
-              { label: 'Min. coverage', value: `${minCoverage}%`, sub: 'Week 3 threshold', accent: true },
+              { label: 'Min. coverage', value: `${minCoverage}%`, sub: 'Week 3 threshold' },
               { label: 'Max. visits', value: String(maxVisits), sub: isModified ? 'Modified' : 'Default limit' },
               { label: 'Min. high conf.', value: `${minHighConf}%`, sub: 'Supply quality floor' },
               { label: 'Max. district', value: `${maxDistConc}%`, sub: 'Concentration cap' },
@@ -2029,7 +2029,7 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
         <DashKpiStrip
           items={[
-            { label: 'Farms to verify', value: '2', sub: 'Assigned to Ravi', accent: true },
+            { label: 'Farms to verify', value: '2', sub: 'Assigned to Ravi' },
             { label: 'Supply at stake', value: '410 t', sub: '250 t + 160 t' },
             { label: 'Evidence missing', value: '1', sub: 'Bhimavaram Lot' },
             { label: 'Evidence aging', value: '1', sub: 'Tanuku Plot' },
@@ -2447,7 +2447,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
         <DashKpiStrip
           items={[
-            { label: 'Findings in', value: '2', sub: 'Farms verified today', accent: true },
+            { label: 'Findings in', value: '2', sub: 'Farms verified today' },
             { label: 'Supply unlocked', value: '410 t', sub: 'Now HIGH confidence' },
             { label: 'Week 3 coverage', value: '96%', sub: '1,150 t confirmed' },
             { label: 'Plan status', value: 'Ready', sub: 'Activate next' },
@@ -2843,7 +2843,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               { label: 'Supply revised', value: '−120 t', sub: '200 t → 80 t', danger: true },
               { label: 'Week 3 coverage', value: '86%', sub: 'Was 96%', danger: true },
               { label: 'Threshold gap', value: '110 t', sub: 'Below 95% target', danger: true },
-              { label: 'Recovery path', value: '+110 t', sub: 'Rajahmundry Block', accent: true },
+              { label: 'Recovery path', value: '+110 t', sub: 'Rajahmundry Block' },
             ]}
           />
 
