@@ -1122,15 +1122,15 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         {/* Detailed table */}
         <Box>
           <SectionLabel>Detailed Comparison</SectionLabel>
-          <TableContainer component={Paper} elevation={0} sx={{ p: 0 }}>
-            <Table size="small">
+          <TableContainer component={Paper} elevation={0}>
+            <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 650, width: 176, position: 'sticky', left: 0, bgcolor: 'grey.50', zIndex: 1 }}>Attribute</TableCell>
+                  <TableCell sx={{ width: 176, position: 'sticky', left: 0, bgcolor: m3.surfaceContainerLow, zIndex: 1 }}>Attribute</TableCell>
                   {COMPARE_FARMS.map(f => (
-                    <TableCell key={f.id} sx={{ fontWeight: 650, minWidth: 180 }}>
-                      <Typography variant="body2" sx={{ fontWeight: 650 }}>{f.name}</Typography>
-                      <Typography variant="caption">{f.district}</Typography>
+                    <TableCell key={f.id} sx={{ minWidth: 180 }}>
+                      <Typography variant="subtitle2" sx={{ color: m3.onSurface }}>{f.name}</Typography>
+                      <Typography variant="caption" sx={{ display: 'block', mt: space.xs }}>{f.district}</Typography>
                     </TableCell>
                   ))}
                 </TableRow>
@@ -1138,13 +1138,13 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               <TableBody>
                 {TABLE_ROWS.map(({ key, label }) => (
                   <TableRow key={key} hover>
-                    <TableCell sx={{ color: 'text.secondary', fontWeight: 500, position: 'sticky', left: 0, bgcolor: 'background.paper', verticalAlign: 'top' }}>{label}</TableCell>
+                    <TableCell sx={{ color: 'text.secondary', fontWeight: 500, position: 'sticky', left: 0, bgcolor: m3.surfaceContainerLowest, verticalAlign: 'top' }}>{label}</TableCell>
                     {COMPARE_FARMS.map(f => {
                       const val = f[key as keyof typeof f]
                       if (key === 'confidence') return (
                         <TableCell key={f.id} sx={{ verticalAlign: 'top' }}>
                           <ConfBadge level={val as Conf} />
-                          <Typography variant="caption" sx={{ display: 'block',  mt: 1 }}>
+                          <Typography variant="caption" sx={{ display: 'block', mt: space.xs }}>
                             {val === 'HIGH' ? 'Evidence current' : val === 'MEDIUM' ? 'Evidence incomplete' : 'Evidence missing'}
                           </Typography>
                         </TableCell>
@@ -2161,7 +2161,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           <Box sx={{ mb: 6 }} id="active-farm-mix">
             <SectionLabel>Active farm mix · Week 3</SectionLabel>
             <TableContainer component={Paper} elevation={0}>
-              <Table size="small">
+              <Table>
                 <TableHead>
                   <TableRow>
                     <TableCell>Farm</TableCell>
@@ -2179,7 +2179,9 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       <TableCell align="right" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 650, color: 'text.primary' }}>{f.supply} t</TableCell>
                       <TableCell>
                         <ConfBadge level={f.conf} />
-                        <Typography sx={{ fontSize: 10, color: 'text.secondary', mt: 1 }}>{f.conf === 'HIGH' ? 'Evidence current' : 'Evidence incomplete'}</Typography>
+                        <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', mt: space.xs }}>
+                          {f.conf === 'HIGH' ? 'Evidence current' : 'Evidence incomplete'}
+                        </Typography>
                       </TableCell>
                       <TableCell sx={{ fontWeight: 500, color: f.status === 'At risk' ? 'warning.dark' : f.status.includes('Verified') ? 'success.dark' : 'text.secondary' }}>
                         {f.status}

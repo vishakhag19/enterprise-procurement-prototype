@@ -253,19 +253,64 @@ export const theme = createTheme({
         mark: { display: 'none' },
       },
     },
+    MuiTable: {
+      defaultProps: { size: 'medium' },
+      styleOverrides: {
+        root: {
+          borderCollapse: 'collapse',
+        },
+      },
+    },
     MuiTableCell: {
       styleOverrides: {
         root: {
           fontFamily: '"Manrope", "Roboto", system-ui, sans-serif',
           borderColor: m3.outlineVariant,
-          // MD3 data table: 16dp horizontal, 12–16 vertical
-          padding: '16px',
+          // MD3 data table: 16dp inset, ~52dp row with content
+          padding: '14px 16px',
+          fontSize: '0.875rem',
+          lineHeight: 1.45,
         },
         head: {
           fontWeight: 650,
           backgroundColor: m3.surfaceContainerLow,
           color: m3.onSurfaceVariant,
           padding: '12px 16px',
+          fontSize: '0.75rem',
+          letterSpacing: '0.02em',
+          borderBottom: `1px solid ${m3.outlineVariant}`,
+        },
+        sizeSmall: {
+          // Keep MD3 16dp horizontal even when size="small" is used
+          padding: '10px 16px',
+        },
+      },
+    },
+    MuiTableBody: {
+      styleOverrides: {
+        root: {
+          // No divider under the last data row
+          '& .MuiTableRow-root:last-of-type .MuiTableCell-root': {
+            borderBottom: 'none',
+          },
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          '&.MuiTableRow-hover:hover': {
+            backgroundColor: alpha(m3.onSurface, 0.04),
+          },
+        },
+      },
+    },
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          borderRadius: 16,
+          // Avoid outer padding fighting cell insets
+          padding: 0,
         },
       },
     },
