@@ -119,7 +119,7 @@ export function StatusChip({ kind }: { kind: StatusKind }) {
         textTransform: kind === 'primary-issue' || kind.startsWith('confidence') ? 'uppercase' : 'none',
         color: meta.fg,
         bgcolor: meta.bg,
-        border: '1px solid transparent',
+        border: meta.border === 'transparent' ? '1px solid transparent' : `1px solid ${meta.border}`,
         '& .MuiChip-label': {
           px: 2.5,
           py: 0,

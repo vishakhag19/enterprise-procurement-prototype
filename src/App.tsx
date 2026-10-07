@@ -1938,8 +1938,10 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                               setInspectedFarm(f.replace(' ✶', '').split(' · ')[0])
                             }}
                             sx={{
-                              bgcolor: f.includes('✶') ? m3.primaryContainer : m3.surfaceContainerHigh,
+                              // Keep farm-mix chips off card accent wash (selected strategy uses primaryContainer)
+                              bgcolor: m3.surfaceContainerLowest,
                               color: f.includes('✶') ? m3.primaryInk : m3.onSurface,
+                              border: f.includes('✶') ? `1px solid ${m3.primaryInk}` : `1px solid ${m3.outlineVariant}`,
                               fontFamily: '"Manrope", system-ui, sans-serif',
                               fontWeight: 600,
                               borderRadius: `${shape.sm}px`,
