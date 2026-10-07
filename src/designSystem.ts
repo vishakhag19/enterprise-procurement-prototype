@@ -11,9 +11,15 @@ export const m3 = {
   onPrimary: '#FFFFFF',
   primaryContainer: '#9EF2F1',
   onPrimaryContainer: '#002020',
-  /** Brand accent kept for CTAs that should read as #0BAFAF */
+  /**
+   * Seed / brand highlight (#0BAFAF). Decorative only — never body text or
+   * filled-button fill (fails WCAG AA). Prefer `primary` + `onPrimary` for actions.
+   */
   primaryBrand: ACCENT,
+  /** Hover/pressed companion for brand chrome (still not for small text) */
   primaryBrandDark: '#089090',
+  /** Darker primary for pressed/hover state layers on filled buttons */
+  primaryPressed: '#004F4F',
 
   secondary: '#4A6363',
   onSecondary: '#FFFFFF',
@@ -93,26 +99,30 @@ export const space = {
   compact: 3,
 } as const
 
-/** Domain semantics mapped onto M3 roles */
+/** Domain semantics mapped onto M3 roles (AA-safe for text/UI where used as meaning) */
 export const semantic = {
   firm: m3.primary,
   atRisk: m3.warning,
-  gap: m3.outlineVariant,
+  /** Was outlineVariant (1.7:1) — use on-surface-variant for legends/text */
+  gap: m3.onSurfaceVariant,
   canopyHigh: m3.success,
   canopyMed: m3.warning,
   canopyLow: m3.error,
   evidenceFresh: m3.success,
   evidenceAging: m3.warning,
   evidenceMissing: m3.error,
-  signal: ACCENT,
+  signal: m3.primary,
   alert: m3.error,
   alertSoft: m3.errorContainer,
   okSoft: m3.successContainer,
   warnSoft: m3.warningContainer,
   accentSoft: m3.primaryContainer,
-  mapWater: '#7BA8B0',
-  mapParcel: '#4A6B62',
-  mapParcelSel: ACCENT,
+  mapWater: m3.tertiary,
+  mapParcel: m3.secondary,
+  mapParcelSel: m3.primary,
+  mapOther: m3.outline,
+  mapOtherFill: m3.surfaceContainerHighest,
+  mapAttribution: m3.onSurfaceVariant,
 } as const
 
 export type StatusKind =

@@ -7,7 +7,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { STATUS_META, StatusKind, space, INK, ACCENT, m3 } from './designSystem'
+import { STATUS_META, StatusKind, space, INK, m3 } from './designSystem'
 
 export function StatusChip({ kind }: { kind: StatusKind }) {
   const meta = STATUS_META[kind]
@@ -107,22 +107,11 @@ export function PrimaryBtn(props: React.ComponentProps<typeof Button> & { fullWi
 }
 
 /** MD3 filled-tonal style */
+/** MD3 filled-tonal — themed via containedSecondary */
 export function SecondaryBtn(props: React.ComponentProps<typeof Button> & { fullWidth?: boolean }) {
   const { children, fullWidth, sx, ...rest } = props
   return (
-    <Button
-      variant="contained"
-      color="secondary"
-      fullWidth={fullWidth}
-      sx={{
-        flexShrink: 0,
-        bgcolor: m3.secondaryContainer,
-        color: m3.onSecondaryContainer,
-        '&:hover': { bgcolor: m3.secondaryContainer, filter: 'brightness(0.96)' },
-        ...sx,
-      }}
-      {...rest}
-    >
+    <Button variant="contained" color="secondary" fullWidth={fullWidth} sx={{ flexShrink: 0, ...sx }} {...rest}>
       {children}
     </Button>
   )
@@ -148,7 +137,7 @@ export function SupplyBar({
 }) {
   return (
     <Box sx={{ display: 'flex', height: 12, borderRadius: 2, overflow: 'hidden', bgcolor: m3.surfaceContainerHighest }}>
-      <Box sx={{ width: `${(firm / total) * 100}%`, bgcolor: ACCENT }} />
+      <Box sx={{ width: `${(firm / total) * 100}%`, bgcolor: m3.primary }} />
       <Box sx={{ width: `${(atRisk / total) * 100}%`, bgcolor: m3.warning }} />
     </Box>
   )
@@ -214,7 +203,7 @@ export function WeekRail({
                   top: 0,
                   height: '100%',
                   width: `${Math.min(pct, 100)}%`,
-                  bgcolor: w.issue ? m3.error : w.delta >= 0 ? ACCENT : m3.outline,
+                  bgcolor: w.issue ? m3.error : w.delta >= 0 ? m3.primary : m3.outline,
                   borderRadius: 2,
                 }}
               />
@@ -303,7 +292,7 @@ export function TradeoffBars({
           </Typography>
         </Stack>
         <Box sx={{ height: 6, bgcolor: m3.surfaceContainerHighest, borderRadius: 2 }}>
-          <Box sx={{ width: `${coverage}%`, height: '100%', bgcolor: ACCENT, borderRadius: 2 }} />
+          <Box sx={{ width: `${coverage}%`, height: '100%', bgcolor: m3.primary, borderRadius: 2 }} />
         </Box>
       </Box>
       <Box>

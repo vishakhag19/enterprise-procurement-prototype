@@ -4,6 +4,7 @@ import tanukuFieldPhoto from './assets/tanuku-field.jpg'
 import {
   AppBar,
   Avatar,
+  Badge,
   Box,
   Button,
   Checkbox,
@@ -16,6 +17,8 @@ import {
   FormControlLabel,
   IconButton,
   List,
+  ListItem,
+  ListItemAvatar,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -32,11 +35,20 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material'
+import type { SvgIconComponent } from '@mui/icons-material'
+import AgricultureOutlinedIcon from '@mui/icons-material/AgricultureOutlined'
+import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined'
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
+import CompareArrowsOutlinedIcon from '@mui/icons-material/CompareArrowsOutlined'
+import DonutLargeOutlinedIcon from '@mui/icons-material/DonutLargeOutlined'
+import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined'
+import NotificationImportantOutlinedIcon from '@mui/icons-material/NotificationImportantOutlined'
 import OpenInFullIcon from '@mui/icons-material/OpenInFull'
-import WarningAmberIcon from '@mui/icons-material/WarningAmber'
-import { ACCENT, space, semantic, m3 } from './theme'
+import PersonPinCircleOutlinedIcon from '@mui/icons-material/PersonPinCircleOutlined'
+import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined'
+import { space, semantic, m3 } from './theme'
 import {
   DashPaper,
   SectionLabel,
@@ -163,26 +175,45 @@ function RegionMap({
 
   function marker(x: number, y: number, role: FarmRole, highlighted: boolean) {
     const hi = highlighted ? 2.25 : undefined
-    if (role === 'committed') return <circle cx={x} cy={y} r="4.5" fill="#0D5C5C" stroke="#0A1A1F" strokeWidth={hi ?? 0.75} />
-    if (role === 'needs-verification') return <circle cx={x} cy={y} r="5.5" fill="#FFFFFF" stroke="#C4872A" strokeWidth={hi ?? 1.5} strokeDasharray="2 1.5" />
-    if (role === 'recommended') return <circle cx={x} cy={y} r="5" fill="#FFFFFF" stroke="#0BAFAF" strokeWidth={hi ?? 1.5} />
-    if (role === 'alert') return (
-      <g>
-        <circle cx={x} cy={y} r="7" fill="#D1433A" stroke="#0A1A1F" strokeWidth={hi ?? 1} />
-        <text x={x} y={y + 3} textAnchor="middle" fontSize="8" fontWeight="700" fill="#ffffff">!</text>
-      </g>
-    )
+    if (role === 'committed') {
+      return <circle cx={x} cy={y} r="4.5" fill={m3.primary} stroke={m3.onSurface} strokeWidth={hi ?? 0.75} />
+    }
+    if (role === 'needs-verification') {
+      return <circle cx={x} cy={y} r="5.5" fill={m3.surfaceContainerLowest} stroke={m3.warning} strokeWidth={hi ?? 1.5} strokeDasharray="2 1.5" />
+    }
+    if (role === 'recommended') {
+      return <circle cx={x} cy={y} r="5" fill={m3.surfaceContainerLowest} stroke={m3.primary} strokeWidth={hi ?? 1.5} />
+    }
+    if (role === 'alert') {
+      return (
+        <g>
+          <circle cx={x} cy={y} r="7" fill={m3.error} stroke={m3.onSurface} strokeWidth={hi ?? 1} />
+          <text x={x} y={y + 3} textAnchor="middle" fontSize="8" fontWeight="700" fill={m3.onError}>!</text>
+        </g>
+      )
+    }
     return (
       <g>
         {role === 'selected' && (
-          <rect x={x - 7} y={y - 7} width="14" height="14" fill="rgba(11,175,175,0.18)" stroke="#0BAFAF" strokeWidth="0.75" strokeDasharray="2 1" transform={`rotate(12 ${x} ${y})`} />
+          <rect
+            x={x - 7}
+            y={y - 7}
+            width="14"
+            height="14"
+            fill={m3.primaryContainer}
+            fillOpacity={0.55}
+            stroke={m3.primary}
+            strokeWidth="0.75"
+            strokeDasharray="2 1"
+            transform={`rotate(12 ${x} ${y})`}
+          />
         )}
         <circle
           cx={x}
           cy={y}
           r={role === 'selected' ? 5.5 : 3.5}
-          fill={role === 'selected' ? '#0BAFAF' : '#B8C0C4'}
-          stroke={highlighted ? '#0BAFAF' : role === 'selected' ? '#089090' : '#8A959C'}
+          fill={role === 'selected' ? m3.primary : semantic.mapOtherFill}
+          stroke={highlighted ? m3.primary : role === 'selected' ? m3.primaryPressed : semantic.mapOther}
           strokeWidth={hi ?? (role === 'selected' ? 1.25 : 0.75)}
         />
       </g>
@@ -222,7 +253,7 @@ function RegionMap({
 
   return (
     <svg viewBox={viewBox} preserveAspectRatio={variant === 'coverage' || variant === 'investigation' || fullscreen ? 'xMidYMid slice' : 'xMidYMid meet'} style={sizeStyle} role="img" aria-label="Andhra Pradesh procurement geography">
-      <rect width="360" height="260" fill="#E2E8EA" />
+      <rect width="360" height="260" fill={m3.surfaceContainerHigh} />
       <g opacity=".82" style={{ filter: 'grayscale(0.28) saturate(0.55) contrast(1.05) hue-rotate(-8deg)' }}>
         {[184, 185, 186].flatMap((tileX, col) =>
           [115, 116, 117].map((tileY, row) => (
@@ -238,21 +269,21 @@ function RegionMap({
           ))
         )}
       </g>
-      <rect width="360" height="260" fill="#0A1A1F" opacity=".04" />
+      <rect width="360" height="260" fill={m3.onSurface} opacity=".04" />
       {variant === 'recovery' ? (
-        <g fontSize="7.5" fontWeight="700" fill="#475569" stroke="#ffffff" strokeWidth="2.5" paintOrder="stroke">
+        <g fontSize="7.5" fontWeight="700" fill={m3.onSurfaceVariant} stroke={m3.surfaceContainerLowest} strokeWidth="2.5" paintOrder="stroke">
           <text x="207" y="145">WEST GODAVARI</text>
           <text x="257" y="34">EAST GODAVARI</text>
         </g>
       ) : variant === 'investigation' ? (
-        <g fontSize="7.5" fontWeight="700" fill="#475569" stroke="#ffffff" strokeWidth="2.5" paintOrder="stroke">
+        <g fontSize="7.5" fontWeight="700" fill={m3.onSurfaceVariant} stroke={m3.surfaceContainerLowest} strokeWidth="2.5" paintOrder="stroke">
           <text x="130" y="184">GUNTUR</text>
           <text x="166" y="174">KRISHNA</text>
           <text x="207" y="157">WEST GODAVARI</text>
           <text x="257" y="34">EAST GODAVARI</text>
         </g>
       ) : (
-        <g fontSize="7.5" fontWeight="700" fill="#475569" stroke="#ffffff" strokeWidth="2.5" paintOrder="stroke">
+        <g fontSize="7.5" fontWeight="700" fill={m3.onSurfaceVariant} stroke={m3.surfaceContainerLowest} strokeWidth="2.5" paintOrder="stroke">
           <text x="112" y="184">GUNTUR</text>
           <text x="166" y="174">KRISHNA</text>
           <text x="207" y="157">WEST GODAVARI</text>
@@ -260,8 +291,8 @@ function RegionMap({
         </g>
       )}
       <g>
-        <rect x={attributionPosition.x} y={attributionPosition.y - 12} width="116" height="13" rx="2" fill="#ffffff" opacity=".9" />
-        <text x={attributionPosition.x + 4} y={attributionPosition.y - 3} fontSize="6.5" fill="#64748b">© OpenStreetMap contributors · Approx.</text>
+        <rect x={attributionPosition.x} y={attributionPosition.y - 12} width="116" height="13" rx="2" fill={m3.surfaceContainerLowest} opacity=".9" />
+        <text x={attributionPosition.x + 4} y={attributionPosition.y - 3} fontSize="6.5" fill={semantic.mapAttribution}>© OpenStreetMap contributors · Approx.</text>
       </g>
       {/* Farm dots */}
       {Object.entries(FARM_COORDS).map(([id, { x, y }]) => {
@@ -280,14 +311,14 @@ function RegionMap({
             {marker(x, y, displayRole, isHighlighted)}
             {addedIds.includes(id) && (
               <g pointerEvents="none">
-                <circle cx={x} cy={y} r="9" fill="none" stroke="#0BAFAF" strokeWidth="1.5" />
-                <text x={x - 21} y={y - 10} fontSize="6.5" fontWeight="700" fill="#089090" stroke="#ffffff" strokeWidth="2" paintOrder="stroke">ADDED</text>
+                <circle cx={x} cy={y} r="9" fill="none" stroke={m3.primary} strokeWidth="1.5" />
+                <text x={x - 21} y={y - 10} fontSize="6.5" fontWeight="700" fill={m3.primary} stroke={m3.surfaceContainerLowest} strokeWidth="2" paintOrder="stroke">ADDED</text>
               </g>
             )}
             {removedIds.includes(id) && (
               <g pointerEvents="none">
-                <path d={`M ${x - 6} ${y - 6} L ${x + 6} ${y + 6} M ${x + 6} ${y - 6} L ${x - 6} ${y + 6}`} stroke="#6b7280" strokeWidth="1.75" />
-                <text x={x + 8} y={y - 7} fontSize="6.5" fontWeight="700" fill="#4b5563" stroke="#ffffff" strokeWidth="2" paintOrder="stroke">REMOVED</text>
+                <path d={`M ${x - 6} ${y - 6} L ${x + 6} ${y + 6} M ${x + 6} ${y - 6} L ${x - 6} ${y + 6}`} stroke={m3.outline} strokeWidth="1.75" />
+                <text x={x + 8} y={y - 7} fontSize="6.5" fontWeight="700" fill={m3.onSurfaceVariant} stroke={m3.surfaceContainerLowest} strokeWidth="2" paintOrder="stroke">REMOVED</text>
               </g>
             )}
           </g>
@@ -295,17 +326,17 @@ function RegionMap({
       })}
       {variant === 'recovery' && (
         <g pointerEvents="none">
-          <text x="185" y="45" fontSize="7" fontWeight="700" fill="#374151" stroke="#ffffff" strokeWidth="2" paintOrder="stroke">Rajahmundry recovery</text>
-          <text x="280" y="79" fontSize="7" fontWeight="700" fill="#D1433A" stroke="#ffffff" strokeWidth="2" paintOrder="stroke">Godavari revised</text>
+          <text x="185" y="45" fontSize="7" fontWeight="700" fill={m3.onSurface} stroke={m3.surfaceContainerLowest} strokeWidth="2" paintOrder="stroke">Rajahmundry recovery</text>
+          <text x="280" y="79" fontSize="7" fontWeight="700" fill={m3.error} stroke={m3.surfaceContainerLowest} strokeWidth="2" paintOrder="stroke">Godavari revised</text>
         </g>
       )}
       {tooltipMeta && tooltipPoint && !compact && (
         <g transform={`translate(${variant === 'investigation' ? Math.min(Math.max(tooltipPoint.x + 8, 130), 188) : Math.min(tooltipPoint.x + 12, 224)} ${Math.max(tooltipPoint.y - 58, variant === 'investigation' ? 22 : 8)})`}>
-          <rect width="108" height="55" rx="3" fill="#ffffff" stroke="#cbd5e1" />
-          <text x="7" y="12" fontSize="7.5" fontWeight="700" fill="#111827">{tooltipMeta.name}</text>
-          <text x="7" y="22" fontSize="6.5" fill="#64748b">{tooltipMeta.district}</text>
-          <text x="7" y="34" fontSize="7" fontWeight="600" fill="#111827">{tooltipMeta.supply} t · {tooltipMeta.harvest}</text>
-          <text x="7" y="45" fontSize="6.5" fontWeight="700" fill="#374151">{tooltipMeta.confidence} confidence</text>
+          <rect width="108" height="55" rx="8" fill={m3.surfaceContainerLowest} stroke={m3.outlineVariant} />
+          <text x="7" y="12" fontSize="7.5" fontWeight="700" fill={m3.onSurface}>{tooltipMeta.name}</text>
+          <text x="7" y="22" fontSize="6.5" fill={m3.onSurfaceVariant}>{tooltipMeta.district}</text>
+          <text x="7" y="34" fontSize="7" fontWeight="600" fill={m3.onSurface}>{tooltipMeta.supply} t · {tooltipMeta.harvest}</text>
+          <text x="7" y="45" fontSize="6.5" fontWeight="700" fill={m3.onSurfaceVariant}>{tooltipMeta.confidence} confidence</text>
           {onViewEvidence ? (
             <text
               x="103"
@@ -313,14 +344,14 @@ function RegionMap({
               textAnchor="end"
               fontSize="6.5"
               fontWeight="600"
-              fill="#089090"
+              fill={m3.primary}
               style={{ cursor: 'pointer' }}
               onClick={() => tooltipId && onViewEvidence(tooltipId)}
             >
               View evidence
             </text>
           ) : (
-            <text x="7" y="52" fontSize="6" fill="#64748b">{tooltipMeta.evidence}</text>
+            <text x="7" y="52" fontSize="6" fill={m3.onSurfaceVariant}>{tooltipMeta.evidence}</text>
           )}
         </g>
       )}
@@ -331,12 +362,12 @@ function RegionMap({
 type LegendItem = { role: FarmRole; label: string }
 
 const DOT_STYLE: Record<FarmRole, React.CSSProperties> = {
-  selected: { background: '#0BAFAF', border: '2px solid #0BAFAF', boxShadow: '0 0 0 3px rgba(11,175,175,0.25)' },
-  committed: { background: '#0D5C5C', border: '2px solid #0D5C5C' },
-  'needs-verification': { background: '#FFFFFF', border: '2px dashed #C4872A' },
-  recommended: { background: '#FFFFFF', border: '2px solid #0BAFAF' },
-  other: { background: '#B8C0C4', border: '1px solid #8A959C' },
-  alert: { background: '#D1433A', border: '2px solid #D1433A' },
+  selected: { background: m3.primary, border: `2px solid ${m3.primary}`, boxShadow: `0 0 0 3px ${m3.primaryContainer}` },
+  committed: { background: m3.primary, border: `2px solid ${m3.primary}` },
+  'needs-verification': { background: m3.surfaceContainerLowest, border: `2px dashed ${m3.warning}` },
+  recommended: { background: m3.surfaceContainerLowest, border: `2px solid ${m3.primary}` },
+  other: { background: semantic.mapOtherFill, border: `1px solid ${semantic.mapOther}` },
+  alert: { background: m3.error, border: `2px solid ${m3.error}` },
 }
 
 function MapLegend({ items }: { items: LegendItem[] }) {
@@ -678,7 +709,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           <Box>
             <SectionLabel>Needs a decision</SectionLabel>
             <Stack spacing={0} sx={{ bgcolor: m3.surfaceContainerLowest, borderRadius: '16px', overflow: 'hidden' }}>
-              <Box sx={{ p: space.related, bgcolor: 'rgba(11,175,175,0.10)' }}>
+              <Box sx={{ p: space.related, bgcolor: m3.primaryContainer }}>
                 <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 4, alignItems: 'flex-start' }}>
                   <Box>
                     <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 1 }}>
@@ -1441,7 +1472,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       p: space.section,
                       cursor: 'pointer',
                       bgcolor: isSelected ? ACCENT_SOFT : failCount > 0 ? semantic.alertSoft : PAPER,
-                      outline: isSelected ? `2px solid ${ACCENT}` : '2px solid transparent',
+                      outline: isSelected ? `2px solid ${m3.primary}` : '2px solid transparent',
                       outlineOffset: -2,
                     }}
                   >
@@ -1452,7 +1483,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                             width: 18,
                             height: 18,
                             borderRadius: '50%',
-                            border: isSelected ? `5px solid ${ACCENT}` : `2px solid ${RULE}`,
+                            border: isSelected ? `5px solid ${m3.primary}` : `2px solid ${RULE}`,
                             bgcolor: PAPER,
                             flexShrink: 0,
                           }}
@@ -1460,7 +1491,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                         <Box>
                           <Typography variant="subtitle1" sx={{ color: INK }}>{s.name}</Typography>
                           {isSelected && (
-                            <Typography variant="caption" sx={{ color: ACCENT, fontWeight: 700 }}>Selected strategy</Typography>
+                            <Typography variant="caption" sx={{ color: m3.primary, fontWeight: 700 }}>Selected strategy</Typography>
                           )}
                         </Box>
                       </Stack>
@@ -1797,7 +1828,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <DashPaper sx={{ width: '100%', maxWidth: 410, overflow: 'hidden', boxShadow: 1, p: 0 }}>
         <Box sx={{ bgcolor: 'background.paper', overflow: 'hidden' }}>
           {/* Dark top bar */}
-          <Box sx={{ color: '#fff', px: 4, pt: 4, pb: 4 }} style={{ background: m3.inverseSurface, borderTop: `3px solid ${ACCENT}` }}>
+          <Box sx={{ color: '#fff', px: 4, pt: 4, pb: 4 }} style={{ background: m3.inverseSurface, borderTop: `3px solid ${m3.primary}` }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box>
               <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 1 }}>
@@ -1836,13 +1867,13 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     )}
                   </g>
                   <rect width="200" height="120" fill="#f8fafc" opacity=".12" />
-                  <path d="M26 101 C56 91 82 70 104 49 C122 32 143 23 169 19" fill="none" stroke="#0BAFAF" strokeWidth="3" strokeDasharray="5 3" />
-                  <circle cx="26" cy="101" r="5" fill="#ffffff" stroke="#0BAFAF" strokeWidth="2" />
+                  <path d="M26 101 C56 91 82 70 104 49 C122 32 143 23 169 19" fill="none" stroke={m3.primary} strokeWidth="3" strokeDasharray="5 3" />
+                  <circle cx="26" cy="101" r="5" fill={m3.surfaceContainerLowest} stroke={m3.primary} strokeWidth="2" />
                   <path d="M169 9 C160 9 153 16 153 25 C153 37 169 49 169 49 C169 49 185 37 185 25 C185 16 178 9 169 9 Z" fill="#111827" />
                   <circle cx="169" cy="25" r="5" fill="#ffffff" />
                   <path d="M145 51 L190 45 L195 84 L151 91 Z" fill="#83996b" opacity=".7" stroke="#526348" strokeDasharray="3 2" />
                   <rect x="131" y="108" width="67" height="10" rx="2" fill="#ffffff" opacity=".9" />
-                  <text x="135" y="115" fontSize="5.5" fill="#64748b">© OpenStreetMap</text>
+                  <text x="135" y="115" fontSize="5.5" fill={m3.onSurfaceVariant}>© OpenStreetMap</text>
                 </svg>
                 <Box sx={{ position: 'absolute', bottom: 8, left: 8, bgcolor: 'background.paper', border: 1, borderColor: 'divider', borderRadius: 1, px: 2, py: 1 }}>
                   <Typography sx={{ fontSize: 9, color: 'text.secondary', fontWeight: 500 }}>Approximate destination · West Godavari</Typography>
@@ -2398,7 +2429,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Recovery recommendation */}
           <DashPaper sx={{ overflow: 'hidden', p: 0 }}>
             <Box sx={{ px: 4, pt: 4 }}>
-              <Typography variant="overline" sx={{ color: ACCENT }}>3 · Recovery options</Typography>
+              <Typography variant="overline" sx={{ color: m3.primary }}>3 · Recovery options</Typography>
               <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary' }}>Recommended recovery · compare before accepting</Typography>
             </Box>
             <Box sx={{ px: 4, pb: 4, pt: 4 }}>
@@ -2541,29 +2572,28 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   )
 }
 
-// ─── SIDEBAR ─────────────────────────────────────────────────────────────────
+// ─── SIDEBAR (MD3 standard Navigation Drawer, 360dp) ─────────────────────────
 
 type NavItem = {
   screen: Screen
-  num: number
   label: string
-  sub: string
+  Icon: SvgIconComponent
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { screen: 'coverage',     num: 1, label: 'Coverage',     sub: 'Procurement position' },
-  { screen: 'farms',        num: 2, label: 'Farms',         sub: 'GIS investigation'   },
-  { screen: 'compare',      num: 3, label: 'Compare',       sub: 'Candidate analysis'  },
-  { screen: 'scenarios',    num: 4, label: 'Scenarios',     sub: 'Constraint planning' },
-  { screen: 'verification', num: 5, label: 'Verification',  sub: 'Field dispatch'      },
-  { screen: 'field',        num: 6, label: 'Field',         sub: 'Officer findings'    },
-  { screen: 'findings',     num: 7, label: 'Findings',      sub: 'Review evidence'     },
-  { screen: 'plan',         num: 8, label: 'Plan',          sub: 'Active procurement'  },
-  { screen: 'alert',        num: 9, label: 'Monitoring alert', sub: 'Exception recovery' },
+  { screen: 'coverage',     label: 'Coverage',          Icon: DonutLargeOutlinedIcon },
+  { screen: 'farms',        label: 'Farms',             Icon: AgricultureOutlinedIcon },
+  { screen: 'compare',      label: 'Compare',           Icon: CompareArrowsOutlinedIcon },
+  { screen: 'scenarios',    label: 'Scenarios',         Icon: TuneOutlinedIcon },
+  { screen: 'verification', label: 'Verification',      Icon: FactCheckOutlinedIcon },
+  { screen: 'field',        label: 'Field',             Icon: PersonPinCircleOutlinedIcon },
+  { screen: 'findings',     label: 'Findings',          Icon: AssignmentTurnedInOutlinedIcon },
+  { screen: 'plan',         label: 'Plan',              Icon: CalendarMonthOutlinedIcon },
+  { screen: 'alert',        label: 'Monitoring alert',  Icon: NotificationImportantOutlinedIcon },
 ]
 
-// Screens considered "visited" in the flow
 const FLOW_ORDER: Screen[] = ['coverage', 'farms', 'compare', 'scenarios', 'verification', 'field', 'findings', 'plan', 'alert']
+const DRAWER_WIDTH = 360
 
 function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Screen) => void }) {
   const currentIdx = FLOW_ORDER.indexOf(current)
@@ -2572,10 +2602,10 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
     <Drawer
       variant="permanent"
       sx={{
-        width: 220,
+        width: DRAWER_WIDTH,
         flexShrink: 0,
         [`& .MuiDrawer-paper`]: {
-          width: 220,
+          width: DRAWER_WIDTH,
           boxSizing: 'border-box',
           bgcolor: m3.surfaceContainerLow,
           color: m3.onSurface,
@@ -2585,11 +2615,12 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
         },
       }}
     >
+      {/* MD3 drawer header — on-surface roles only */}
       <Box sx={{ px: space.related, pt: space.section, pb: space.related }}>
-        <Typography variant="overline" sx={{ color: ACCENT, display: 'block', mb: space.xs }}>
+        <Typography variant="overline" component="p" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.xs }}>
           ITC Procurement
         </Typography>
-        <Typography variant="h6" sx={{ color: m3.onSurface, lineHeight: 1.25, fontSize: '1.05rem' }}>
+        <Typography variant="h6" sx={{ color: m3.onSurface, lineHeight: 1.25 }}>
           Decision Support
         </Typography>
         <Typography variant="body2" sx={{ color: m3.onSurfaceVariant, display: 'block', mt: space.xs }}>
@@ -2597,12 +2628,22 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
         </Typography>
       </Box>
 
-      <List sx={{ flex: 1, overflowY: 'auto', py: space.tight, px: 0, scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-        {NAV_ITEMS.map(({ screen, num, label, sub }) => {
+      <List
+        disablePadding
+        sx={{
+          flex: 1,
+          overflowY: 'auto',
+          py: space.tight,
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          '&::-webkit-scrollbar': { display: 'none' },
+        }}
+      >
+        {NAV_ITEMS.map(({ screen, label, Icon }) => {
           const itemIdx = FLOW_ORDER.indexOf(screen)
           const isActive = current === screen
-          const isComplete = itemIdx < currentIdx
           const isAccessible = itemIdx <= currentIdx + 1
+          const iconEl = <Icon fontSize="small" />
 
           return (
             <ListItemButton
@@ -2610,63 +2651,66 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
               selected={isActive}
               disabled={!isAccessible}
               onClick={() => isAccessible && onNavigate(screen)}
-              sx={{
-                alignItems: 'center',
-                opacity: isAccessible ? 1 : 0.38,
-              }}
             >
-              <ListItemIcon sx={{ minWidth: 36 }}>
-                <Avatar
-                  sx={{
-                    width: 28,
-                    height: 28,
-                    fontSize: 12,
-                    fontWeight: 700,
-                    bgcolor: isActive
-                      ? m3.primaryContainer
-                      : isComplete
-                        ? m3.successContainer
-                        : m3.surfaceContainerHighest,
-                    color: isActive
-                      ? m3.onPrimaryContainer
-                      : isComplete
-                        ? m3.onSuccessContainer
-                        : m3.onSurfaceVariant,
-                  }}
-                >
-                  {screen === 'alert' ? <WarningAmberIcon sx={{ fontSize: 14 }} /> : isComplete ? <CheckIcon sx={{ fontSize: 14 }} /> : num}
-                </Avatar>
+              <ListItemIcon>
+                {screen === 'alert' ? (
+                  <Badge
+                    color="error"
+                    variant="dot"
+                    overlap="circular"
+                    sx={{ '& .MuiBadge-badge': { top: 4, right: 4 } }}
+                  >
+                    {iconEl}
+                  </Badge>
+                ) : (
+                  iconEl
+                )}
               </ListItemIcon>
               <ListItemText
                 primary={label}
-                secondary={sub}
                 slotProps={{
                   primary: {
-                    variant: 'body2',
+                    variant: 'body1',
                     sx: {
-                      fontWeight: isActive ? 700 : 650,
+                      fontWeight: isActive ? 700 : 500,
                       color: isActive ? m3.onSecondaryContainer : m3.onSurface,
-                      lineHeight: 1.2,
                     },
-                  },
-                  secondary: {
-                    variant: 'caption',
-                    sx: { color: m3.onSurfaceVariant, mt: 0.5 },
                   },
                 }}
               />
-              {screen === 'alert' && (
-                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m3.error, flexShrink: 0 }} />
-              )}
             </ListItemButton>
           )
         })}
       </List>
 
-      <Box sx={{ mx: space.compact, mb: space.related, p: space.related, borderRadius: '16px', bgcolor: m3.surfaceContainerLowest }}>
-        <Typography variant="body2" sx={{ fontWeight: 700, color: m3.onSurface }}>Shrikant</Typography>
-        <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mt: space.xs }}>Procurement Mgr · AP Region</Typography>
-      </Box>
+      {/* MD3 drawer footer — account row, not a floating card */}
+      <Divider sx={{ mx: space.compact }} />
+      <List disablePadding sx={{ py: space.tight }}>
+        <ListItem sx={{ px: space.related, py: space.tight }}>
+          <ListItemAvatar sx={{ minWidth: 56 }}>
+            <Avatar
+              sx={{
+                width: 40,
+                height: 40,
+                bgcolor: m3.primaryContainer,
+                color: m3.onPrimaryContainer,
+                fontWeight: 700,
+                fontSize: '1rem',
+              }}
+            >
+              S
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary="Shrikant"
+            secondary="Procurement Mgr · AP Region"
+            slotProps={{
+              primary: { variant: 'body1', sx: { fontWeight: 650, color: m3.onSurface } },
+              secondary: { variant: 'caption', sx: { color: m3.onSurfaceVariant } },
+            }}
+          />
+        </ListItem>
+      </List>
     </Drawer>
   )
 }

@@ -1,5 +1,5 @@
 import { createTheme, alpha } from '@mui/material/styles'
-import { ACCENT, PAPER, SIDEBAR_BG, SURFACE, m3, semantic, space } from './designSystem'
+import { PAPER, SIDEBAR_BG, SURFACE, m3, semantic, space } from './designSystem'
 
 export { ACCENT, SIDEBAR_BG, SURFACE, PAPER, space, semantic, m3 } from './designSystem'
 
@@ -11,9 +11,10 @@ export const theme = createTheme({
   shape: { borderRadius: 12 },
   palette: {
     mode: 'light',
+    // MD3 color roles: filled actions use primary (#006A6A) + onPrimary — not the seed accent
     primary: {
-      main: ACCENT,
-      dark: m3.primary,
+      main: m3.primary,
+      dark: m3.primaryPressed,
       light: m3.primaryContainer,
       contrastText: m3.onPrimary,
     },
@@ -42,9 +43,9 @@ export const theme = createTheme({
       contrastText: m3.onSuccess,
     },
     info: {
-      main: ACCENT,
+      main: m3.primary,
       light: m3.primaryContainer,
-      dark: m3.primary,
+      dark: m3.primaryPressed,
       contrastText: m3.onPrimary,
     },
     background: {
@@ -58,7 +59,7 @@ export const theme = createTheme({
     divider: m3.outlineVariant,
     action: {
       hover: alpha(m3.onSurface, 0.08),
-      selected: alpha(ACCENT, 0.12),
+      selected: alpha(m3.primary, 0.12),
       disabled: alpha(m3.onSurface, 0.38),
       disabledBackground: alpha(m3.onSurface, 0.12),
       focus: alpha(m3.onSurface, 0.12),
@@ -124,7 +125,16 @@ export const theme = createTheme({
           boxShadow: 'none',
           '&:hover': {
             boxShadow: 'none',
-            backgroundColor: m3.primaryBrandDark,
+          },
+          '&.MuiButton-containedPrimary:hover': {
+            backgroundColor: m3.primaryPressed,
+          },
+          '&.MuiButton-containedSecondary': {
+            backgroundColor: m3.secondaryContainer,
+            color: m3.onSecondaryContainer,
+            '&:hover': {
+              backgroundColor: alpha(m3.secondary, 0.22),
+            },
           },
         },
         outlined: {
@@ -132,7 +142,7 @@ export const theme = createTheme({
           color: m3.primary,
           '&:hover': {
             borderColor: m3.primary,
-            backgroundColor: alpha(ACCENT, 0.08),
+            backgroundColor: alpha(m3.primary, 0.08),
           },
         },
         text: {
@@ -201,6 +211,8 @@ export const theme = createTheme({
     MuiDrawer: {
       styleOverrides: {
         paper: {
+          // MD3 standard navigation drawer
+          width: 360,
           backgroundColor: m3.surfaceContainerLow,
           color: m3.onSurface,
           borderRight: 'none',
@@ -211,36 +223,51 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 28,
-          // MD3 nav drawer: 12dp side inset, 16dp item padding
+          // MD3 nav drawer destination: 56dp tall, 12dp side inset, 16dp item padding
+          minHeight: 56,
           marginInline: 12,
-          marginBlock: 4,
-          paddingTop: 12,
-          paddingBottom: 12,
+          marginBlock: 0,
+          paddingTop: 4,
+          paddingBottom: 4,
           paddingLeft: 16,
-          paddingRight: 16,
+          paddingRight: 24,
           '&.Mui-selected': {
             backgroundColor: m3.secondaryContainer,
             color: m3.onSecondaryContainer,
             '&:hover': { backgroundColor: alpha(m3.secondary, 0.22) },
             '& .MuiListItemIcon-root': { color: m3.onSecondaryContainer },
+            '& .MuiListItemText-primary': { color: m3.onSecondaryContainer, fontWeight: 700 },
           },
           '&:hover': {
-            backgroundColor: alpha(m3.onSurface, 0.06),
+            backgroundColor: alpha(m3.onSurface, 0.08),
           },
+          '&.Mui-disabled': {
+            opacity: 1,
+            color: alpha(m3.onSurface, 0.38),
+            '& .MuiListItemIcon-root': { color: alpha(m3.onSurface, 0.38) },
+          },
+        },
+      },
+    },
+    MuiListItemIcon: {
+      styleOverrides: {
+        root: {
+          minWidth: 40,
+          color: m3.onSurfaceVariant,
         },
       },
     },
     MuiSlider: {
       styleOverrides: {
-        root: { color: ACCENT, padding: '14px 0', height: 4 },
+        root: { color: m3.primary, padding: '14px 0', height: 4 },
         thumb: {
           width: 20,
           height: 20,
-          backgroundColor: ACCENT,
+          backgroundColor: m3.primary,
           border: `2px solid ${m3.surfaceContainerLowest}`,
           boxShadow: 'none',
           '&:hover, &.Mui-focusVisible': {
-            boxShadow: `0 0 0 8px ${alpha(ACCENT, 0.16)}`,
+            boxShadow: `0 0 0 8px ${alpha(m3.primary, 0.16)}`,
           },
         },
         track: { height: 4, borderRadius: 2 },
