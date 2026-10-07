@@ -2,7 +2,6 @@ import { useState } from 'react'
 import bhimavaramFieldPhoto from './assets/bhimavaram-field.jpg'
 import tanukuFieldPhoto from './assets/tanuku-field.jpg'
 import {
-  AppBar,
   Avatar,
   Badge,
   Box,
@@ -32,7 +31,6 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Toolbar,
   Typography,
 } from '@mui/material'
 import type { SvgIconComponent } from '@mui/icons-material'
@@ -2146,7 +2144,6 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               )}
 
               <Box sx={{ borderTop: `1px solid ${PANEL_BORDER}`, px: space.related, py: space.related }}>
-                <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: space.tight }}>Status and submit</Typography>
                 <PrimaryBtn fullWidth onClick={handleSubmit} disabled={!canConfirm} sx={{ mb: space.tight }}>
                   Evidence confirmed · Submit findings
                 </PrimaryBtn>
@@ -2845,64 +2842,6 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
   )
 }
 
-// ─── TOP BAR ─────────────────────────────────────────────────────────────────
-
-const BREADCRUMB_TITLE: Record<Screen, string> = {
-  coverage:     'Procurement Coverage',
-  farms:        'GIS Farm Investigation',
-  compare:      'Farm Comparison',
-  scenarios:    'Scenario Planning',
-  verification: 'Field Verification',
-  field:        'Field Officer',
-  findings:     'Field Findings',
-  plan:         'Active Plan',
-  alert:        'Plan Alert',
-}
-
-function TopBar({ screen }: { screen: Screen }) {
-  const ctxParts = screen === 'coverage' || screen === 'farms' || screen === 'compare'
-    ? ['Week 3 gap: 620 t', 'Target: 4,000 t']
-    : ['Target: 4,000 t']
-  if (screen === 'compare' || screen === 'scenarios' || screen === 'verification' || screen === 'field' || screen === 'findings' || screen === 'plan' || screen === 'alert') {
-    ctxParts.push('4 farms in comparison')
-  }
-  if (screen === 'scenarios' || screen === 'verification' || screen === 'field' || screen === 'findings' || screen === 'plan') {
-    ctxParts.push('Strategy: Coverage-First')
-  }
-
-  return (
-    <AppBar
-      position="static"
-      color="inherit"
-      sx={{
-        ...shellChrome,
-        bgcolor: m3.surfaceContainerLowest,
-        flexShrink: 0,
-      }}
-    >
-      <Toolbar variant="dense" sx={{ minHeight: 64, px: space.related, gap: space.tight }}>
-        <Typography variant="h6" component="h1" sx={{ mr: space.tight, fontWeight: 700, fontSize: '1.05rem', color: m3.onSurface }}>
-          {BREADCRUMB_TITLE[screen]}
-        </Typography>
-        <Box sx={{ flex: 1 }} />
-        {ctxParts.map(p => (
-          <Chip
-            key={p}
-            size="small"
-            label={p}
-            sx={{
-              bgcolor: m3.surfaceContainerHigh,
-              color: m3.onSurface,
-              fontWeight: 600,
-              borderRadius: `${shape.sm}px`,
-            }}
-          />
-        ))}
-      </Toolbar>
-    </AppBar>
-  )
-}
-
 // ─── APP ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -2936,11 +2875,8 @@ export default function App() {
       }}
     >
       <Sidebar current={screen} onNavigate={setScreen} />
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden', gap: space.tight }}>
-        <TopBar screen={screen} />
-        <Box sx={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
-          {screens[screen]}
-        </Box>
+      <Box sx={{ flex: 1, minWidth: 0, overflow: 'hidden', minHeight: 0 }}>
+        {screens[screen]}
       </Box>
     </Box>
   )
