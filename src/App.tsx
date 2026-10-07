@@ -63,7 +63,7 @@ import {
   DataStrip,
 } from './ui'
 import type { StatusKind } from './designSystem'
-import { CARD_HOVER_BG, CARD_SELECTION_BG, INK, INK_MUTED, PAPER, PANEL_BORDER, panelSurface, shellChrome, shape } from './designSystem'
+import { CARD_HOVER_BG, CARD_SELECTION_BG, INK, INK_MUTED, PAPER, PANEL_BORDER, panelSurface, shellChrome, shape, meter } from './designSystem'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 'field' | 'findings' | 'plan' | 'alert'
@@ -179,7 +179,7 @@ function RegionMap({
       return <circle cx={x} cy={y} r="4.5" fill={m3.primary} stroke={m3.onSurface} strokeWidth={hi ?? 0.75} />
     }
     if (role === 'needs-verification') {
-      return <circle cx={x} cy={y} r="5.5" fill={m3.surfaceContainerLowest} stroke={m3.warning} strokeWidth={hi ?? 1.5} strokeDasharray="2 1.5" />
+      return <circle cx={x} cy={y} r="5.5" fill={m3.surfaceContainerLowest} stroke={m3.secondary} strokeWidth={hi ?? 1.5} strokeDasharray="2 1.5" />
     }
     if (role === 'recommended') {
       return <circle cx={x} cy={y} r="5" fill={m3.surfaceContainerLowest} stroke={m3.primary} strokeWidth={hi ?? 1.5} />
@@ -364,7 +364,7 @@ type LegendItem = { role: FarmRole; label: string }
 const DOT_STYLE: Record<FarmRole, React.CSSProperties> = {
   selected: { background: m3.primary, border: `2px solid ${m3.primary}`, boxShadow: `0 0 0 3px ${alpha(m3.primary, 0.1)}` },
   committed: { background: m3.primary, border: `2px solid ${m3.primary}` },
-  'needs-verification': { background: m3.surfaceContainerLowest, border: `2px dashed ${m3.warning}` },
+  'needs-verification': { background: m3.surfaceContainerLowest, border: `2px dashed ${m3.secondary}` },
   recommended: { background: m3.surfaceContainerLowest, border: `2px solid ${alpha(m3.primary, 0.35)}` },
   other: { background: semantic.mapOtherFill, border: `1px solid ${semantic.mapOther}` },
   alert: { background: m3.error, border: `2px solid ${m3.error}` },
@@ -776,7 +776,6 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             mb: space.section,
             p: space.section,
             ...panelSurface,
-            backgroundImage: `linear-gradient(135deg, rgba(209,67,58,0.08) 0%, ${PAPER} 42%)`,
           }}
         >
           <Typography variant="overline" sx={{ color: semantic.alert, display: 'block', mb: 1 }}>
@@ -1004,14 +1003,13 @@ function FarmCard({
         <Typography variant="body2" color="text.primary"><Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>Missing:</Box> {farm.missing}</Typography>
       )}
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mt: space.related }}>
-        <Button onClick={() => onViewEvidence(farm.id)} size="small" color="primary" sx={{ minWidth: 0, px: 1, fontSize: 12 }}>View evidence</Button>
+        <GhostBtn onClick={() => onViewEvidence(farm.id)}>View evidence</GhostBtn>
         <Button
-          size="small"
           variant={inComparison ? 'contained' : 'outlined'}
           color="primary"
           onClick={() => onToggle(farm.id)}
-          startIcon={inComparison ? <CheckIcon sx={{ fontSize: 14 }} /> : undefined}
-          sx={{ fontSize: 12, py: 1, px: 2.5, minWidth: 0 }}
+          startIcon={inComparison ? <CheckIcon sx={{ fontSize: 18 }} /> : undefined}
+          sx={{ minHeight: 40, height: 40, py: 0, px: 6, fontSize: '0.875rem', fontWeight: 650 }}
         >
           {inComparison ? 'Added to comparison' : 'Add to comparison'}
         </Button>
@@ -1261,7 +1259,7 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       </TableCell>
                     )
                     if (key === 'verifReq') return (
-                      <TableCell key={f.id} sx={{ verticalAlign: 'top', fontWeight: 650, color: val ? 'warning.dark' : 'text.primary' }}>
+                      <TableCell key={f.id} sx={{ verticalAlign: 'top', fontWeight: 650, color: val ? m3.secondary : 'text.primary' }}>
                         {val ? 'Yes' : 'No'}
                       </TableCell>
                     )
@@ -1526,10 +1524,10 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
           {/* Impact panel (shown when maxVisits changed) */}
           {showImpact && (
-            <DashPaper sx={{ p: space.section, mb: space.section, bgcolor: m3.warningContainer, color: m3.onWarningContainer }}>
+            <DashPaper sx={{ p: space.section, mb: space.section, bgcolor: m3.surfaceContainerLow, color: m3.onSurface }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
-                <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: m3.onWarningContainer }}>Impact of This Change</Typography>
-                <Typography sx={{ fontSize: 10, color: m3.onWarningContainer, fontWeight: 500 }}>Max. field verification visits: 10 visits → <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>{maxVisits} visit{maxVisits !== 1 ? 's' : ''}</Box></Typography>
+                <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: m3.onSurfaceVariant }}>Impact of This Change</Typography>
+                <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, fontWeight: 500 }}>Max. field verification visits: 10 visits → <Box component="strong" sx={{ fontWeight: 700, display: 'inline', color: m3.primaryInk }}>{maxVisits} visit{maxVisits !== 1 ? 's' : ''}</Box></Typography>
               </Box>
               {/* Metrics grid */}
               <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderTop: `1px solid ${PANEL_BORDER}`, borderBottom: `1px solid ${PANEL_BORDER}`, py: 4, mb: 4 }}>
@@ -1540,11 +1538,11 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   { label: 'Max district conc.', before: '36%', after: '23%', bad: false },
                 ].map(({ label, before, after, bad }) => (
                   <Box sx={{ px: 4, borderRight: `1px solid ${PANEL_BORDER}` }} key={label}>
-                    <Typography sx={{ fontSize: 10, color: m3.onWarningContainer, mb: 2, opacity: 0.85 }}>{label}</Typography>
+                    <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, mb: 2 }}>{label}</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '0.875rem', color: m3.onWarningContainer, textDecoration: 'line-through', opacity: 0.75 }}>{before}</Box>
-                      <Box component="span" sx={{ color: m3.onWarningContainer, opacity: 0.75 }}>→</Box>
-                      <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '0.875rem', fontWeight: 700, color: bad ? m3.error : m3.onWarningContainer }}>{after}</Box>
+                      <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '0.875rem', color: m3.onSurfaceVariant, textDecoration: 'line-through' }}>{before}</Box>
+                      <Box component="span" sx={{ color: m3.onSurfaceVariant }}>→</Box>
+                      <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '0.875rem', fontWeight: 700, color: bad ? m3.error : m3.onSurface }}>{after}</Box>
                     </Box>
                     {bad && <Typography sx={{ fontSize: 10, fontWeight: 700, color: m3.error, mt: 1, textTransform: 'uppercase' }}>Below target</Typography>}
                   </Box>
@@ -1552,15 +1550,15 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </Box>
               {/* Farm mix */}
               <Box sx={{ mb: 4 }}>
-                <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: m3.onWarningContainer, mb: 2 }}>Farm Mix Changed</Typography>
+                <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: m3.onSurfaceVariant, mb: 2 }}>Farm Mix Changed</Typography>
                 <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
                   <Box sx={{ pr: 4, borderRight: `1px solid ${PANEL_BORDER}` }}>
                     <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.error, mb: 2 }}>Removed</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
                       <Box component="span" sx={{ color: m3.error, fontWeight: 700, mt: 1 }}>✕</Box>
                       <Box>
-                        <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onWarningContainer }}>Tanuku Plot · <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }}>160 t</Box></Typography>
-                        <Typography sx={{ fontSize: 10, color: m3.onWarningContainer, opacity: 0.85 }}>Requires a field verification visit — exceeds new limit of {maxVisits}</Typography>
+                        <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface }}>Tanuku Plot · <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }}>160 t</Box></Typography>
+                        <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant }}>Requires a field verification visit — exceeds new limit of {maxVisits}</Typography>
                       </Box>
                     </Box>
                   </Box>
@@ -1569,8 +1567,8 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
                       <Box component="span" sx={{ color: m3.success, fontWeight: 700, mt: 1 }}>+</Box>
                       <Box>
-                        <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onWarningContainer }}>Guntur Strip · <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }}>80 t</Box></Typography>
-                        <Typography sx={{ fontSize: 10, color: m3.onWarningContainer, opacity: 0.85 }}>No field visit required — stays within {maxVisits}-visit limit</Typography>
+                        <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface }}>Guntur Strip · <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }}>80 t</Box></Typography>
+                        <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant }}>No field visit required — stays within {maxVisits}-visit limit</Typography>
                       </Box>
                     </Box>
                   </Box>
@@ -1589,7 +1587,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </DashPaper>
               {/* Interpretation */}
               <Box sx={{ bgcolor: m3.surfaceContainerLowest, borderRadius: `${shape.sm}px`, p: 3, border: `1px solid ${PANEL_BORDER}` }}>
-                <Typography sx={{ fontSize: '0.75rem', color: m3.onWarningContainer, lineHeight: 1.6 }}>
+                <Typography sx={{ fontSize: '0.75rem', color: m3.onSurface, lineHeight: 1.6 }}>
                   Reducing the verification limit to {maxVisits} removes Tanuku Plot and substitutes Guntur Strip, reducing Week 3 supply by 80 t and coverage from 96% to 89%, below the 95% target.
                 </Typography>
               </Box>
@@ -1816,36 +1814,36 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
     >
       <Box sx={{ maxWidth: 672, display: 'flex', flexDirection: 'column', gap: 4 }}>
         {farms.map(f => (
-          <DashPaper key={f.id} sx={{ p: space.section, bgcolor: m3.warningContainer, color: m3.onWarningContainer }}>
+          <DashPaper key={f.id} sx={{ p: space.section, bgcolor: m3.surfaceContainerLow, color: m3.onSurface }}>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 4 }}>
-                <Box sx={{ width: 20, height: 20, borderRadius: `${shape.xs}px`, bgcolor: m3.warning, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, mt: 1 }}>
-                  <svg style={{ width: 12, height: 12, color: m3.onWarning }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                <Box sx={{ width: 20, height: 20, borderRadius: `${shape.xs}px`, bgcolor: m3.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, mt: 1 }}>
+                  <svg style={{ width: 12, height: 12, color: m3.onPrimary }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </Box>
                 <Box>
-                  <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: m3.onWarningContainer }}>{f.name}</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: m3.onWarningContainer, opacity: 0.85 }}>{f.district}</Typography>
+                  <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: m3.onSurface }}>{f.name}</Typography>
+                  <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant }}>{f.district}</Typography>
                 </Box>
               </Box>
               <Box sx={{ textAlign: 'right' }}>
-                <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: m3.onWarningContainer, mb: 1 }}>{f.supply} t</Typography>
+                <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: m3.onSurface, mb: 1 }}>{f.supply} t</Typography>
                 <StatusChip kind={f.evidenceKind === 'missing' ? 'evidence-missing' : 'evidence-aging'} />
               </Box>
             </Box>
-            <Typography sx={{ fontSize: '0.75rem', color: m3.onWarningContainer, mb: 4 }}>{f.reason}</Typography>
-            <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: m3.onWarningContainer, mb: 2 }}>Needs</Typography>
+            <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant, mb: 4 }}>{f.reason}</Typography>
+            <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: m3.onSurfaceVariant, mb: 2 }}>Needs</Typography>
             <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4, m: 0, p: 0, listStyle: 'none' }}>
               {f.needs.map(n => (
-                <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: '0.75rem', fontWeight: 650, color: m3.onWarningContainer }} key={n}>
-                  <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: m3.onWarningContainer, flexShrink: 0 }} />
+                <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface }} key={n}>
+                  <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: m3.primaryInk, flexShrink: 0 }} />
                   {n}
                 </Stack>
               ))}
             </Box>
-            <Typography sx={{ fontSize: '0.75rem', color: m3.onWarningContainer }}>
-              Confidence before verification: <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>{f.confidence}</Box>
+            <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant }}>
+              Confidence before verification: <Box component="strong" sx={{ fontWeight: 700, display: 'inline', color: m3.onSurface }}>{f.confidence}</Box>
               <Box component="span"> · {f.confidence === 'LOW' ? 'Evidence missing' : 'Evidence incomplete'}</Box>
             </Typography>
           </DashPaper>
@@ -2297,7 +2295,18 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               onClick={() => onNavigate('alert')}
               color="error"
               variant="outlined"
-              sx={{ bgcolor: m3.errorContainer, color: m3.onErrorContainer, borderColor: m3.error }}
+              sx={{
+                minHeight: 40,
+                height: 40,
+                py: 0,
+                px: 6,
+                fontSize: '0.875rem',
+                fontWeight: 650,
+                bgcolor: m3.errorContainer,
+                color: m3.onErrorContainer,
+                borderColor: m3.error,
+                '&:hover': { bgcolor: m3.errorContainer, borderColor: m3.error },
+              }}
             >
               1 monitoring alert
             </Button>
@@ -2337,8 +2346,8 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <StatusChip kind="constraint-pass" />
           </Box>
         </Box>
-        <Box sx={{ height: 8, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px`, overflow: 'hidden' }}>
-          <Box sx={{ height: '100%', borderRadius: `${shape.xs}px`, bgcolor: m3.success, width: `${wk3Pct}%` }} />
+        <Box sx={{ height: meter.height, bgcolor: meter.track, borderRadius: `${meter.radius}px`, overflow: 'hidden' }}>
+          <Box sx={{ height: '100%', borderRadius: `${meter.radius}px`, bgcolor: m3.success, width: `${wk3Pct}%` }} />
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: space.tight }}>
           <Box component="span" sx={{ fontSize: 10, color: m3.onSurfaceVariant }}>0%</Box>
@@ -2388,7 +2397,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       {f.conf === 'HIGH' ? 'Evidence current' : 'Evidence incomplete'}
                     </Typography>
                   </TableCell>
-                  <TableCell sx={{ fontWeight: 500, color: f.status === 'At risk' ? 'warning.dark' : f.status.includes('Verified') ? 'success.dark' : 'text.secondary' }}>
+                  <TableCell sx={{ fontWeight: 500, color: f.status === 'At risk' ? m3.secondary : f.status.includes('Verified') ? m3.success : 'text.secondary' }}>
                     {f.status}
                   </TableCell>
                 </TableRow>
@@ -2612,15 +2621,15 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <Box sx={{ pr: 4, borderRight: 1, borderColor: 'divider' }}>
                   <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 2 }}>Current</Typography>
                   <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: 'error.dark' }}>1,030 t · 86%</Typography>
-                  <Box sx={{ height: 6, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px`, mt: 2 }}>
-                    <Box sx={{ height: '100%', borderRadius: `${shape.xs}px`, bgcolor: m3.error, width: '86%' }} />
+                  <Box sx={{ height: meter.height, bgcolor: meter.track, borderRadius: `${meter.radius}px`, mt: 2 }}>
+                    <Box sx={{ height: '100%', borderRadius: `${meter.radius}px`, bgcolor: m3.error, width: '86%' }} />
                   </Box>
                 </Box>
                 <Box sx={{ pl: 4 }}>
                   <Typography sx={{ fontSize: 10, color: m3.success, mb: 2 }}>After recovery</Typography>
                   <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: m3.success }}>1,140 t · 95%</Typography>
-                  <Box sx={{ height: 6, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px`, mt: 2 }}>
-                    <Box sx={{ height: '100%', borderRadius: `${shape.xs}px`, bgcolor: m3.success, width: '95%' }} />
+                  <Box sx={{ height: meter.height, bgcolor: meter.track, borderRadius: `${meter.radius}px`, mt: 2 }}>
+                    <Box sx={{ height: '100%', borderRadius: `${meter.radius}px`, bgcolor: m3.success, width: '95%' }} />
                   </Box>
                   <Typography sx={{ fontSize: 9, fontWeight: 700, color: m3.success, mt: 1 }}>Target Met</Typography>
                 </Box>
@@ -2631,8 +2640,8 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4 }}>
                 {[
                   { icon: '↑', color: m3.primaryInk, bg: CARD_SELECTION_BG, label: 'Supply impact', detail: '+110 t · Restores Week 3 to 95% coverage target' },
-                  { icon: '!', color: m3.onWarningContainer, bg: m3.warningContainer, label: 'Verification impact', detail: '+1 field verification required before committing' },
-                  { icon: '⚑', color: m3.onWarningContainer, bg: m3.warningContainer, label: 'Geographic impact', detail: 'East Godavari concentration: 8% → 17%' },
+                  { icon: '!', color: m3.onSecondaryContainer, bg: m3.secondaryContainer, label: 'Verification impact', detail: '+1 field verification required before committing' },
+                  { icon: '⚑', color: m3.onTertiaryContainer, bg: m3.tertiaryContainer, label: 'Geographic impact', detail: 'East Godavari concentration: 8% → 17%' },
                 ].map(({ icon, color, bg, label, detail }) => (
                   <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 4 }} key={label}>
                     <Box sx={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, color, bgcolor: bg, borderRadius: `${shape.xs}px` }}>{icon}</Box>

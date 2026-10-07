@@ -152,17 +152,21 @@ export const theme = createTheme({
             color: m3.onPrimary,
           },
           '&.MuiButton-containedSecondary': {
-            backgroundColor: m3.secondaryContainer,
-            color: m3.onSecondaryContainer,
+            backgroundColor: m3.primaryContainer,
+            color: m3.primaryInk,
             '&:hover': {
-              backgroundColor: alpha(m3.secondary, 0.22),
+              backgroundColor: alpha(m3.primary, 0.16),
+              color: m3.primaryInk,
             },
           },
         },
         outlined: {
+          borderWidth: 1.5,
           borderColor: m3.primaryInk,
           color: m3.primaryInk,
+          backgroundColor: 'transparent',
           '&:hover': {
+            borderWidth: 1.5,
             borderColor: m3.primaryInk,
             backgroundColor: CARD_SELECTION_BG,
           },
@@ -171,6 +175,7 @@ export const theme = createTheme({
           color: m3.primaryInk,
           fontWeight: 650,
           paddingInline: 12,
+          minHeight: 40,
         },
       },
     },

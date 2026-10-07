@@ -7,7 +7,20 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3, shellChrome } from './designSystem'
+import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3, meter, shellChrome, CARD_SELECTION_BG } from './designSystem'
+
+/** Shared control size — every Primary / Secondary / Ghost button matches */
+const btnBaseSx = {
+  flexShrink: 0,
+  minHeight: 40,
+  height: 40,
+  py: 0,
+  px: 6,
+  fontSize: '0.875rem',
+  fontWeight: 650,
+  lineHeight: 1.25,
+  boxSizing: 'border-box',
+} as const
 
 /**
  * Desktop tab chrome matching Compare: fixed header, scroll body, fixed footer.
@@ -177,18 +190,17 @@ export function DataStrip({ children, sx }: { children: React.ReactNode; sx?: ob
 export function PrimaryBtn(props: React.ComponentProps<typeof Button> & { fullWidth?: boolean }) {
   const { children, fullWidth, sx, ...rest } = props
   return (
-    <Button variant="contained" color="primary" fullWidth={fullWidth} sx={{ flexShrink: 0, ...sx }} {...rest}>
+    <Button variant="contained" color="primary" fullWidth={fullWidth} sx={{ ...btnBaseSx, ...sx }} {...rest}>
       {children}
     </Button>
   )
 }
 
-/** MD3 filled-tonal style */
-/** MD3 filled-tonal — themed via containedSecondary */
+/** Outlined brand secondary — same height as PrimaryBtn */
 export function SecondaryBtn(props: React.ComponentProps<typeof Button> & { fullWidth?: boolean }) {
   const { children, fullWidth, sx, ...rest } = props
   return (
-    <Button variant="contained" color="secondary" fullWidth={fullWidth} sx={{ flexShrink: 0, ...sx }} {...rest}>
+    <Button variant="outlined" color="primary" fullWidth={fullWidth} sx={{ ...btnBaseSx, ...sx }} {...rest}>
       {children}
     </Button>
   )
@@ -197,7 +209,7 @@ export function SecondaryBtn(props: React.ComponentProps<typeof Button> & { full
 export function GhostBtn(props: React.ComponentProps<typeof Button>) {
   const { children, sx, ...rest } = props
   return (
-    <Button variant="text" color="primary" sx={{ flexShrink: 0, minWidth: 0, px: 3, ...sx }} {...rest}>
+    <Button variant="text" color="primary" sx={{ ...btnBaseSx, minWidth: 0, px: 3, ...sx }} {...rest}>
       {children}
     </Button>
   )
@@ -213,9 +225,17 @@ export function SupplyBar({
   total: number
 }) {
   return (
-    <Box sx={{ display: 'flex', height: 12, borderRadius: `${shape.xs}px`, overflow: 'hidden', bgcolor: m3.surfaceContainerHighest }}>
+    <Box
+      sx={{
+        display: 'flex',
+        height: meter.height,
+        borderRadius: `${meter.radius}px`,
+        overflow: 'hidden',
+        bgcolor: meter.track,
+      }}
+    >
       <Box sx={{ width: `${(firm / total) * 100}%`, bgcolor: m3.primary }} />
-      <Box sx={{ width: `${(atRisk / total) * 100}%`, bgcolor: m3.warning }} />
+      <Box sx={{ width: `${(atRisk / total) * 100}%`, bgcolor: m3.secondary }} />
     </Box>
   )
 }
@@ -271,7 +291,7 @@ export function WeekRail({
                 </Typography>
               </Stack>
             </Stack>
-            <Box sx={{ position: 'relative', height: 8, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px` }}>
+            <Box sx={{ position: 'relative', height: meter.height, bgcolor: meter.track, borderRadius: `${meter.radius}px` }}>
               <Box
                 sx={{
                   position: 'absolute',
@@ -280,7 +300,7 @@ export function WeekRail({
                   height: '100%',
                   width: `${Math.min(pct, 100)}%`,
                   bgcolor: w.issue ? m3.error : w.delta >= 0 ? m3.primary : m3.outline,
-                  borderRadius: `${shape.xs}px`,
+                  borderRadius: `${meter.radius}px`,
                 }}
               />
               <Box
@@ -325,26 +345,26 @@ export function ThresholdControl({
     <Box
       sx={{
         p: space.related,
-        bgcolor: modified ? m3.warningContainer : m3.surfaceContainerLow,
+        bgcolor: modified ? CARD_SELECTION_BG : m3.surfaceContainerLow,
         borderRadius: `${shape.lg}px`,
-        border: `1px solid ${PANEL_BORDER}`,
+        border: `1px solid ${modified ? m3.primary : PANEL_BORDER}`,
       }}
     >
       <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1 }}>
-        <Typography variant="body2" sx={{ color: modified ? m3.onWarningContainer : m3.onSurface, fontWeight: 600 }}>
+        <Typography variant="body2" sx={{ color: m3.onSurface, fontWeight: 600 }}>
           {label}
         </Typography>
         <Typography
           variant="subtitle2"
-          sx={{ color: modified ? m3.onWarningContainer : m3.onSurface, fontVariantNumeric: 'tabular-nums' }}
+          sx={{ color: modified ? m3.primaryInk : m3.onSurface, fontVariantNumeric: 'tabular-nums' }}
         >
           {display}
         </Typography>
       </Stack>
       <Slider min={min} max={max} value={value} onChange={(_: Event, v: number | number[]) => onChange(v as number)} />
       <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-        <Typography variant="caption" sx={{ color: modified ? m3.onWarningContainer : m3.onSurfaceVariant }}>{marks[0]}</Typography>
-        <Typography variant="caption" sx={{ color: modified ? m3.onWarningContainer : m3.onSurfaceVariant }}>{marks[1]}</Typography>
+        <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>{marks[0]}</Typography>
+        <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>{marks[1]}</Typography>
       </Stack>
     </Box>
   )
@@ -368,8 +388,8 @@ export function TradeoffBars({
             {coverage}%
           </Typography>
         </Stack>
-        <Box sx={{ height: 8, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px`, overflow: 'hidden' }}>
-          <Box sx={{ width: `${Math.min(coverage, 100)}%`, height: '100%', bgcolor: m3.primary, borderRadius: `${shape.xs}px` }} />
+        <Box sx={{ height: meter.height, bgcolor: meter.track, borderRadius: `${meter.radius}px`, overflow: 'hidden' }}>
+          <Box sx={{ width: `${Math.min(coverage, 100)}%`, height: '100%', bgcolor: m3.primary, borderRadius: `${meter.radius}px` }} />
         </Box>
       </Box>
       <Box>
@@ -379,13 +399,13 @@ export function TradeoffBars({
             {visits} visit{visits === 1 ? '' : 's'}
           </Typography>
         </Stack>
-        <Box sx={{ height: 8, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px`, overflow: 'hidden' }}>
+        <Box sx={{ height: meter.height, bgcolor: meter.track, borderRadius: `${meter.radius}px`, overflow: 'hidden' }}>
           <Box
             sx={{
               width: `${Math.min((visits / maxVisits) * 100, 100)}%`,
               height: '100%',
-              bgcolor: m3.warning,
-              borderRadius: `${shape.xs}px`,
+              bgcolor: m3.secondary,
+              borderRadius: `${meter.radius}px`,
             }}
           />
         </Box>
