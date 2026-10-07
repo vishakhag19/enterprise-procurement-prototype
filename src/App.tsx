@@ -2207,53 +2207,53 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       </Box>
 
       <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6 }}>
-        <Box sx={{ maxWidth: 672, display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ maxWidth: 672, display: 'flex', flexDirection: 'column', gap: 4 }}>
           {findings.map(f => (
-            <DashPaper key={f.id} sx={{ overflow: 'hidden', bgcolor: m3.successContainer, color: m3.onSuccessContainer, p: 0 }}>
+            <DashPaper key={f.id} sx={{ overflow: 'hidden', bgcolor: CARD_SELECTION_BG, color: m3.onSurface, p: 0 }}>
               {/* Header */}
               <Box sx={{ borderBottom: `1px solid ${PANEL_BORDER}`, px: 4, py: 4, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <Box>
-                  <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: m3.onSuccessContainer, mb: 1 }}>{f.name}</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: m3.onSuccessContainer, opacity: 0.85 }}>{f.district}</Typography>
+                  <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: m3.onSurface, mb: 1 }}>{f.name}</Typography>
+                  <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant }}>{f.district}</Typography>
                 </Box>
-                <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: m3.onSuccessContainer }}>{f.supply} t</Typography>
+                <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: m3.onSurface }}>{f.supply} t</Typography>
               </Box>
 
               <Box sx={{ px: space.related, py: space.related }}>
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: space.related, mb: space.section }}>
                   <Box sx={{ flexShrink: 0 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSuccessContainer, opacity: 0.85, mb: 1 }}>Previous confidence</Typography>
+                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Previous confidence</Typography>
                     <ConfBadge level={f.before} />
-                    <Typography sx={{ fontSize: 10, color: m3.onSuccessContainer, opacity: 0.85, mt: 1 }}>{f.before === 'LOW' ? 'Evidence missing' : 'Evidence incomplete'}</Typography>
+                    <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, mt: 1 }}>{f.before === 'LOW' ? 'Evidence missing' : 'Evidence incomplete'}</Typography>
                   </Box>
-                  <Box component="span" sx={{ color: m3.onSuccessContainer, opacity: 0.55, pt: 4 }}>→</Box>
+                  <Box component="span" sx={{ color: m3.onSurfaceVariant, opacity: 0.55, pt: 4 }}>→</Box>
                   <Box sx={{ flex: 1 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSuccessContainer, opacity: 0.85, mb: 1 }}>Evidence collected</Typography>
-                    <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSuccessContainer }}>Required evidence collected</Typography>
+                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Evidence collected</Typography>
+                    <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface }}>Required evidence collected</Typography>
                   </Box>
-                  <Box component="span" sx={{ color: m3.onSuccessContainer, opacity: 0.55, pt: 4 }}>→</Box>
+                  <Box component="span" sx={{ color: m3.onSurfaceVariant, opacity: 0.55, pt: 4 }}>→</Box>
                   <Box sx={{ flexShrink: 0 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSuccessContainer, opacity: 0.85, mb: 1 }}>Updated confidence</Typography>
+                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Updated confidence</Typography>
                     <ConfBadge level={f.after} />
-                    <Typography sx={{ fontSize: 10, color: m3.onSuccessContainer, opacity: 0.85, mt: 1 }}>Evidence current · Field evidence aligned</Typography>
+                    <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, mt: 1 }}>Evidence current · Field evidence aligned</Typography>
                   </Box>
                   <Box sx={{ flexShrink: 0 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSuccessContainer, opacity: 0.85, mb: 1 }}>Verification</Typography>
+                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Verification</Typography>
                     <StatusChip kind="verified" />
                   </Box>
                 </Box>
               </Box>
               <Box sx={{ borderTop: `1px solid ${PANEL_BORDER}`, px: space.related, py: space.related }}>
-                <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSuccessContainer, mb: space.tight }}>Evidence confirmed</Typography>
+                <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface, mb: space.tight }}>Evidence confirmed</Typography>
                 <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: space.tight, m: 0, p: 0, listStyle: 'none', mb: space.related }}>
                   {f.evidence.map(item => (
-                    <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: space.tight, fontSize: '0.75rem', color: m3.onSuccessContainer }} key={item}>
+                    <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: space.tight, fontSize: '0.75rem', color: m3.onSurface }} key={item}>
                       <Box component="span" sx={{ color: m3.success, fontWeight: 650 }}>✓</Box>
                       {item}
                     </Stack>
                   ))}
                 </Box>
-                <Typography sx={{ fontSize: '0.75rem', color: m3.onSuccessContainer, lineHeight: 1.6 }}>{f.impact}</Typography>
+                <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant, lineHeight: 1.6 }}>{f.impact}</Typography>
               </Box>
             </DashPaper>
           ))}
@@ -2613,7 +2613,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.primary', mb: 4 }}>Business tradeoffs</Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4 }}>
                 {[
-                  { icon: '↑', color: m3.onSuccessContainer, bg: m3.successContainer, label: 'Supply impact', detail: '+110 t · Restores Week 3 to 95% coverage target' },
+                  { icon: '↑', color: m3.primaryInk, bg: CARD_SELECTION_BG, label: 'Supply impact', detail: '+110 t · Restores Week 3 to 95% coverage target' },
                   { icon: '!', color: m3.onWarningContainer, bg: m3.warningContainer, label: 'Verification impact', detail: '+1 field verification required before committing' },
                   { icon: '⚑', color: m3.onWarningContainer, bg: m3.warningContainer, label: 'Geographic impact', detail: 'East Godavari concentration: 8% → 17%' },
                 ].map(({ icon, color, bg, label, detail }) => (
@@ -2646,16 +2646,16 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   </SecondaryBtn>
                 </Box>
               ) : (
-                <DashPaper sx={{ p: space.related, bgcolor: m3.successContainer, color: m3.onSuccessContainer }}>
+                <DashPaper sx={{ p: space.related, bgcolor: CARD_SELECTION_BG, color: m3.onSurface }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                     <Box sx={{ borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <svg style={{ width: 16, height: 16, color: m3.success }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </Box>
-                    <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: m3.onSuccessContainer }}>Rajahmundry Block added to recovery plan</Typography>
+                    <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: m3.onSurface }}>Rajahmundry Block added to recovery plan</Typography>
                   </Box>
-                  <Typography sx={{ fontSize: '0.75rem', color: m3.onSuccessContainer, mb: 4 }}>Week 3 coverage restored to 95%. Field verification for Rajahmundry Block has been assigned to Ravi.</Typography>
+                  <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant, mb: 4 }}>Week 3 coverage restored to 95%. Field verification for Rajahmundry Block has been assigned to Ravi.</Typography>
                   <PrimaryBtn onClick={() => onNavigate('plan')}>Return to active plan →</PrimaryBtn>
                 </DashPaper>
               )}
