@@ -61,9 +61,11 @@ import {
   ThresholdControl,
   TradeoffBars,
   DataStrip,
+  DashKpiStrip,
+  PercentBar,
 } from './ui'
 import type { StatusKind } from './designSystem'
-import { CARD_HOVER_BG, CARD_SELECTION_BG, INK, INK_MUTED, PAPER, PANEL_BORDER, panelSurface, shellChrome, shape, meter } from './designSystem'
+import { CARD_HOVER_BG, CARD_SELECTION_BG, INK, INK_MUTED, PAPER, PANEL_BORDER, panelSurface, shellChrome, shape } from './designSystem'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 'field' | 'findings' | 'plan' | 'alert'
@@ -179,7 +181,7 @@ function RegionMap({
       return <circle cx={x} cy={y} r="4.5" fill={m3.primary} stroke={m3.onSurface} strokeWidth={hi ?? 0.75} />
     }
     if (role === 'needs-verification') {
-      return <circle cx={x} cy={y} r="5.5" fill={m3.surfaceContainerLowest} stroke={m3.secondary} strokeWidth={hi ?? 1.5} strokeDasharray="2 1.5" />
+      return <circle cx={x} cy={y} r="5.5" fill={m3.surfaceContainerLowest} stroke={m3.warning} strokeWidth={hi ?? 1.5} strokeDasharray="2 1.5" />
     }
     if (role === 'recommended') {
       return <circle cx={x} cy={y} r="5" fill={m3.surfaceContainerLowest} stroke={m3.primary} strokeWidth={hi ?? 1.5} />
@@ -364,7 +366,7 @@ type LegendItem = { role: FarmRole; label: string }
 const DOT_STYLE: Record<FarmRole, React.CSSProperties> = {
   selected: { background: m3.primary, border: `2px solid ${m3.primary}`, boxShadow: `0 0 0 3px ${alpha(m3.primary, 0.1)}` },
   committed: { background: m3.primary, border: `2px solid ${m3.primary}` },
-  'needs-verification': { background: m3.surfaceContainerLowest, border: `2px dashed ${m3.secondary}` },
+  'needs-verification': { background: m3.surfaceContainerLowest, border: `2px dashed ${m3.warning}` },
   recommended: { background: m3.surfaceContainerLowest, border: `2px solid ${alpha(m3.primary, 0.35)}` },
   other: { background: semantic.mapOtherFill, border: `1px solid ${semantic.mapOther}` },
   alert: { background: m3.error, border: `2px solid ${m3.error}` },
@@ -770,42 +772,14 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       }
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
-        {/* KPI strip */}
-        <Box
-          sx={{
-            ...panelSurface,
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(4, 1fr)' },
-            overflow: 'hidden',
-          }}
-        >
-          {[
-            { label: 'Week 3 gap', value: '620 t', sub: '1,200 needed · 580 committed', accent: true },
-            { label: 'Firm supply', value: '2,568 t', sub: '64% of 4,000 t target', accent: false },
-            { label: 'At risk', value: '570 t', sub: 'Narsapur + Avanigadda', accent: false },
-            { label: 'Open gap', value: '862 t', sub: '78% committed overall', accent: false },
-          ].map((kpi, i) => (
-            <Box
-              key={kpi.label}
-              sx={{
-                p: space.related,
-                bgcolor: kpi.accent ? CARD_SELECTION_BG : m3.surfaceContainerLowest,
-                borderRight: { md: i < 3 ? `1px solid ${PANEL_BORDER}` : 'none' },
-                borderBottom: { xs: i < 2 ? `1px solid ${PANEL_BORDER}` : 'none', md: 'none' },
-              }}
-            >
-              <Typography variant="caption" sx={{ display: 'block', mb: 1, color: kpi.accent ? m3.primaryInk : m3.onSurfaceVariant, fontWeight: 650 }}>
-                {kpi.label}
-              </Typography>
-              <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.02em', color: kpi.accent ? m3.error : INK, lineHeight: 1.1 }}>
-                {kpi.value}
-              </Typography>
-              <Typography variant="caption" sx={{ display: 'block', mt: 1.5, color: m3.onSurfaceVariant }}>
-                {kpi.sub}
-              </Typography>
-            </Box>
-          ))}
-        </Box>
+        <DashKpiStrip
+          items={[
+            { label: 'Week 3 gap', value: '620 t', sub: '1,200 needed · 580 committed', accent: true, danger: true },
+            { label: 'Firm supply', value: '2,568 t', sub: '64% of 4,000 t target' },
+            { label: 'At risk', value: '570 t', sub: 'Narsapur + Avanigadda' },
+            { label: 'Open gap', value: '862 t', sub: '78% committed overall' },
+          ]}
+        />
 
         {/* Procurement position */}
         <Box sx={{ ...panelSurface, p: space.related }}>
@@ -1093,37 +1067,48 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           />
         }
       >
-        <Box sx={{ mb: 6 }}>
-          <SectionLabel>Recommended for this gap</SectionLabel>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            {RECOMMENDED_FARMS.map(f => (
-              <FarmCard
-                key={f.id}
-                farm={f}
-                inComparison={comparison.includes(f.id)}
-                onToggle={toggle}
-                onViewEvidence={setEvidenceFarm}
-                hoverId={activeFarmId}
-                onHover={setHoverId}
-              />
-            ))}
-          </Box>
-        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
+          <DashKpiStrip
+            items={[
+              { label: 'Week 3 gap', value: '620 t', sub: 'Still uncovered', accent: true, danger: true },
+              { label: 'Selected', value: String(comparison.length), sub: 'Farms in comparison' },
+              { label: 'Recommended supply', value: '570 t', sub: '4 candidate farms' },
+              { label: 'Need verification', value: '2', sub: 'Bhimavaram + Tanuku' },
+            ]}
+          />
 
-        <Box>
-          <SectionLabel>Other eligible farms · May close remaining gap or diversify supply</SectionLabel>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            {OTHER_FARMS.map(f => (
-              <FarmCard
-                key={f.id}
-                farm={f}
-                inComparison={comparison.includes(f.id)}
-                onToggle={toggle}
-                onViewEvidence={setEvidenceFarm}
-                hoverId={activeFarmId}
-                onHover={setHoverId}
-              />
-            ))}
+          <Box>
+            <SectionLabel>Recommended for this gap</SectionLabel>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: space.related }}>
+              {RECOMMENDED_FARMS.map(f => (
+                <FarmCard
+                  key={f.id}
+                  farm={f}
+                  inComparison={comparison.includes(f.id)}
+                  onToggle={toggle}
+                  onViewEvidence={setEvidenceFarm}
+                  hoverId={activeFarmId}
+                  onHover={setHoverId}
+                />
+              ))}
+            </Box>
+          </Box>
+
+          <Box>
+            <SectionLabel>Other eligible farms</SectionLabel>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: space.related }}>
+              {OTHER_FARMS.map(f => (
+                <FarmCard
+                  key={f.id}
+                  farm={f}
+                  inComparison={comparison.includes(f.id)}
+                  onToggle={toggle}
+                  onViewEvidence={setEvidenceFarm}
+                  hoverId={activeFarmId}
+                  onHover={setHoverId}
+                />
+              ))}
+            </Box>
           </Box>
         </Box>
       </MainPane>
@@ -1229,77 +1214,85 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         />
       }
     >
-      <Box sx={{ mb: 8 }}>
-        <SectionLabel>Interpretation</SectionLabel>
-        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
-          {COMPARE_FARMS.map(f => (
-            <DashPaper key={f.id} sx={{ p: space.related }}>
-              <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: 'text.primary', mb: 1 }}>{f.name}</Typography>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary', mb: 2 }}>{f.headline}</Typography>
-              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 4 }}>{f.summary}</Typography>
-              <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mb: 4 }}>
-                Closes <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>{f.gapPct}%</Box> of the remaining 620 t Week 3 gap
-                {f.gapNote ? `, but ${f.gapNote}.` : '.'}
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: 'text.primary' }}>{f.supply} t</Box>
-                <ConfBadge level={f.confidence} />
-                <Box component="span" sx={{ fontSize: 10, color: 'text.secondary' }}>
-                  {f.confidence === 'HIGH' ? 'Evidence current' : f.confidence === 'MEDIUM' ? 'Evidence incomplete' : 'Evidence missing'}
-                </Box>
-                {f.verifReq && <Box component="span" sx={{ fontSize: 10, color: 'text.secondary', fontWeight: 500 }}>verif. req.</Box>}
-              </Box>
-            </DashPaper>
-          ))}
-        </Box>
-      </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
+        <DashKpiStrip
+          items={[
+            { label: 'Combined supply', value: '570 t', sub: '4 farms in set', accent: true },
+            { label: 'Gap coverage', value: '92%', sub: 'Of 620 t Week 3 gap' },
+            { label: 'High confidence', value: '2', sub: 'Evidence current' },
+            { label: 'Verif. required', value: '2', sub: 'Before commit' },
+          ]}
+        />
 
-      <Box>
-        <SectionLabel>Detailed Comparison</SectionLabel>
-        <TableContainer component={Paper} elevation={0}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ width: 176, position: 'sticky', left: 0, bgcolor: m3.surfaceContainerLow, zIndex: 1 }}>Attribute</TableCell>
-                {COMPARE_FARMS.map(f => (
-                  <TableCell key={f.id} sx={{ minWidth: 180 }}>
-                    <Typography variant="subtitle2" sx={{ color: m3.onSurface }}>{f.name}</Typography>
-                    <Typography variant="caption" sx={{ display: 'block', mt: space.xs }}>{f.district}</Typography>
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {TABLE_ROWS.map(({ key, label }) => (
-                <TableRow key={key} hover>
-                  <TableCell sx={{ color: 'text.secondary', fontWeight: 500, position: 'sticky', left: 0, bgcolor: m3.surfaceContainerLowest, verticalAlign: 'top' }}>{label}</TableCell>
-                  {COMPARE_FARMS.map(f => {
-                    const val = f[key as keyof typeof f]
-                    if (key === 'confidence') return (
-                      <TableCell key={f.id} sx={{ verticalAlign: 'top' }}>
-                        <ConfBadge level={val as Conf} />
-                        <Typography variant="caption" sx={{ display: 'block', mt: space.xs }}>
-                          {val === 'HIGH' ? 'Evidence current' : val === 'MEDIUM' ? 'Evidence incomplete' : 'Evidence missing'}
-                        </Typography>
-                      </TableCell>
-                    )
-                    if (key === 'verifReq') return (
-                      <TableCell key={f.id} sx={{ verticalAlign: 'top', fontWeight: 650, color: val ? m3.secondary : 'text.primary' }}>
-                        {val ? 'Yes' : 'No'}
-                      </TableCell>
-                    )
-                    if (key === 'supply') return (
-                      <TableCell key={f.id} sx={{ fontVariantNumeric: 'tabular-nums', verticalAlign: 'top', fontWeight: 650 }}>{val} t</TableCell>
-                    )
-                    return (
-                      <TableCell key={f.id} sx={{ verticalAlign: 'top', color: 'text.secondary' }}>{String(val)}</TableCell>
-                    )
-                  })}
+        <Box>
+          <SectionLabel>Interpretation</SectionLabel>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: space.related }}>
+            {COMPARE_FARMS.map(f => (
+              <DashPaper key={f.id} sx={{ p: space.related }}>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: space.tight }}>
+                  <Box>
+                    <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: 'text.primary' }}>{f.name}</Typography>
+                    <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary' }}>{f.headline}</Typography>
+                  </Box>
+                  <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700 }}>{f.supply} t</Typography>
+                </Stack>
+                <PercentBar label="Gap closed" display={`${f.gapPct}%`} value={f.gapPct} tone={f.verifReq ? 'muted' : 'primary'} sx={{ mb: space.related }} />
+                <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+                  <ConfBadge level={f.confidence} />
+                  {f.verifReq && <StatusChip kind="visit-required" />}
+                </Stack>
+              </DashPaper>
+            ))}
+          </Box>
+        </Box>
+
+        <Box>
+          <SectionLabel>Detailed Comparison</SectionLabel>
+          <TableContainer component={Paper} elevation={0}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ width: 176, position: 'sticky', left: 0, bgcolor: m3.surfaceContainerLow, zIndex: 1 }}>Attribute</TableCell>
+                  {COMPARE_FARMS.map(f => (
+                    <TableCell key={f.id} sx={{ minWidth: 180 }}>
+                      <Typography variant="subtitle2" sx={{ color: m3.onSurface }}>{f.name}</Typography>
+                      <Typography variant="caption" sx={{ display: 'block', mt: space.xs }}>{f.district}</Typography>
+                    </TableCell>
+                  ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {TABLE_ROWS.map(({ key, label }) => (
+                  <TableRow key={key} hover>
+                    <TableCell sx={{ color: 'text.secondary', fontWeight: 500, position: 'sticky', left: 0, bgcolor: m3.surfaceContainerLowest, verticalAlign: 'top' }}>{label}</TableCell>
+                    {COMPARE_FARMS.map(f => {
+                      const val = f[key as keyof typeof f]
+                      if (key === 'confidence') return (
+                        <TableCell key={f.id} sx={{ verticalAlign: 'top' }}>
+                          <ConfBadge level={val as Conf} />
+                          <Typography variant="caption" sx={{ display: 'block', mt: space.xs }}>
+                            {val === 'HIGH' ? 'Evidence current' : val === 'MEDIUM' ? 'Evidence incomplete' : 'Evidence missing'}
+                          </Typography>
+                        </TableCell>
+                      )
+                      if (key === 'verifReq') return (
+                        <TableCell key={f.id} sx={{ verticalAlign: 'top', fontWeight: 650, color: val ? m3.secondary : 'text.primary' }}>
+                          {val ? 'Yes' : 'No'}
+                        </TableCell>
+                      )
+                      if (key === 'supply') return (
+                        <TableCell key={f.id} sx={{ fontVariantNumeric: 'tabular-nums', verticalAlign: 'top', fontWeight: 650 }}>{val} t</TableCell>
+                      )
+                      return (
+                        <TableCell key={f.id} sx={{ verticalAlign: 'top', color: 'text.secondary' }}>{String(val)}</TableCell>
+                      )
+                    })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
       </Box>
     </MainPane>
   )
@@ -1495,17 +1488,24 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         />
       }
     >
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
+          <DashKpiStrip
+            items={[
+              { label: 'Min. coverage', value: `${minCoverage}%`, sub: 'Week 3 threshold', accent: true },
+              { label: 'Max. visits', value: String(maxVisits), sub: isModified ? 'Modified' : 'Default limit' },
+              { label: 'Min. high conf.', value: `${minHighConf}%`, sub: 'Supply quality floor' },
+              { label: 'Max. district', value: `${maxDistConc}%`, sub: 'Concentration cap' },
+            ]}
+          />
+
           {/* Constraints - threshold rails, not consumer sliders */}
-          <Box sx={{ mb: space.section }}>
+          <Box>
             <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: space.tight }}>
               <SectionLabel>Business constraints</SectionLabel>
               {isModified && (
-                <GhostBtn onClick={() => setMaxVisits(10)}>Reset to defaults</GhostBtn>
+                <GhostBtn onClick={() => setMaxVisits(10)} sx={{ height: 32, minHeight: 32 }}>Reset to defaults</GhostBtn>
               )}
             </Stack>
-            <Typography variant="body2" sx={{ mb: space.related, maxWidth: 520 }}>
-              Thresholds define feasibility. Drag a control to recompute strategies. Violations surface on each option.
-            </Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: space.related }}>
               <ThresholdControl
                 label="Min. Week 3 coverage"
@@ -1549,7 +1549,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
           {/* Impact panel (shown when maxVisits changed) */}
           {showImpact && (
-            <DashPaper sx={{ p: space.section, mb: space.section, bgcolor: m3.surfaceContainerLow, color: m3.onSurface }}>
+            <DashPaper sx={{ p: space.section, bgcolor: m3.surfaceContainerLow, color: m3.onSurface }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
                 <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: m3.onSurfaceVariant }}>Impact of This Change</Typography>
                 <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, fontWeight: 500 }}>Max. field verification visits: 10 visits → <Box component="strong" sx={{ fontWeight: 700, display: 'inline', color: m3.primaryInk }}>{maxVisits} visit{maxVisits !== 1 ? 's' : ''}</Box></Typography>
@@ -1767,7 +1767,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               })}
             </Box>
           </Box>
-
+      </Box>
     </MainPane>
       {inspectedFarm && (
         <FarmDecisionPanel
@@ -1837,42 +1837,44 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
         />
       }
     >
-      <Box sx={{ maxWidth: 672, display: 'flex', flexDirection: 'column', gap: 4 }}>
-        {farms.map(f => (
-          <DashPaper key={f.id} sx={{ p: space.section, bgcolor: m3.surfaceContainerLow, color: m3.onSurface }}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 4 }}>
-                <Box sx={{ width: 20, height: 20, borderRadius: `${shape.xs}px`, bgcolor: m3.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, mt: 1 }}>
-                  <svg style={{ width: 12, height: 12, color: m3.onPrimary }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
+        <DashKpiStrip
+          items={[
+            { label: 'Farms to verify', value: '2', sub: 'Assigned to Ravi', accent: true },
+            { label: 'Supply at stake', value: '410 t', sub: '250 t + 160 t' },
+            { label: 'Evidence missing', value: '1', sub: 'Bhimavaram Lot' },
+            { label: 'Evidence aging', value: '1', sub: 'Tanuku Plot' },
+          ]}
+        />
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: space.related }}>
+          {farms.map(f => (
+            <DashPaper key={f.id} sx={{ p: space.related, bgcolor: m3.warningContainer, color: m3.onWarningContainer, height: '100%' }}>
+              <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: space.related }}>
                 <Box>
-                  <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: m3.onSurface }}>{f.name}</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant }}>{f.district}</Typography>
+                  <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: m3.onWarningContainer }}>{f.name}</Typography>
+                  <Typography sx={{ fontSize: '0.75rem', color: m3.onWarningContainer, opacity: 0.85 }}>{f.district}</Typography>
                 </Box>
+                <Box sx={{ textAlign: 'right' }}>
+                  <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: m3.onWarningContainer }}>{f.supply} t</Typography>
+                  <StatusChip kind={f.evidenceKind === 'missing' ? 'evidence-missing' : 'evidence-aging'} />
+                </Box>
+              </Stack>
+              <Typography sx={{ fontSize: '0.75rem', color: m3.onWarningContainer, mb: space.related }}>{f.reason}</Typography>
+              <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: m3.onWarningContainer, mb: 2 }}>Needs</Typography>
+              <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: 2, m: 0, p: 0, listStyle: 'none', mb: space.related }}>
+                {f.needs.map(n => (
+                  <Stack component="li" direction="row" sx={{ alignItems: 'center', gap: 2, fontSize: '0.75rem', fontWeight: 650, color: m3.onWarningContainer }} key={n}>
+                    <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: m3.onWarningContainer, flexShrink: 0 }} />
+                    {n}
+                  </Stack>
+                ))}
               </Box>
-              <Box sx={{ textAlign: 'right' }}>
-                <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: m3.onSurface, mb: 1 }}>{f.supply} t</Typography>
-                <StatusChip kind={f.evidenceKind === 'missing' ? 'evidence-missing' : 'evidence-aging'} />
-              </Box>
-            </Box>
-            <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant, mb: 4 }}>{f.reason}</Typography>
-            <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: m3.onSurfaceVariant, mb: 2 }}>Needs</Typography>
-            <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4, m: 0, p: 0, listStyle: 'none' }}>
-              {f.needs.map(n => (
-                <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface }} key={n}>
-                  <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: m3.primaryInk, flexShrink: 0 }} />
-                  {n}
-                </Stack>
-              ))}
-            </Box>
-            <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant }}>
-              Confidence before verification: <Box component="strong" sx={{ fontWeight: 700, display: 'inline', color: m3.onSurface }}>{f.confidence}</Box>
-              <Box component="span"> · {f.confidence === 'LOW' ? 'Evidence missing' : 'Evidence incomplete'}</Box>
-            </Typography>
-          </DashPaper>
-        ))}
+              <Typography sx={{ fontSize: '0.75rem', color: m3.onWarningContainer }}>
+                Confidence before: <Box component="strong" sx={{ fontWeight: 700 }}>{f.confidence}</Box>
+              </Typography>
+            </DashPaper>
+          ))}
+        </Box>
       </Box>
     </MainPane>
   )
@@ -2228,55 +2230,51 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         />
       }
     >
-      <Box sx={{ maxWidth: 672, display: 'flex', flexDirection: 'column', gap: 4 }}>
-        {findings.map(f => (
-          <DashPaper key={f.id} sx={{ overflow: 'hidden', bgcolor: CARD_SELECTION_BG, color: m3.onSurface, p: 0 }}>
-            <Box sx={{ borderBottom: `1px solid ${PANEL_BORDER}`, px: 4, py: 4, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-              <Box>
-                <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: m3.onSurface, mb: 1 }}>{f.name}</Typography>
-                <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant }}>{f.district}</Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
+        <DashKpiStrip
+          items={[
+            { label: 'Findings in', value: '2', sub: 'Farms verified today', accent: true },
+            { label: 'Supply unlocked', value: '410 t', sub: 'Now HIGH confidence' },
+            { label: 'Week 3 coverage', value: '96%', sub: '1,150 t confirmed' },
+            { label: 'Plan status', value: 'Ready', sub: 'Activate next' },
+          ]}
+        />
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: space.related }}>
+          {findings.map(f => (
+            <DashPaper key={f.id} sx={{ overflow: 'hidden', bgcolor: CARD_SELECTION_BG, color: m3.onSurface, p: 0, height: '100%' }}>
+              <Box sx={{ borderBottom: `1px solid ${PANEL_BORDER}`, px: space.related, py: space.related, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: m3.onSurface }}>{f.name}</Typography>
+                  <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant }}>{f.district}</Typography>
+                </Box>
+                <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: m3.onSurface }}>{f.supply} t</Typography>
               </Box>
-              <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: m3.onSurface }}>{f.supply} t</Typography>
-            </Box>
-
-            <Box sx={{ px: space.related, py: space.related }}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: space.related, mb: space.section }}>
-                <Box sx={{ flexShrink: 0 }}>
-                  <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Previous confidence</Typography>
-                  <ConfBadge level={f.before} />
-                  <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, mt: 1 }}>{f.before === 'LOW' ? 'Evidence missing' : 'Evidence incomplete'}</Typography>
-                </Box>
-                <Box component="span" sx={{ color: m3.onSurfaceVariant, opacity: 0.55, pt: 4 }}>→</Box>
-                <Box sx={{ flex: 1 }}>
-                  <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Evidence collected</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface }}>Required evidence collected</Typography>
-                </Box>
-                <Box component="span" sx={{ color: m3.onSurfaceVariant, opacity: 0.55, pt: 4 }}>→</Box>
-                <Box sx={{ flexShrink: 0 }}>
-                  <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Updated confidence</Typography>
-                  <ConfBadge level={f.after} />
-                  <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, mt: 1 }}>Evidence current · Field evidence aligned</Typography>
-                </Box>
-                <Box sx={{ flexShrink: 0 }}>
-                  <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Verification</Typography>
+              <Box sx={{ px: space.related, py: space.related }}>
+                <Stack direction="row" spacing={space.related} sx={{ alignItems: 'center', mb: space.related, flexWrap: 'wrap' }}>
+                  <Box>
+                    <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, mb: 1 }}>Before</Typography>
+                    <ConfBadge level={f.before} />
+                  </Box>
+                  <Box component="span" sx={{ color: m3.onSurfaceVariant }}>→</Box>
+                  <Box>
+                    <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, mb: 1 }}>After</Typography>
+                    <ConfBadge level={f.after} />
+                  </Box>
                   <StatusChip kind="verified" />
+                </Stack>
+                <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: space.tight, m: 0, p: 0, listStyle: 'none', mb: space.related }}>
+                  {f.evidence.map(item => (
+                    <Stack component="li" direction="row" sx={{ alignItems: 'center', gap: space.tight, fontSize: '0.75rem', color: m3.onSurface }} key={item}>
+                      <Box component="span" sx={{ color: m3.success, fontWeight: 650 }}>✓</Box>
+                      {item}
+                    </Stack>
+                  ))}
                 </Box>
+                <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant }}>{f.impact}</Typography>
               </Box>
-            </Box>
-            <Box sx={{ borderTop: `1px solid ${PANEL_BORDER}`, px: space.related, py: space.related }}>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface, mb: space.tight }}>Evidence confirmed</Typography>
-              <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: space.tight, m: 0, p: 0, listStyle: 'none', mb: space.related }}>
-                {f.evidence.map(item => (
-                  <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: space.tight, fontSize: '0.75rem', color: m3.onSurface }} key={item}>
-                    <Box component="span" sx={{ color: m3.success, fontWeight: 650 }}>✓</Box>
-                    {item}
-                  </Stack>
-                ))}
-              </Box>
-              <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant, lineHeight: 1.6 }}>{f.impact}</Typography>
-            </Box>
-          </DashPaper>
-        ))}
+            </DashPaper>
+          ))}
+        </Box>
       </Box>
     </MainPane>
   )
@@ -2367,16 +2365,14 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: 'text.primary' }}>{wk3Supply.toLocaleString()} <Box component="span" sx={{ color: 'text.secondary', fontSize: '1.25rem' }}>/ {wk3Target.toLocaleString()} t</Box></Typography>
           </Box>
           <Box sx={{ textAlign: 'right' }}>
-            <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: m3.success }}>{wk3Pct}%</Typography>
+            <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: m3.primaryInk }}>{wk3Pct}%</Typography>
             <StatusChip kind="constraint-pass" />
           </Box>
         </Box>
-        <Box sx={{ height: meter.height, bgcolor: meter.track, borderRadius: `${meter.radius}px`, overflow: 'hidden' }}>
-          <Box sx={{ height: '100%', borderRadius: `${meter.radius}px`, bgcolor: m3.success, width: `${wk3Pct}%` }} />
-        </Box>
+        <PercentBar value={wk3Pct} tone="primary" markerPct={95} />
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: space.tight }}>
           <Box component="span" sx={{ fontSize: 10, color: m3.onSurfaceVariant }}>0%</Box>
-          <Box component="span" sx={{ fontSize: 10, color: m3.success, fontWeight: 650 }}>95% threshold · {(0.95 * wk3Target).toLocaleString()} t</Box>
+          <Box component="span" sx={{ fontSize: 10, color: m3.primaryInk, fontWeight: 650 }}>95% threshold · {(0.95 * wk3Target).toLocaleString()} t</Box>
           <Box component="span" sx={{ fontSize: 10, color: m3.onSurfaceVariant }}>100%</Box>
         </Box>
       </DashPaper>
@@ -2646,17 +2642,13 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <Box sx={{ pr: 4, borderRight: 1, borderColor: 'divider' }}>
                   <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 2 }}>Current</Typography>
                   <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: 'error.dark' }}>1,030 t · 86%</Typography>
-                  <Box sx={{ height: meter.height, bgcolor: meter.track, borderRadius: `${meter.radius}px`, mt: 2 }}>
-                    <Box sx={{ height: '100%', borderRadius: `${meter.radius}px`, bgcolor: m3.error, width: '86%' }} />
-                  </Box>
+                  <PercentBar value={86} tone="danger" sx={{ mt: 2 }} />
                 </Box>
                 <Box sx={{ pl: 4 }}>
-                  <Typography sx={{ fontSize: 10, color: m3.success, mb: 2 }}>After recovery</Typography>
-                  <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: m3.success }}>1,140 t · 95%</Typography>
-                  <Box sx={{ height: meter.height, bgcolor: meter.track, borderRadius: `${meter.radius}px`, mt: 2 }}>
-                    <Box sx={{ height: '100%', borderRadius: `${meter.radius}px`, bgcolor: m3.success, width: '95%' }} />
-                  </Box>
-                  <Typography sx={{ fontSize: 9, fontWeight: 700, color: m3.success, mt: 1 }}>Target Met</Typography>
+                  <Typography sx={{ fontSize: 10, color: m3.primaryInk, mb: 2 }}>After recovery</Typography>
+                  <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: m3.primaryInk }}>1,140 t · 95%</Typography>
+                  <PercentBar value={95} tone="primary" markerPct={95} sx={{ mt: 2 }} />
+                  <Typography sx={{ fontSize: 9, fontWeight: 700, color: m3.primaryInk, mt: 1 }}>Target Met</Typography>
                 </Box>
               </Box>
 
@@ -2665,8 +2657,8 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4 }}>
                 {[
                   { icon: '↑', color: m3.primaryInk, bg: CARD_SELECTION_BG, label: 'Supply impact', detail: '+110 t · Restores Week 3 to 95% coverage target' },
-                  { icon: '!', color: m3.onSecondaryContainer, bg: m3.secondaryContainer, label: 'Verification impact', detail: '+1 field verification required before committing' },
-                  { icon: '⚑', color: m3.onTertiaryContainer, bg: m3.tertiaryContainer, label: 'Geographic impact', detail: 'East Godavari concentration: 8% → 17%' },
+                  { icon: '!', color: m3.onWarningContainer, bg: m3.warningContainer, label: 'Verification impact', detail: '+1 field verification required before committing' },
+                  { icon: '⚑', color: m3.onWarningContainer, bg: m3.warningContainer, label: 'Geographic impact', detail: 'East Godavari concentration: 8% → 17%' },
                 ].map(({ icon, color, bg, label, detail }) => (
                   <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 4 }} key={label}>
                     <Box sx={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, color, bgcolor: bg, borderRadius: `${shape.xs}px` }}>{icon}</Box>

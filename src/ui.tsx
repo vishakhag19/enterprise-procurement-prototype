@@ -215,6 +215,159 @@ export function GhostBtn(props: React.ComponentProps<typeof Button>) {
   )
 }
 
+const METER_FILL = {
+  primary: m3.primary,
+  danger: m3.error,
+  muted: m3.secondary,
+  caution: m3.warning,
+} as const
+
+export type MeterTone = keyof typeof METER_FILL
+
+/**
+ * Single completion % meter used on every tab.
+ * Same height, track, radius, and fill geometry everywhere.
+ */
+export function PercentBar({
+  value,
+  tone = 'primary',
+  label,
+  display,
+  markerPct,
+  sx,
+}: {
+  /** 0-100 completion */
+  value: number
+  tone?: MeterTone
+  label?: string
+  display?: string
+  /** Optional threshold marker, 0-100 */
+  markerPct?: number
+  sx?: object
+}) {
+  const pct = Math.max(0, Math.min(value, 100))
+  const fill = METER_FILL[tone]
+  return (
+    <Box sx={sx}>
+      {(label != null || display != null) && (
+        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: space.tight, alignItems: 'baseline' }}>
+          {label != null && (
+            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>{label}</Typography>
+          )}
+          {display != null && (
+            <Typography variant="caption" sx={{ fontWeight: 700, color: m3.onSurface, fontVariantNumeric: 'tabular-nums' }}>
+              {display}
+            </Typography>
+          )}
+        </Stack>
+      )}
+      <Box sx={{ position: 'relative', height: meter.height }}>
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            bgcolor: meter.track,
+            borderRadius: `${meter.radius}px`,
+            overflow: 'hidden',
+          }}
+        >
+          <Box
+            sx={{
+              height: '100%',
+              width: `${pct}%`,
+              bgcolor: fill,
+              borderRadius: `${meter.radius}px`,
+              transition: 'width 0.2s ease',
+            }}
+          />
+        </Box>
+        {markerPct != null && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: -3,
+              bottom: -3,
+              left: `${Math.max(0, Math.min(markerPct, 100))}%`,
+              width: 2,
+              bgcolor: INK,
+              opacity: 0.45,
+            }}
+          />
+        )}
+      </Box>
+    </Box>
+  )
+}
+
+export type DashKpi = {
+  label: string
+  value: string
+  sub?: string
+  accent?: boolean
+  danger?: boolean
+}
+
+/** Shared dashboard KPI strip for tab center panes */
+export function DashKpiStrip({ items }: { items: DashKpi[] }) {
+  const cols = Math.min(Math.max(items.length, 1), 4)
+  return (
+    <Box
+      sx={{
+        ...panelSurface,
+        display: 'grid',
+        gridTemplateColumns: { xs: '1fr 1fr', md: `repeat(${cols}, 1fr)` },
+        overflow: 'hidden',
+      }}
+    >
+      {items.map((kpi, i) => (
+        <Box
+          key={kpi.label}
+          sx={{
+            p: space.related,
+            bgcolor: kpi.accent ? CARD_SELECTION_BG : m3.surfaceContainerLowest,
+            borderRight: {
+              md: (i + 1) % cols !== 0 ? `1px solid ${PANEL_BORDER}` : 'none',
+            },
+            borderBottom: {
+              xs: i < items.length - (items.length % 2 === 0 ? 2 : 1) ? `1px solid ${PANEL_BORDER}` : 'none',
+              md: 'none',
+            },
+          }}
+        >
+          <Typography
+            variant="caption"
+            sx={{
+              display: 'block',
+              mb: 1,
+              color: kpi.accent ? m3.primaryInk : m3.onSurfaceVariant,
+              fontWeight: 650,
+            }}
+          >
+            {kpi.label}
+          </Typography>
+          <Typography
+            sx={{
+              fontVariantNumeric: 'tabular-nums',
+              fontSize: '1.75rem',
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              color: kpi.danger ? m3.error : INK,
+              lineHeight: 1.1,
+            }}
+          >
+            {kpi.value}
+          </Typography>
+          {kpi.sub != null && (
+            <Typography variant="caption" sx={{ display: 'block', mt: 1.5, color: m3.onSurfaceVariant }}>
+              {kpi.sub}
+            </Typography>
+          )}
+        </Box>
+      ))}
+    </Box>
+  )
+}
+
 export function SupplyBar({
   firm,
   atRisk,
@@ -234,8 +387,8 @@ export function SupplyBar({
         bgcolor: meter.track,
       }}
     >
-      <Box sx={{ width: `${(firm / total) * 100}%`, bgcolor: m3.primary }} />
-      <Box sx={{ width: `${(atRisk / total) * 100}%`, bgcolor: m3.secondary }} />
+      <Box sx={{ width: `${(firm / total) * 100}%`, bgcolor: METER_FILL.primary }} />
+      <Box sx={{ width: `${(atRisk / total) * 100}%`, bgcolor: METER_FILL.caution }} />
     </Box>
   )
 }
@@ -291,30 +444,11 @@ export function WeekRail({
                 </Typography>
               </Stack>
             </Stack>
-            <Box sx={{ position: 'relative', height: meter.height, bgcolor: meter.track, borderRadius: `${meter.radius}px` }}>
-              <Box
-                sx={{
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  height: '100%',
-                  width: `${Math.min(pct, 100)}%`,
-                  bgcolor: w.issue ? m3.error : w.delta >= 0 ? m3.primary : m3.outline,
-                  borderRadius: `${meter.radius}px`,
-                }}
-              />
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: -3,
-                  bottom: -3,
-                  left: `${Math.min(tPct, 100)}%`,
-                  width: 2,
-                  bgcolor: INK,
-                  opacity: 0.45,
-                }}
-              />
-            </Box>
+            <PercentBar
+              value={pct}
+              tone={w.issue ? 'danger' : 'primary'}
+              markerPct={tPct}
+            />
           </Box>
         )
       })}
@@ -345,18 +479,18 @@ export function ThresholdControl({
     <Box
       sx={{
         p: space.related,
-        bgcolor: modified ? CARD_SELECTION_BG : m3.surfaceContainerLow,
+        bgcolor: modified ? m3.warningContainer : m3.surfaceContainerLow,
         borderRadius: `${shape.lg}px`,
-        border: `1px solid ${modified ? m3.primary : PANEL_BORDER}`,
+        border: `1px solid ${modified ? m3.warning : PANEL_BORDER}`,
       }}
     >
       <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1 }}>
-        <Typography variant="body2" sx={{ color: m3.onSurface, fontWeight: 600 }}>
+        <Typography variant="body2" sx={{ color: modified ? m3.onWarningContainer : m3.onSurface, fontWeight: 600 }}>
           {label}
         </Typography>
         <Typography
           variant="subtitle2"
-          sx={{ color: modified ? m3.primaryInk : m3.onSurface, fontVariantNumeric: 'tabular-nums' }}
+          sx={{ color: modified ? m3.onWarningContainer : m3.onSurface, fontVariantNumeric: 'tabular-nums' }}
         >
           {display}
         </Typography>
@@ -381,35 +515,19 @@ export function TradeoffBars({
 }) {
   return (
     <Stack spacing={space.related} sx={{ mt: 0 }}>
-      <Box>
-        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: space.tight }}>
-          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>Week 3 coverage</Typography>
-          <Typography variant="caption" sx={{ fontWeight: 700, color: m3.onSurface, fontVariantNumeric: 'tabular-nums' }}>
-            {coverage}%
-          </Typography>
-        </Stack>
-        <Box sx={{ height: meter.height, bgcolor: meter.track, borderRadius: `${meter.radius}px`, overflow: 'hidden' }}>
-          <Box sx={{ width: `${Math.min(coverage, 100)}%`, height: '100%', bgcolor: m3.primary, borderRadius: `${meter.radius}px` }} />
-        </Box>
-      </Box>
-      <Box>
-        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: space.tight }}>
-          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>Verification load</Typography>
-          <Typography variant="caption" sx={{ fontWeight: 700, color: m3.onSurface, fontVariantNumeric: 'tabular-nums' }}>
-            {visits} visit{visits === 1 ? '' : 's'}
-          </Typography>
-        </Stack>
-        <Box sx={{ height: meter.height, bgcolor: meter.track, borderRadius: `${meter.radius}px`, overflow: 'hidden' }}>
-          <Box
-            sx={{
-              width: `${Math.min((visits / maxVisits) * 100, 100)}%`,
-              height: '100%',
-              bgcolor: m3.secondary,
-              borderRadius: `${meter.radius}px`,
-            }}
-          />
-        </Box>
-      </Box>
+      <PercentBar
+        label="Week 3 coverage"
+        display={`${coverage}%`}
+        value={coverage}
+        tone="primary"
+        markerPct={95}
+      />
+      <PercentBar
+        label="Verification load"
+        display={`${visits} visit${visits === 1 ? '' : 's'}`}
+        value={(visits / maxVisits) * 100}
+        tone="caution"
+      />
     </Stack>
   )
 }

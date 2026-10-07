@@ -50,13 +50,13 @@ export const m3 = {
   onErrorContainer: '#410002',
 
   /**
-   * Caution role - warm stone, not peach/orange.
-   * Keeps medium/at-risk states readable next to teal without clashing.
+   * Caution role - refined amber gold (replaces the old peach).
+   * Soft honey container for verification / medium / aging states.
    */
-  warning: '#6A5F4D',
+  warning: '#9C6B00',
   onWarning: '#FFFFFF',
-  warningContainer: '#EEE9E1',
-  onWarningContainer: '#231F18',
+  warningContainer: '#FFF1CC',
+  onWarningContainer: '#2E1F00',
 
   success: '#006B5F',
   onSuccess: '#FFFFFF',
@@ -181,15 +181,15 @@ export const space = {
 /** Domain semantics mapped onto M3 roles (AA-safe for text/UI where used as meaning) */
 export const semantic = {
   firm: m3.primary,
-  /** At-risk supply uses secondary slate - stays in the teal family */
-  atRisk: m3.secondary,
+  /** At-risk supply uses caution amber */
+  atRisk: m3.warning,
   /** Was outlineVariant (1.7:1) - use on-surface-variant for legends/text */
   gap: m3.onSurfaceVariant,
   canopyHigh: m3.success,
-  canopyMed: m3.secondary,
+  canopyMed: m3.warning,
   canopyLow: m3.error,
   evidenceFresh: m3.success,
-  evidenceAging: m3.secondary,
+  evidenceAging: m3.warning,
   evidenceMissing: m3.error,
   signal: m3.primary,
   alert: m3.error,
@@ -233,10 +233,10 @@ export const STATUS_META: Record<
   { label: string; fg: string; bg: string; border: string }
 > = {
   'confidence-high': { label: 'HIGH', fg: m3.onSuccessContainer, bg: m3.successContainer, border: 'transparent' },
-  'confidence-medium': { label: 'MEDIUM', fg: m3.onSecondaryContainer, bg: m3.secondaryContainer, border: 'transparent' },
+  'confidence-medium': { label: 'MEDIUM', fg: m3.onWarningContainer, bg: m3.warningContainer, border: 'transparent' },
   'confidence-low': { label: 'LOW', fg: m3.onErrorContainer, bg: m3.errorContainer, border: 'transparent' },
   'evidence-current': { label: 'Evidence current', fg: m3.success, bg: 'transparent', border: m3.success },
-  'evidence-aging': { label: 'Evidence aging', fg: m3.secondary, bg: 'transparent', border: m3.secondary },
+  'evidence-aging': { label: 'Evidence aging', fg: m3.warning, bg: 'transparent', border: m3.warning },
   'evidence-missing': { label: 'Evidence missing', fg: m3.error, bg: 'transparent', border: m3.error },
   'candidate-strong': { label: 'Strong candidate', fg: m3.primaryInk, bg: m3.primaryContainer, border: 'transparent' },
   'visit-required': { label: 'Field visit required', fg: m3.onTertiaryContainer, bg: m3.tertiaryContainer, border: 'transparent' },
