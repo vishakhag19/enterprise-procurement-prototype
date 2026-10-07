@@ -122,6 +122,102 @@ export function StatusChip({ kind }: { kind: StatusKind }) {
   )
 }
 
+export type EvidenceSyncState = 'synced' | 'pending' | 'offline'
+
+/** Captured-by / timestamp / GPS / sync strip used on Field + Findings evidence. */
+export function EvidenceProvenance({
+  capturedBy,
+  timestamp,
+  gps,
+  sync = 'synced',
+  dense = false,
+}: {
+  capturedBy: string
+  timestamp: string
+  gps: string
+  sync?: EvidenceSyncState
+  dense?: boolean
+}) {
+  const syncLabel = sync === 'synced' ? 'Synced' : sync === 'pending' ? 'Sync pending' : 'Offline'
+  const syncColor = sync === 'synced' ? m3.success : sync === 'pending' ? m3.warning : m3.error
+
+  const cells = [
+    { label: 'Captured by', value: capturedBy },
+    { label: 'Timestamp', value: timestamp },
+    { label: 'GPS', value: gps },
+    { label: 'Sync', value: syncLabel, valueColor: syncColor },
+  ]
+
+  return (
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: { xs: '1fr 1fr', sm: 'repeat(4, 1fr)' },
+        gap: dense ? space.tight : space.related,
+        p: dense ? space.tight : space.related,
+        bgcolor: m3.surfaceContainerLow,
+        border: `1px solid ${PANEL_BORDER}`,
+        borderRadius: `${shape.sm}px`,
+      }}
+      aria-label="Evidence provenance"
+    >
+      {cells.map(({ label, value, valueColor }) => (
+        <Box key={label} sx={{ minWidth: 0 }}>
+          <Typography
+            sx={{
+              fontSize: 10,
+              fontWeight: 650,
+              color: m3.onSurfaceVariant,
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              mb: 0.5,
+            }}
+          >
+            {label}
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: dense ? '0.6875rem' : '0.75rem',
+              fontWeight: 650,
+              color: valueColor ?? m3.onSurface,
+              fontVariantNumeric: 'tabular-nums',
+              wordBreak: 'break-word',
+            }}
+          >
+            {value}
+          </Typography>
+        </Box>
+      ))}
+    </Box>
+  )
+}
+
+/** Compact recency / harvest timing cue for comparison cards. */
+export function EvidenceCueBar({
+  label,
+  valueLabel,
+  pct,
+  tone = 'primary',
+}: {
+  label: string
+  valueLabel: string
+  /** 0-100 freshness or alignment */
+  pct: number
+  tone?: MeterTone
+}) {
+  return (
+    <Box sx={{ minWidth: 0, flex: 1 }}>
+      <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5, alignItems: 'baseline', gap: 1 }}>
+        <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.onSurfaceVariant }}>{label}</Typography>
+        <Typography sx={{ fontSize: 10, fontWeight: 700, color: m3.onSurface, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+          {valueLabel}
+        </Typography>
+      </Stack>
+      <PercentBar value={pct} tone={tone} />
+    </Box>
+  )
+}
+
 export function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <Typography

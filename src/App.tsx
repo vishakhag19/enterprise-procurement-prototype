@@ -63,6 +63,8 @@ import {
   DataStrip,
   DashKpiStrip,
   PercentBar,
+  EvidenceProvenance,
+  EvidenceCueBar,
 } from './ui'
 import type { StatusKind } from './designSystem'
 import { CARD_HOVER_BG, CARD_SELECTION_BG, INK, INK_MUTED, PAPER, PANEL_BORDER, panelSurface, shellChrome, shape } from './designSystem'
@@ -1279,6 +1281,9 @@ const COMPARE_FARMS = [
     field: 'Confirmed 6 weeks ago', missing: 'None: evidence gap closed.',
     risks: 'None identified', harvest: 'Week 3',
     whyConf: 'Stable historical yield, healthy satellite readings, and current field evidence align.',
+    evidenceRecencyPct: 92, evidenceRecencyLabel: '6d · current',
+    harvestTimingPct: 100, harvestTimingLabel: 'In Week 3',
+    evidenceKind: 'evidence-current' as StatusKind,
   },
   {
     id: 'reddy', name: 'Reddy Plot', district: 'Krishna',
@@ -1290,6 +1295,9 @@ const COMPARE_FARMS = [
     field: 'Confirmed 4 weeks ago', missing: 'None: evidence gap closed.',
     risks: 'None identified', harvest: 'Week 3',
     whyConf: 'Stable historical yield, healthy satellite readings, and current field evidence align.',
+    evidenceRecencyPct: 88, evidenceRecencyLabel: '4d · current',
+    harvestTimingPct: 100, harvestTimingLabel: 'In Week 3',
+    evidenceKind: 'evidence-current' as StatusKind,
   },
   {
     id: 'bhim', name: 'Bhimavaram Lot', district: 'West Godavari',
@@ -1301,6 +1309,9 @@ const COMPARE_FARMS = [
     field: 'None available', missing: 'No current field evidence. Standing stock unconfirmed. Yield estimate based on prior season data only.',
     risks: 'Standing stock unverified; potential 20-30% yield variance', harvest: 'Week 3',
     whyConf: 'Estimate based on prior season only. No current satellite or field evidence available.',
+    evidenceRecencyPct: 8, evidenceRecencyLabel: 'None · missing',
+    harvestTimingPct: 95, harvestTimingLabel: 'In Week 3',
+    evidenceKind: 'evidence-missing' as StatusKind,
   },
   {
     id: 'tanuku', name: 'Tanuku Plot', district: 'West Godavari',
@@ -1312,6 +1323,9 @@ const COMPARE_FARMS = [
     field: 'Last confirmed 6 weeks ago', missing: 'Missing current field evidence. Last field visit was 6 weeks ago. Crop status may have changed.',
     risks: 'Crop condition change possible since last visit', harvest: 'Week 3',
     whyConf: 'Supply and timing are adequate but evidence is incomplete or variable.',
+    evidenceRecencyPct: 28, evidenceRecencyLabel: '42d · aging',
+    harvestTimingPct: 90, harvestTimingLabel: 'In Week 3',
+    evidenceKind: 'evidence-aging' as StatusKind,
   },
 ]
 
@@ -1386,8 +1400,23 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700 }}>{f.supply} t</Typography>
                 </Stack>
                 <PercentBar label="Gap closed" display={`${f.gapPct}%`} value={f.gapPct} tone={f.verifReq ? 'muted' : 'primary'} sx={{ mb: space.related }} />
+                <Stack direction="row" spacing={space.related} sx={{ mb: space.related, alignItems: 'flex-start' }}>
+                  <EvidenceCueBar
+                    label="Evidence recency"
+                    valueLabel={f.evidenceRecencyLabel}
+                    pct={f.evidenceRecencyPct}
+                    tone={f.evidenceRecencyPct >= 70 ? 'primary' : f.evidenceRecencyPct >= 30 ? 'caution' : 'danger'}
+                  />
+                  <EvidenceCueBar
+                    label="Harvest timing"
+                    valueLabel={f.harvestTimingLabel}
+                    pct={f.harvestTimingPct}
+                    tone={f.harvestTimingPct >= 90 ? 'primary' : 'caution'}
+                  />
+                </Stack>
                 <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                   <ConfBadge level={f.confidence} />
+                  <StatusChip kind={f.evidenceKind} />
                   {f.verifReq && <StatusChip kind="visit-required" />}
                 </Stack>
               </DashPaper>
@@ -2039,7 +2068,7 @@ type FieldFarm = {
   verifyItems: string[]
 }
 
-const FIELD_FARMS: FieldFarm[] = [
+const FIELD_FARMS: (FieldFarm & { gps: string; captureTime: string })[] = [
   {
     name: 'Bhimavaram Lot',
     location: 'West Godavari, Andhra Pradesh',
@@ -2047,6 +2076,8 @@ const FIELD_FARMS: FieldFarm[] = [
     harvest: 'Week 3',
     whyVisit: 'No current field evidence. Standing stock unconfirmed. Yield estimate based on prior season data only.',
     verifyItems: ['Standing stock confirmed', 'Harvest readiness confirmed', 'Current field photos captured'],
+    gps: '16.5442° N, 81.5218° E',
+    captureTime: 'Today · 09:42 IST',
   },
   {
     name: 'Tanuku Plot',
@@ -2055,6 +2086,8 @@ const FIELD_FARMS: FieldFarm[] = [
     harvest: 'Week 3',
     whyVisit: 'Field evidence is outdated. Last visit was 6 weeks ago. Crop status may have changed.',
     verifyItems: ['Current crop / harvest status confirmed', 'Current field photos captured'],
+    gps: '16.7568° N, 81.6754° E',
+    captureTime: 'Today · 11:18 IST',
   },
 ]
 
@@ -2263,13 +2296,20 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       style={{ width: '100%', height: 'auto', maxHeight: 256, objectFit: 'cover', display: 'block', borderRadius: shape.md }}
                     />
                   </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: space.related, mt: space.related }}>
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: space.related, mt: space.related, mb: space.related }}>
                     <Box>
                       <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'text.primary' }}>Field photo captured</Typography>
-                      <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Today · {farm.name}</Typography>
+                      <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>{farm.name}</Typography>
                     </Box>
                     <Button size="small" color="error" onClick={() => setPhotos(prev => ({ ...prev, [farmIdx]: false }))}>Remove</Button>
                   </Box>
+                  <EvidenceProvenance
+                    capturedBy="Ravi · Field officer"
+                    timestamp={farm.captureTime}
+                    gps={farm.gps}
+                    sync="synced"
+                    dense
+                  />
                 </Box>
               ) : (
                 <Box sx={{ px: space.related, pb: space.related }}>
@@ -2311,7 +2351,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: m3.inverseOnSurface, mb: 4 }}>
               <Box>
                 <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: m3.inverseOnSurface }}>Field photo captured</Typography>
-                <Typography sx={{ fontSize: '0.75rem', color: m3.inverseOnSurface, opacity: 0.8 }}>Today · {farm.name}</Typography>
+                <Typography sx={{ fontSize: '0.75rem', color: m3.inverseOnSurface, opacity: 0.8 }}>{farm.name}</Typography>
               </Box>
               <IconButton onClick={() => setPhotoPreviewOpen(false)} aria-label="Close photo preview" sx={{ color: m3.inverseOnSurface }}><CloseIcon /></IconButton>
             </Box>
@@ -2320,6 +2360,14 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               alt={`Full-size field evidence captured at ${farm.name}`}
               style={{ maxWidth: '100%', maxHeight: '80vh', objectFit: 'contain' }}
             />
+            <Box sx={{ mt: 4 }}>
+              <EvidenceProvenance
+                capturedBy="Ravi · Field officer"
+                timestamp={farm.captureTime}
+                gps={farm.gps}
+                sync="synced"
+              />
+            </Box>
           </Box>
         </Box>
       )}
@@ -2336,12 +2384,18 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       supply: 250, before: 'LOW' as Conf, after: 'HIGH' as Conf,
       evidence: ['Standing stock confirmed', 'Harvest readiness confirmed', 'Current field photos captured'],
       impact: 'Bhimavaram Lot can now contribute 250 t to the Coverage-First procurement plan.',
+      capturedBy: 'Ravi · Field officer',
+      timestamp: 'Today · 09:42 IST',
+      gps: '16.5442° N, 81.5218° E',
     },
     {
       id: 'tanuku', name: 'Tanuku Plot', district: 'West Godavari district',
       supply: 160, before: 'MEDIUM' as Conf, after: 'HIGH' as Conf,
       evidence: ['Current crop / harvest status confirmed', 'Current field photos captured'],
       impact: 'Tanuku Plot can now contribute 160 t to the Coverage-First procurement plan.',
+      capturedBy: 'Ravi · Field officer',
+      timestamp: 'Today · 11:18 IST',
+      gps: '16.7568° N, 81.6754° E',
     },
   ]
 
@@ -2399,17 +2453,26 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: m3.onSurface }}>{f.supply} t</Typography>
               </Box>
               <Box sx={{ px: space.related, py: space.related }}>
-                <Stack direction="row" spacing={space.related} sx={{ alignItems: 'center', mb: space.related, flexWrap: 'wrap' }}>
-                  <Box>
-                    <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, mb: 1 }}>Before</Typography>
+                <Stack
+                  direction="row"
+                  spacing={space.related}
+                  sx={{ alignItems: 'flex-end', mb: space.related, flexWrap: 'wrap', rowGap: space.tight }}
+                >
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, lineHeight: 1 }}>Before</Typography>
                     <ConfBadge level={f.before} />
                   </Box>
-                  <Box component="span" sx={{ color: m3.onSurfaceVariant }}>→</Box>
-                  <Box>
-                    <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, mb: 1 }}>After</Typography>
+                  <Box component="span" sx={{ color: m3.onSurfaceVariant, pb: '4px', lineHeight: 1 }}>→</Box>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, lineHeight: 1 }}>After</Typography>
                     <ConfBadge level={f.after} />
                   </Box>
-                  <StatusChip kind="verified" />
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    <Typography sx={{ fontSize: 10, color: 'transparent', lineHeight: 1, userSelect: 'none' }} aria-hidden>
+                      Status
+                    </Typography>
+                    <StatusChip kind="verified" />
+                  </Box>
                 </Stack>
                 <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: space.tight, m: 0, p: 0, listStyle: 'none', mb: space.related }}>
                   {f.evidence.map(item => (
@@ -2419,7 +2482,14 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     </Stack>
                   ))}
                 </Box>
-                <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant }}>{f.impact}</Typography>
+                <EvidenceProvenance
+                  capturedBy={f.capturedBy}
+                  timestamp={f.timestamp}
+                  gps={f.gps}
+                  sync="synced"
+                  dense
+                />
+                <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant, mt: space.related }}>{f.impact}</Typography>
               </Box>
             </DashPaper>
           ))}
@@ -2453,36 +2523,20 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         <Box>
           <SectionLabel>Active Procurement Plan</SectionLabel>
           <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Coverage-First · Week 3 Active</Typography>
-          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Monitoring active · 1 open alert</Typography>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Monitoring active · Godavari exception open in plan</Typography>
         </Box>
       }
       footer={
         <>
           <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', flex: 1 }}>
-            Active plan monitoring · open the alert when supply is revised.
+            Monitoring exception is open in the plan body. Review recovery before Week 3 slips further.
           </Typography>
-          <Stack direction="row" spacing={2} sx={{ flexShrink: 0 }}>
-            <SecondaryBtn onClick={() => document.getElementById('active-farm-mix')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>View full plan</SecondaryBtn>
-            <Button
-              onClick={() => onNavigate('alert')}
-              color="error"
-              variant="outlined"
-              sx={{
-                minHeight: 40,
-                height: 40,
-                py: 0,
-                px: 6,
-                fontSize: '0.875rem',
-                fontWeight: 650,
-                bgcolor: m3.errorContainer,
-                color: m3.onErrorContainer,
-                borderColor: m3.error,
-                '&:hover': { bgcolor: m3.errorContainer, borderColor: m3.error },
-              }}
-            >
-              1 monitoring alert
-            </Button>
-          </Stack>
+          <SecondaryBtn
+            onClick={() => document.getElementById('active-farm-mix')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            sx={{ flexShrink: 0 }}
+          >
+            View full plan
+          </SecondaryBtn>
         </>
       }
       map={
@@ -2506,6 +2560,57 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         />
       }
     >
+      <DashPaper
+        sx={{
+          p: space.section,
+          mb: space.section,
+          bgcolor: m3.errorContainer,
+          color: m3.onErrorContainer,
+          border: `1px solid ${alpha(m3.error, 0.35)}`,
+        }}
+      >
+        <Stack direction="row" spacing={space.related} sx={{ alignItems: 'flex-start', justifyContent: 'space-between', mb: space.related, flexWrap: 'wrap', rowGap: space.tight }}>
+          <Box sx={{ minWidth: 0, flex: 1 }}>
+            <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 1 }}>
+              <StatusChip kind="primary-issue" />
+              <Typography sx={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: m3.onErrorContainer }}>
+                Monitoring exception
+              </Typography>
+            </Stack>
+            <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: m3.onErrorContainer, mb: 1 }}>
+              Godavari Combined Block: supply revised 200 t → 80 t
+            </Typography>
+            <Typography sx={{ fontSize: '0.75rem', color: m3.onErrorContainer, fontWeight: 500 }}>
+              New satellite NDVI cut Week 3 by 120 t. Coverage would fall to 86% (110 t below the 95% threshold) unless recovery is accepted.
+            </Typography>
+          </Box>
+          <Box sx={{ textAlign: 'right', flexShrink: 0 }}>
+            <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: m3.onErrorContainer }}>−120 t</Typography>
+            <Typography sx={{ fontSize: 10, color: m3.onErrorContainer }}>vs. active plan</Typography>
+          </Box>
+        </Stack>
+        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
+          <PrimaryBtn onClick={() => onNavigate('alert')}>Review exception →</PrimaryBtn>
+          <Button
+            variant="outlined"
+            onClick={() => onNavigate('alert')}
+            sx={{
+              minHeight: 40,
+              height: 40,
+              py: 0,
+              px: 6,
+              fontWeight: 650,
+              color: m3.onErrorContainer,
+              borderColor: m3.error,
+              bgcolor: alpha(m3.surfaceContainerLowest, 0.35),
+              '&:hover': { borderColor: m3.error, bgcolor: alpha(m3.surfaceContainerLowest, 0.55) },
+            }}
+          >
+            Open recovery path
+          </Button>
+        </Stack>
+      </DashPaper>
+
       {/* Week 3 status card */}
       <DashPaper sx={{ p: space.section, mb: space.section }}>
         <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
@@ -2532,11 +2637,11 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           { label: 'High-confidence supply', value: '83%' },
           { label: 'Farms in plan', value: '8' },
           { label: 'Max district concentration', value: '36%' },
-          { label: 'Monitoring status', value: 'Active' },
+          { label: 'Monitoring status', value: '1 exception' },
         ].map(({ label, value }) => (
           <Box sx={{ px: 4, borderRight: 1, borderColor: 'divider' }} key={label}>
             <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 1 }}>{label}</Typography>
-            <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: 'text.primary' }}>{value}</Typography>
+            <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: label === 'Monitoring status' ? m3.error : 'text.primary' }}>{value}</Typography>
           </Box>
         ))}
       </Box>
