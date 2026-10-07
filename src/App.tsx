@@ -2160,10 +2160,10 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
               <Box sx={{ borderTop: `1px solid ${PANEL_BORDER}`, px: space.related, py: space.related }}>
                 <PrimaryBtn fullWidth onClick={handleSubmit} disabled={!canConfirm} sx={{ mb: space.tight }}>
-                  Evidence confirmed · Submit findings
+                  Evidence confirmed
                 </PrimaryBtn>
                 <SecondaryBtn fullWidth onClick={handleSubmit}>
-                  Partial or uncertain · Submit findings
+                  Partial or uncertain
                 </SecondaryBtn>
               </Box>
             </Box>
