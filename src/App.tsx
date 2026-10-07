@@ -2455,24 +2455,28 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               <Box sx={{ px: space.related, py: space.related }}>
                 <Stack
                   direction="row"
-                  spacing={space.related}
-                  sx={{ alignItems: 'flex-end', mb: space.related, flexWrap: 'wrap', rowGap: space.tight }}
+                  spacing={1.5}
+                  sx={{
+                    alignItems: 'center',
+                    mb: space.related,
+                    flexWrap: 'wrap',
+                    rowGap: space.tight,
+                    minHeight: 24,
+                  }}
                 >
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, lineHeight: 1 }}>Before</Typography>
-                    <ConfBadge level={f.before} />
-                  </Box>
-                  <Box component="span" sx={{ color: m3.onSurfaceVariant, pb: '4px', lineHeight: 1 }}>→</Box>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, lineHeight: 1 }}>After</Typography>
-                    <ConfBadge level={f.after} />
-                  </Box>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    <Typography sx={{ fontSize: 10, color: 'transparent', lineHeight: 1, userSelect: 'none' }} aria-hidden>
-                      Status
-                    </Typography>
-                    <StatusChip kind="verified" />
-                  </Box>
+                  <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.onSurfaceVariant, lineHeight: '24px' }}>
+                    Before
+                  </Typography>
+                  <ConfBadge level={f.before} />
+                  <Typography sx={{ fontSize: 14, color: m3.onSurfaceVariant, lineHeight: '24px', px: 0.5 }} aria-hidden>
+                    →
+                  </Typography>
+                  <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.onSurfaceVariant, lineHeight: '24px' }}>
+                    After
+                  </Typography>
+                  <ConfBadge level={f.after} />
+                  <Box sx={{ width: 1, height: 16, bgcolor: PANEL_BORDER, mx: 0.5 }} aria-hidden />
+                  <StatusChip kind="verified" />
                 </Stack>
                 <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: space.tight, m: 0, p: 0, listStyle: 'none', mb: space.related }}>
                   {f.evidence.map(item => (
