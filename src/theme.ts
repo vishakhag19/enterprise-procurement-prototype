@@ -1,5 +1,5 @@
 import { createTheme, alpha } from '@mui/material/styles'
-import { PANEL_BORDER, PANEL_BORDER_WIDTH, PAPER, SIDEBAR_BG, SURFACE, m3, semantic, shape, space } from './designSystem'
+import { PANEL_BORDER, PANEL_BORDER_WIDTH, PAPER, SIDEBAR_BG, SURFACE, m3, semantic, shape, shellChrome, space } from './designSystem'
 
 export {
   ACCENT,
@@ -8,6 +8,7 @@ export {
   PAPER,
   PANEL_BORDER,
   PANEL_BORDER_WIDTH,
+  shellChrome,
   space,
   semantic,
   shape,
@@ -210,10 +211,12 @@ export const theme = createTheme({
       defaultProps: { elevation: 0, color: 'inherit' },
       styleOverrides: {
         root: {
-          backgroundColor: m3.surface,
+          backgroundColor: m3.surfaceContainerLowest,
           color: m3.onSurface,
-          borderBottom: hairline,
+          ...shellChrome,
           boxShadow: 'none',
+          // static flex child — not a viewport-fixed bar
+          position: 'relative',
         },
       },
     },
@@ -226,11 +229,13 @@ export const theme = createTheme({
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          // Compact permanent nav — frees width for content/right panes
+          // Compact permanent nav — same shell radius as header / right panes
           width: 240,
           backgroundColor: m3.surfaceContainerLow,
           color: m3.onSurface,
-          borderRight: hairline,
+          ...shellChrome,
+          position: 'relative',
+          height: '100%',
         },
       },
     },

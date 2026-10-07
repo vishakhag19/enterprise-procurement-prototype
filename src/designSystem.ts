@@ -107,7 +107,17 @@ export const panelSurface = {
   bgcolor: m3.surfaceContainerLowest,
 } as const
 
-/** Full-height side pane edge (no radius — flush to viewport) */
+/**
+ * App shell chrome — header, left nav, and right panes share the same
+ * MD3 large (16dp) radius + hairline. Used with shell inset/gap so corners show.
+ */
+export const shellChrome = {
+  border: `${PANEL_BORDER_WIDTH}px solid ${PANEL_BORDER}`,
+  borderRadius: `${shape.lg}px`,
+  overflow: 'hidden',
+} as const
+
+/** @deprecated — use shellChrome; kept for internal hairlines */
 export const paneEdgeLeft = {
   borderLeft: `${PANEL_BORDER_WIDTH}px solid ${PANEL_BORDER}`,
 } as const

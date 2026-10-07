@@ -63,7 +63,7 @@ import {
   DataStrip,
 } from './ui'
 import type { StatusKind } from './designSystem'
-import { INK, INK_MUTED, PAPER, RULE, ACCENT_SOFT, PANEL_BORDER, panelSurface, paneEdgeLeft, paneEdgeRight, shape } from './designSystem'
+import { INK, INK_MUTED, PAPER, RULE, ACCENT_SOFT, PANEL_BORDER, panelSurface, shellChrome, shape } from './designSystem'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 'field' | 'findings' | 'plan' | 'alert'
@@ -627,9 +627,9 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   }
 
   return (
-    <Box sx={{ display: 'flex', height: '100%' }}>
+    <Box sx={{ display: 'flex', height: '100%', gap: space.tight }}>
       {/* Main */}
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6, minWidth: 0 }}>
         <Box sx={{ maxWidth: 768 }}>
           <SectionLabel>Procurement Command Centre</SectionLabel>
           <Typography
@@ -744,7 +744,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       </Box>
 
       {/* Right geo panel */}
-      <Box sx={{ position: 'relative', display: 'flex', flexDirection: 'column', flexShrink: 0, ...paneEdgeLeft }} style={{ width: geoPanelWidth, minWidth: 320, maxWidth: 560, background: PAPER }}>
+      <Box sx={{ position: 'relative', display: 'flex', flexDirection: 'column', flexShrink: 0, ...shellChrome, bgcolor: PAPER }} style={{ width: geoPanelWidth, minWidth: 320, maxWidth: 560 }}>
         <Box sx={{ position: 'absolute', left: -4, top: 0, bottom: 0, width: 8, cursor: 'col-resize', touchAction: 'none', zIndex: 10 }} onPointerDown={startGeoPanelResize} role="separator" aria-orientation="vertical" aria-label="Resize supply geography panel">
           <Box sx={{ width: '1px', height: '100%', mx: 'auto', bgcolor: 'transparent', transition: 'background-color 0.15s' }} />
         </Box>
@@ -955,9 +955,9 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   const highlightIds = activeFarmId ? [activeFarmId] : []
 
   return (
-    <Box sx={{ display: 'flex', height: '100%', position: 'relative' }}>
+    <Box sx={{ display: 'flex', height: '100%', position: 'relative', gap: space.tight }}>
       {/* Map stays compact so the farm list (right) keeps primary width */}
-      <Box sx={{ width: '30%', minWidth: 300, maxWidth: 380, flexShrink: 0, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', ...paneEdgeRight }}>
+      <Box sx={{ width: '30%', minWidth: 300, maxWidth: 380, flexShrink: 0, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', ...shellChrome }}>
         <Box sx={{ p: 4, borderBottom: 1, borderColor: 'divider' }}>
           <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>GIS Workspace · Week 3</Typography>
           <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>Hover a farm card to highlight on map</Typography>
@@ -989,8 +989,8 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         </Box>
       </Box>
 
-      {/* Farm list */}
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      {/* Farm list — same shell radius as header / nav / map pane */}
+      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
         <Box sx={{ p: 6 }}>
           {/* Gap header */}
           <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 6 }}>
@@ -1303,7 +1303,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     : null
 
   return (
-    <Box sx={{ display: 'flex', height: '100%' }}>
+    <Box sx={{ display: 'flex', height: '100%', gap: space.tight }}>
       {/* Main */}
       <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         <Box sx={{ p: 6 }}>
@@ -1559,7 +1559,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       </Box>
 
       {/* Right panel */}
-      <Box sx={{ width: 400, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', flexShrink: 0, ...paneEdgeLeft }}>
+      <Box sx={{ width: 400, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', flexShrink: 0, ...shellChrome }}>
         <Box sx={{ p: 4, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 4 }}>
           <SectionLabel>Select a Strategy</SectionLabel>
           <ExpandMapButton onClick={() => {
@@ -2606,9 +2606,11 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
         [`& .MuiDrawer-paper`]: {
           width: DRAWER_WIDTH,
           boxSizing: 'border-box',
+          position: 'relative',
+          height: '100%',
           bgcolor: m3.surfaceContainerLow,
           color: m3.onSurface,
-          ...paneEdgeRight,
+          ...shellChrome,
           display: 'flex',
           flexDirection: 'column',
         },
@@ -2740,7 +2742,15 @@ function TopBar({ screen }: { screen: Screen }) {
   }
 
   return (
-    <AppBar position="static" color="inherit" sx={{ bgcolor: m3.surface }}>
+    <AppBar
+      position="static"
+      color="inherit"
+      sx={{
+        ...shellChrome,
+        bgcolor: m3.surfaceContainerLowest,
+        flexShrink: 0,
+      }}
+    >
       <Toolbar variant="dense" sx={{ minHeight: 64, px: space.related, gap: space.tight }}>
         <Typography variant="h6" component="h1" sx={{ mr: space.tight, fontWeight: 700, fontSize: '1.05rem', color: m3.onSurface }}>
           {BREADCRUMB_TITLE[screen]}
@@ -2786,11 +2796,20 @@ export default function App() {
   }
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden', bgcolor: 'background.default' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        height: '100vh',
+        overflow: 'hidden',
+        bgcolor: m3.surface,
+        p: space.tight,
+        gap: space.tight,
+      }}
+    >
       <Sidebar current={screen} onNavigate={setScreen} />
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden', gap: space.tight }}>
         <TopBar screen={screen} />
-        <Box sx={{ flex: 1, overflow: 'hidden', bgcolor: 'background.default' }}>
+        <Box sx={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
           {screens[screen]}
         </Box>
       </Box>
