@@ -18,7 +18,7 @@ export {
 
 const hairline = `${PANEL_BORDER_WIDTH}px solid ${PANEL_BORDER}`
 
-/** Material Design 3 theme — tonal surfaces, MD3 shape, type roles */
+/** Material Design 3 theme - tonal surfaces, MD3 shape, type roles */
 export const theme = createTheme({
   cssVariables: true,
   // MD3 baseline grid: 4dp
@@ -204,7 +204,7 @@ export const theme = createTheme({
           backgroundImage: 'none',
           backgroundColor: m3.surfaceContainerLowest,
           border: hairline,
-          borderRadius: `${shape.lg}px`, // MD3 large — cards/panels
+          borderRadius: `${shape.lg}px`, // MD3 large - cards/panels
         },
       },
     },
@@ -227,7 +227,7 @@ export const theme = createTheme({
           color: m3.onSurface,
           ...shellChrome,
           boxShadow: 'none',
-          // static flex child — not a viewport-fixed bar
+          // static flex child - not a viewport-fixed bar
           position: 'relative',
         },
       },
@@ -241,7 +241,7 @@ export const theme = createTheme({
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          // Compact permanent nav — same shell radius as header / right panes
+          // Compact permanent nav - same shell radius as header / right panes
           width: 240,
           backgroundColor: m3.surfaceContainerLow,
           color: m3.onSurface,

@@ -329,7 +329,7 @@ def convert_file(src: str) -> str:
 
     def repl(m: re.Match[str]) -> str:
         attrs = m.group("attrs") or ""
-        # Skip if already looks like it has only event handlers and no class — still convert div→Box
+        # Skip if already looks like it has only event handlers and no class - still convert div→Box
         # Don't convert inside comments
         return convert_open_tag(m)
 
@@ -376,7 +376,7 @@ def convert_file(src: str) -> str:
         "fullWidth",
     )
 
-    # RegionMap sizeClass still uses tw strings — leave those as they are passed to svg className
+    # RegionMap sizeClass still uses tw strings - leave those as they are passed to svg className
     # Fix double-converted Typography variant conflicts later via tsc
 
     return out

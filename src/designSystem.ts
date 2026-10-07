@@ -8,14 +8,14 @@ export const ACCENT = '#0BAFAF'
 /** M3 tonal palette from accent seed #0BAFAF */
 export const m3 = {
   /**
-   * Brand accent fill — the seed color. Pair with white `onPrimary` on filled
+   * Brand accent fill - the seed color. Pair with white `onPrimary` on filled
    * controls. Do not use as small body text on white; use `primaryInk`.
    */
   primary: ACCENT,
   /** White label/icon on solid accent fills (buttons, avatar, controls) */
   onPrimary: '#FFFFFF',
   /**
-   * Highlight / soft accent surface — ~10% of brand accent on white.
+   * Highlight / soft accent surface - ~10% of brand accent on white.
    * Solid `#0BAFAF` stays on interactive fills only (buttons, checks, etc.).
    */
   primaryContainer: '#E6F7F7',
@@ -27,7 +27,7 @@ export const m3 = {
    * Prefer this over `primary` whenever the accent is used as text color.
    */
   primaryInk: '#006A6A',
-  /** @deprecated alias of primary — kept for older call sites */
+  /** @deprecated alias of primary - kept for older call sites */
   primaryBrand: ACCENT,
   /** Hover/pressed companion for accent fills */
   primaryBrandDark: '#089090',
@@ -50,7 +50,7 @@ export const m3 = {
   onErrorContainer: '#410002',
 
   /**
-   * Caution role — warm stone, not peach/orange.
+   * Caution role - warm stone, not peach/orange.
    * Keeps medium/at-risk states readable next to teal without clashing.
    */
   warning: '#6A5F4D',
@@ -94,15 +94,15 @@ export const INK_MUTED = m3.onSurfaceVariant
  * @see https://m3.material.io/styles/shape/corner-radius-scale
  */
 export const shape = {
-  /** 4 — extra-small */
+  /** 4 - extra-small */
   xs: 4,
-  /** 8 — small (chips, dense embeds) */
+  /** 8 - small (chips, dense embeds) */
   sm: 8,
-  /** 12 — medium (text fields, default theme) */
+  /** 12 - medium (text fields, default theme) */
   md: 12,
-  /** 16 — large (cards, section panels) */
+  /** 16 - large (cards, section panels) */
   lg: 16,
-  /** 28 — extra-large (dialogs, sheets) */
+  /** 28 - extra-large (dialogs, sheets) */
   xl: 28,
   /** Full pill */
   full: 9999,
@@ -111,20 +111,20 @@ export const shape = {
 /** Single hairline for panel chrome + internal panel dividers */
 export const PANEL_BORDER = 'rgba(22, 29, 29, 0.08)'
 export const PANEL_BORDER_WIDTH = 1
-/** @deprecated alias — use PANEL_BORDER for all panel hairlines */
+/** @deprecated alias - use PANEL_BORDER for all panel hairlines */
 export const RULE = PANEL_BORDER
 export const ACCENT_SOFT = m3.primaryContainer
 export const ACCENT_DARK = m3.primaryBrandDark
 
 /**
- * Shared card / list selection wash — Farms-tab selected card color.
+ * Shared card / list selection wash - Farms-tab selected card color.
  * 10% brand accent (#0BAFAF). Use for every selectable card state.
  */
 export const CARD_SELECTION_BG = 'rgba(11, 175, 175, 0.1)'
 /** Hover-only wash on unselected cards (half of selection) */
 export const CARD_HOVER_BG = 'rgba(11, 175, 175, 0.05)'
 
-/** Shared card/section panel surface chrome (px strings — safe in MUI `sx`) */
+/** Shared card/section panel surface chrome (px strings - safe in MUI `sx`) */
 export const panelSurface = {
   border: `${PANEL_BORDER_WIDTH}px solid ${PANEL_BORDER}`,
   borderRadius: `${shape.lg}px`,
@@ -132,7 +132,7 @@ export const panelSurface = {
 } as const
 
 /**
- * App shell chrome — header, left nav, and right panes share the same
+ * App shell chrome - header, left nav, and right panes share the same
  * MD3 large (16dp) radius + hairline. Used with shell inset/gap so corners show.
  */
 export const shellChrome = {
@@ -141,7 +141,7 @@ export const shellChrome = {
   overflow: 'hidden',
 } as const
 
-/** @deprecated — use shellChrome; kept for internal hairlines */
+/** @deprecated - use shellChrome; kept for internal hairlines */
 export const paneEdgeLeft = {
   borderLeft: `${PANEL_BORDER_WIDTH}px solid ${PANEL_BORDER}`,
 } as const
@@ -156,7 +156,7 @@ export const paneHairlineBottom = {
 } as const
 
 /**
- * Material Design 3 spacing — theme.spacing unit = 4dp.
+ * Material Design 3 spacing - theme.spacing unit = 4dp.
  * xs 1=4 · sm 2=8 · md 3=12 · lg 4=16 · xl 6=24 · xxl 8=32
  */
 export const space = {
@@ -166,24 +166,24 @@ export const space = {
   lg: 4,
   xl: 6,
   xxl: 8,
-  /** 8dp — icon/chip gaps, tight stacks */
+  /** 8dp - icon/chip gaps, tight stacks */
   tight: 2,
-  /** 16dp — card padding, list padding, related gaps */
+  /** 16dp - card padding, list padding, related gaps */
   related: 4,
-  /** 24dp — pane padding, section gaps, dialogs */
+  /** 24dp - pane padding, section gaps, dialogs */
   section: 6,
-  /** 32dp — major layout gutters */
+  /** 32dp - major layout gutters */
   gutter: 8,
-  /** 12dp — nav item outer margin */
+  /** 12dp - nav item outer margin */
   compact: 3,
 } as const
 
 /** Domain semantics mapped onto M3 roles (AA-safe for text/UI where used as meaning) */
 export const semantic = {
   firm: m3.primary,
-  /** At-risk supply uses secondary slate — stays in the teal family */
+  /** At-risk supply uses secondary slate - stays in the teal family */
   atRisk: m3.secondary,
-  /** Was outlineVariant (1.7:1) — use on-surface-variant for legends/text */
+  /** Was outlineVariant (1.7:1) - use on-surface-variant for legends/text */
   gap: m3.onSurfaceVariant,
   canopyHigh: m3.success,
   canopyMed: m3.secondary,

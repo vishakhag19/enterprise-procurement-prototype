@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3, meter, shellChrome, CARD_SELECTION_BG } from './designSystem'
 
-/** Shared control size — every Primary / Secondary / Ghost button matches */
+/** Shared control size - every Primary / Secondary / Ghost button matches */
 const btnBaseSx = {
   flexShrink: 0,
   minHeight: 40,
@@ -170,7 +170,7 @@ export function DashPaper({
   )
 }
 
-/** Open data strip — surface-container tonal band */
+/** Open data strip - surface-container tonal band */
 export function DataStrip({ children, sx }: { children: React.ReactNode; sx?: object }) {
   return (
     <Box
@@ -196,7 +196,7 @@ export function PrimaryBtn(props: React.ComponentProps<typeof Button> & { fullWi
   )
 }
 
-/** Outlined brand secondary — same height as PrimaryBtn */
+/** Outlined brand secondary - same height as PrimaryBtn */
 export function SecondaryBtn(props: React.ComponentProps<typeof Button> & { fullWidth?: boolean }) {
   const { children, fullWidth, sx, ...rest } = props
   return (

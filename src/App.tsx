@@ -126,7 +126,7 @@ const FARM_MAP_META: Record<string, FarmMapMeta> = {
   tanuku: { name: 'Tanuku Plot', district: 'West Godavari', supply: 160, harvest: 'Week 3', confidence: 'MEDIUM', evidence: 'Field confirmation is 6 weeks old' },
   kv: { name: 'Krishna Valley', district: 'Krishna', supply: 55, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Evidence current' },
   eluru: { name: 'Eluru Farm', district: 'West Godavari', supply: 65, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Evidence current' },
-  guntur: { name: 'Guntur Strip', district: 'Guntur', supply: 80, harvest: 'Wk 3–4', confidence: 'MEDIUM', evidence: 'Harvest window outside ideal range' },
+  guntur: { name: 'Guntur Strip', district: 'Guntur', supply: 80, harvest: 'Wk 3-4', confidence: 'MEDIUM', evidence: 'Harvest window outside ideal range' },
   kovvur: { name: 'Kovvur Fields', district: 'West Godavari', supply: 75, harvest: 'Week 3', confidence: 'MEDIUM', evidence: 'Recent field evidence needed' },
   raj: { name: 'Rajahmundry Block', district: 'East Godavari', supply: 110, harvest: 'Week 3', confidence: 'MEDIUM', evidence: 'Field verification required' },
   godavari: { name: 'Godavari Combined Block', district: 'East Godavari', supply: 200, harvest: 'Week 3', confidence: 'HIGH', evidence: 'Monitored by satellite' },
@@ -405,7 +405,7 @@ function ExpandMapButton({ onClick }: { onClick: () => void }) {
   )
 }
 
-/** Fixed right-rail width — identical on every desktop tab */
+/** Fixed right-rail width - identical on every desktop tab */
 const MAP_PANE_WIDTH = 400
 
 function ExpandedMap({
@@ -574,7 +574,7 @@ function MapPane({
 const FARM_DECISION_CONTEXT: Record<string, { verification: string; risk: string }> = {
   'Machilipatnam Edge': { verification: 'Not required', risk: 'No material risk identified' },
   'Reddy Plot': { verification: 'Not required', risk: 'No material risk identified' },
-  'Bhimavaram Lot': { verification: 'Required', risk: 'Standing stock unverified; potential 20–30% yield variance' },
+  'Bhimavaram Lot': { verification: 'Required', risk: 'Standing stock unverified; potential 20-30% yield variance' },
   'Tanuku Plot': { verification: 'Required', risk: 'Crop condition may have changed since the last field visit' },
   'Krishna Valley': { verification: 'Not required', risk: 'No material risk identified' },
   'Eluru Farm': { verification: 'Not required', risk: 'No material risk identified' },
@@ -680,7 +680,7 @@ function EvidenceModal({ farmId, onClose, recovery = false }: { farmId: string; 
               <SatelliteThumbnail />
               <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mt: 2 }}>
                 {farm.confidence === 'LOW' && !recovery
-                  ? <><Box component="strong" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, display: 'inline' }}>NDVI —</Box> · Current reading inconclusive due to cloud cover</>
+                  ? <><Box component="strong" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, display: 'inline' }}>NDVI:</Box> · Current reading inconclusive due to cloud cover</>
                   : <><Box component="strong" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, display: 'inline' }}>{recovery ? 'NDVI 0.68' : farmId === 'mach' ? 'NDVI 0.74' : 'NDVI 0.66'}</Box> · Vegetation condition: Healthy</>}
               </Typography>
             </Box>
@@ -753,7 +753,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       footer={
         <>
           <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', flex: 1 }}>
-            Week 3 still has a 620 t uncovered gap — investigate candidates next.
+            Week 3 still has a 620 t uncovered gap. Investigate candidates next.
           </Typography>
           <PrimaryBtn onClick={() => onNavigate('farms')}>Investigate farms →</PrimaryBtn>
         </>
@@ -950,7 +950,7 @@ const OTHER_FARMS: Farm[] = [
   },
   {
     id: 'guntur', name: 'Guntur Strip', district: 'Guntur district', supply: 80,
-    harvest: 'Wk 3–4', confidence: 'MEDIUM', signals: ['OUTSIDE_HARVEST'],
+    harvest: 'Wk 3-4', confidence: 'MEDIUM', signals: ['OUTSIDE_HARVEST'],
     why: 'Adequate supply and suitable harvest window.',
     evidenceStatus: 'Evidence incomplete', evidenceNote: 'Harvest timing remains variable.',
     verified: true, mapId: 'guntur',
@@ -1141,8 +1141,8 @@ const COMPARE_FARMS = [
     summary: 'Highest confidence with solid satellite and field evidence.',
     gapPct: 15, gapNote: 'no additional verification',
     supply: 90, confidence: 'HIGH' as Conf, verifReq: false,
-    history: '87t (Season 1)', satellite: 'Healthy — NDVI 0.74',
-    field: 'Confirmed 6 weeks ago', missing: 'None — evidence gap closed.',
+    history: '87t (Season 1)', satellite: 'Healthy: NDVI 0.74',
+    field: 'Confirmed 6 weeks ago', missing: 'None: evidence gap closed.',
     risks: 'None identified', harvest: 'Week 3',
     whyConf: 'Stable historical yield, healthy satellite readings, and current field evidence align.',
   },
@@ -1152,8 +1152,8 @@ const COMPARE_FARMS = [
     summary: 'Reliable yield, verified evidence, Week 3 harvest window aligns cleanly.',
     gapPct: 11, gapNote: 'no additional verification',
     supply: 70, confidence: 'HIGH' as Conf, verifReq: false,
-    history: '66t (Season 2)', satellite: 'Healthy — NDVI 0.71',
-    field: 'Confirmed 4 weeks ago', missing: 'None — evidence gap closed.',
+    history: '66t (Season 2)', satellite: 'Healthy: NDVI 0.71',
+    field: 'Confirmed 4 weeks ago', missing: 'None: evidence gap closed.',
     risks: 'None identified', harvest: 'Week 3',
     whyConf: 'Stable historical yield, healthy satellite readings, and current field evidence align.',
   },
@@ -1163,9 +1163,9 @@ const COMPARE_FARMS = [
     summary: 'Largest single block available. Requires field verification before committing.',
     gapPct: 40, gapNote: 'requires one field verification',
     supply: 250, confidence: 'LOW' as Conf, verifReq: true,
-    history: '231t (Season 1)', satellite: 'Inconclusive — cloud cover',
+    history: '231t (Season 1)', satellite: 'Inconclusive: cloud cover',
     field: 'None available', missing: 'No current field evidence. Standing stock unconfirmed. Yield estimate based on prior season data only.',
-    risks: 'Standing stock unverified; potential 20–30% yield variance', harvest: 'Week 3',
+    risks: 'Standing stock unverified; potential 20-30% yield variance', harvest: 'Week 3',
     whyConf: 'Estimate based on prior season only. No current satellite or field evidence available.',
   },
   {
@@ -1174,7 +1174,7 @@ const COMPARE_FARMS = [
     summary: 'Good historical performance. Missing recent field evidence is the only barrier.',
     gapPct: 26, gapNote: 'requires one field verification',
     supply: 160, confidence: 'MEDIUM' as Conf, verifReq: true,
-    history: '148t (Season 2)', satellite: 'Moderate — NDVI 0.63',
+    history: '148t (Season 2)', satellite: 'Moderate: NDVI 0.63',
     field: 'Last confirmed 6 weeks ago', missing: 'Missing current field evidence. Last field visit was 6 weeks ago. Crop status may have changed.',
     risks: 'Crop condition change possible since last visit', harvest: 'Week 3',
     whyConf: 'Supply and timing are adequate but evidence is incomplete or variable.',
@@ -1417,7 +1417,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           canProceed ? (
             <>
               <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'text.primary', flex: 1 }}>
-                {selectedStrategy?.name} selected — all constraints satisfied.
+                {selectedStrategy?.name} selected. All constraints satisfied.
               </Typography>
               <PrimaryBtn onClick={() => onNavigate('verification')} sx={{ flexShrink: 0 }}>Proceed with {selectedStrategy?.name} →</PrimaryBtn>
             </>
@@ -1495,7 +1495,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         />
       }
     >
-          {/* Constraints — threshold rails, not consumer sliders */}
+          {/* Constraints - threshold rails, not consumer sliders */}
           <Box sx={{ mb: space.section }}>
             <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: space.tight }}>
               <SectionLabel>Business constraints</SectionLabel>
@@ -1504,7 +1504,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               )}
             </Stack>
             <Typography variant="body2" sx={{ mb: space.related, maxWidth: 520 }}>
-              Thresholds define feasibility. Drag a control to recompute strategies — violations surface on each option.
+              Thresholds define feasibility. Drag a control to recompute strategies. Violations surface on each option.
             </Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: space.related }}>
               <ThresholdControl
@@ -1583,7 +1583,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       <Box component="span" sx={{ color: m3.error, fontWeight: 700, mt: 1 }}>✕</Box>
                       <Box>
                         <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface }}>Tanuku Plot · <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }}>160 t</Box></Typography>
-                        <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant }}>Requires a field verification visit — exceeds new limit of {maxVisits}</Typography>
+                        <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant }}>Requires a field verification visit; exceeds new limit of {maxVisits}</Typography>
                       </Box>
                     </Box>
                   </Box>
@@ -1593,7 +1593,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       <Box component="span" sx={{ color: m3.success, fontWeight: 700, mt: 1 }}>+</Box>
                       <Box>
                         <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface }}>Guntur Strip · <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }}>80 t</Box></Typography>
-                        <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant }}>No field visit required — stays within {maxVisits}-visit limit</Typography>
+                        <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant }}>No field visit required; stays within {maxVisits}-visit limit</Typography>
                       </Box>
                     </Box>
                   </Box>
@@ -1604,10 +1604,10 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: m3.onErrorContainer, mb: 1 }}>Coverage target not met</Typography>
                 <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onErrorContainer, mb: 1 }}>Coverage-First cannot reach the 95% target with this constraint.</Typography>
                 <Typography sx={{ fontSize: '0.75rem', color: m3.onErrorContainer }}>
-                  Week 3 supply drops to <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>1,070 t (89%)</Box>. The 95% minimum requires <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>1,140 t</Box> — 70 t short.
+                  Week 3 supply drops to <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>1,070 t (89%)</Box>. The 95% minimum requires <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>1,140 t</Box> (70 t short).
                 </Typography>
                 <Typography sx={{ fontSize: '0.75rem', color: m3.onErrorContainer, mt: 1 }}>
-                  The farm substitution replaces <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>160 t</Box> with only <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>80 t</Box> — a net supply loss of <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>80 t</Box>.
+                  The farm substitution replaces <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>160 t</Box> with only <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>80 t</Box> (a net supply loss of <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>80 t</Box>).
                 </Typography>
               </DashPaper>
               {/* Interpretation */}
@@ -1687,12 +1687,12 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       </Stack>
                     </Box>
 
-                    {/* Tradeoff bars — same card surface */}
+                    {/* Tradeoff bars - same card surface */}
                     <Box sx={{ px: space.related, pb: space.related }}>
                       <TradeoffBars coverage={wk3} visits={verif} />
                     </Box>
 
-                    {/* Metrics — same surface, equal 16dp padding; fail = text role only */}
+                    {/* Metrics - same surface, equal 16dp padding; fail = text role only */}
                     <Box
                       sx={{
                         display: 'grid',
@@ -1735,7 +1735,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       ))}
                     </Box>
 
-                    {/* Farm mix — same surface */}
+                    {/* Farm mix - same surface */}
                     <Box sx={{ px: space.related, py: space.related }}>
                       <Typography variant="caption" sx={{ display: 'block', mb: space.tight, color: m3.onSurfaceVariant, fontWeight: 650 }}>
                         Farm mix
@@ -1948,7 +1948,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', height: '100%', bgcolor: m3.surfaceContainerHigh, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', py: 6, px: 4 }}>
       <DashPaper sx={{ width: '100%', maxWidth: 410, overflow: 'hidden', boxShadow: 1, p: 0 }}>
         <Box sx={{ bgcolor: 'background.paper', overflow: 'hidden' }}>
-          {/* Dark top bar — inverse roles only (never light-theme text.* on inverse) */}
+          {/* Dark top bar - inverse roles only (never light-theme text.* on inverse) */}
           <Box sx={{ color: m3.inverseOnSurface, px: 4, pt: 4, pb: 4, bgcolor: m3.inverseSurface, borderTop: `3px solid ${alpha(m3.primary, 0.35)}` }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box>
@@ -2207,7 +2207,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         <>
           <Box sx={{ flex: 1, textAlign: 'left' }}>
             <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'text.primary' }}>
-              Verification complete — Coverage-First is ready to proceed
+              Verification complete. Coverage-First is ready to proceed
             </Typography>
             <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>
               Both farms are now HIGH · VERIFIED. Week 3 coverage confirmed at 1,150 t / 96%.
@@ -2524,7 +2524,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m3.error }} />
             <Typography variant="overline" sx={{ color: m3.onErrorContainer }}>Severity · Week 3 below 95% threshold</Typography>
           </Stack>
-          <Typography variant="h2" sx={{ color: m3.onErrorContainer }}>Godavari Combined Block — supply revised</Typography>
+          <Typography variant="h2" sx={{ color: m3.onErrorContainer }}>Godavari Combined Block: supply revised</Typography>
           <Typography variant="body2" sx={{ mt: 1, color: m3.onErrorContainer, fontWeight: 600 }}>
             Cause: new satellite NDVI · Impact: −120 t · Recovery required
           </Typography>
@@ -2813,7 +2813,7 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
         })}
       </List>
 
-      {/* MD3 drawer footer — account row, not a floating card */}
+      {/* MD3 drawer footer - account row, not a floating card */}
       <Divider />
       <List disablePadding sx={{ py: space.tight }}>
         <ListItem sx={{ px: space.related, py: space.tight }}>
