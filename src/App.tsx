@@ -462,23 +462,23 @@ function FarmDecisionPanel({
       <DialogContent>
         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: space.related }}>
           <Box>
-            <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>Expected supply</Typography>
+            <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>Expected supply</Typography>
             <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }} variant="subtitle1">{farm.supply} t · {farm.harvest}</Typography>
           </Box>
           <Box>
-            <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>Confidence</Typography>
+            <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>Confidence</Typography>
             <ConfBadge level={farm.confidence} />
           </Box>
           <Box>
-            <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>Evidence status</Typography>
+            <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>Evidence status</Typography>
             <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>{farm.evidence}</Typography>
           </Box>
           <Box>
-            <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>Verification</Typography>
+            <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>Verification</Typography>
             <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>{context.verification}</Typography>
           </Box>
           <Box sx={{ gridColumn: '1 / -1', borderTop: 1, borderColor: 'divider', pt: space.related }}>
-            <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>Relevant risk</Typography>
+            <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>Relevant risk</Typography>
             <Typography variant="body2" color="text.primary">{context.risk}</Typography>
           </Box>
         </Box>
@@ -523,36 +523,36 @@ function EvidenceModal({ farmId, onClose, recovery = false }: { farmId: string; 
       </DialogTitle>
       <Divider />
       <DialogContent>
-          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 2 }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4, mb: 4 }}>
             <Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                 <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary' }}>{recovery || farm.confidence === 'LOW' ? 'Previous observation' : 'Satellite observation'}</Typography>
                 <Typography sx={{ fontSize: 10, color: 'text.secondary' }}>{recovery ? '14 days ago' : farm.confidence === 'LOW' ? 'Current view unavailable' : 'Updated 2 days ago'}</Typography>
               </Box>
               <SatelliteThumbnail />
-              <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mt: 1 }}>
+              <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mt: 2 }}>
                 {farm.confidence === 'LOW' && !recovery
                   ? <><Box component="strong" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, display: 'inline' }}>NDVI —</Box> · Current reading inconclusive due to cloud cover</>
                   : <><Box component="strong" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, display: 'inline' }}>{recovery ? 'NDVI 0.68' : farmId === 'mach' ? 'NDVI 0.74' : 'NDVI 0.66'}</Box> · Vegetation condition: Healthy</>}
               </Typography>
             </Box>
             <Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                 <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary' }}>{recovery ? 'Current observation' : 'Field evidence'}</Typography>
                 <Typography sx={{ fontSize: 10, color: 'text.secondary' }}>{recovery ? 'Updated 2 days ago' : farm.confidence === 'LOW' ? 'Not available' : 'Confirmed recently'}</Typography>
               </Box>
               {recovery ? <SatelliteThumbnail degraded /> : (
-                <Box sx={{ height: 96, borderRadius: 1, border: 1, borderStyle: 'dashed', borderColor: 'divider', bgcolor: 'grey.50', display: 'flex', alignItems: 'center', justifyContent: 'center', px: 2, textAlign: 'center' }}>
+                <Box sx={{ height: 96, borderRadius: 1, border: 1, borderStyle: 'dashed', borderColor: 'divider', bgcolor: 'grey.50', display: 'flex', alignItems: 'center', justifyContent: 'center', px: 4, textAlign: 'center' }}>
                   <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>{farm.evidence}</Typography>
                 </Box>
               )}
-              <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mt: 1 }}>
+              <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mt: 2 }}>
                 {recovery ? <><Box component="strong" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, display: 'inline' }}>NDVI 0.41</Box> · Canopy condition materially reduced</> : <>Evidence confidence: <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>{farm.confidence}</Box></>}
               </Typography>
             </Box>
           </Box>
           <Paper elevation={0} sx={{ p: space.related, bgcolor: recovery ? semantic.alertSoft : ACCENT_SOFT }}>
-            <Typography variant="overline" color={recovery ? 'error' : 'primary'} sx={{ display: 'block', mb: 0.5 }}>Procurement interpretation</Typography>
+            <Typography variant="overline" color={recovery ? 'error' : 'primary'} sx={{ display: 'block', mb: 1 }}>Procurement interpretation</Typography>
             <Typography variant="body2" color="text.primary">
               {recovery
                 ? 'Vegetation decline and cloud-corrected canopy analysis indicate lower standing stock. Expected supply was revised from 200 t to 80 t.'
@@ -598,12 +598,12 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
     <Box sx={{ display: 'flex', height: '100%' }}>
       {/* Main */}
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 3 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6 }}>
         <Box sx={{ maxWidth: 768 }}>
           <SectionLabel>Procurement Command Centre</SectionLabel>
           <Typography
             variant="h1"
-            sx={{ color: INK, mb: 0.5, fontSize: { xs: '2rem', md: '2.75rem' } }}
+            sx={{ color: INK, mb: 1, fontSize: { xs: '2rem', md: '2.75rem' } }}
           >
             4,000 t Eucalyptus
           </Typography>
@@ -621,22 +621,22 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               backgroundImage: `linear-gradient(135deg, rgba(209,67,58,0.08) 0%, ${PAPER} 42%)`,
             }}
           >
-            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', gap: 2, flexWrap: 'wrap' }}>
+            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', gap: 4, flexWrap: 'wrap' }}>
               <Box sx={{ flex: 1, minWidth: 200 }}>
-                <Typography variant="overline" sx={{ color: semantic.alert, display: 'block', mb: 0.5 }}>
+                <Typography variant="overline" sx={{ color: semantic.alert, display: 'block', mb: 1 }}>
                   Operational focus · Week 3
                 </Typography>
                 <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '2.75rem', fontWeight: 700, letterSpacing: '-0.03em', color: INK, lineHeight: 1 }}>
                   620 t
                 </Typography>
-                <Typography variant="subtitle2" sx={{ color: INK, mt: 1 }}>
+                <Typography variant="subtitle2" sx={{ color: INK, mt: 2 }}>
                   Supply gap still uncovered
                 </Typography>
-                <Typography variant="body2" sx={{ mt: 0.5, maxWidth: 360 }}>
+                <Typography variant="body2" sx={{ mt: 1, maxWidth: 360 }}>
                   1,200 t needed · 580 t committed. This is the most constrained delivery window in the procurement plan.
                 </Typography>
               </Box>
-              <Stack spacing={1} sx={{ alignItems: 'flex-end' }}>
+              <Stack spacing={2} sx={{ alignItems: 'flex-end' }}>
                 <PrimaryBtn onClick={() => onNavigate('farms')}>Investigate farms →</PrimaryBtn>
                 <GhostBtn onClick={() => onNavigate('farms')}>View candidates on map</GhostBtn>
               </Stack>
@@ -645,18 +645,18 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
           {/* Target as open strip — not a KPI card wall */}
           <Box sx={{ mb: space.section }}>
-            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'baseline', mb: 1 }}>
+            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'baseline', mb: 2 }}>
               <SectionLabel>Procurement position</SectionLabel>
               <Typography variant="h2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>4,000 t</Typography>
             </Stack>
             <SupplyBar firm={2568} atRisk={570} total={4000} />
-            <Stack direction="row" spacing={3} sx={{ mt: 1.5 }}>
+            <Stack direction="row" spacing={6} sx={{ mt: 3 }}>
               {[
                 { label: 'Firm', value: '2,568 t', color: semantic.firm },
                 { label: 'At risk', value: '570 t', color: semantic.atRisk },
                 { label: 'Open gap', value: '862 t', color: semantic.gap },
               ].map(m => (
-                <Stack key={m.label} direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                <Stack key={m.label} direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                   <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m.color }} />
                   <Typography variant="caption">{m.label}</Typography>
                   <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>{m.value}</Typography>
@@ -679,14 +679,14 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <SectionLabel>Needs a decision</SectionLabel>
             <Stack spacing={0} sx={{ bgcolor: m3.surfaceContainerLowest, borderRadius: '16px', overflow: 'hidden' }}>
               <Box sx={{ p: space.related, bgcolor: 'rgba(11,175,175,0.10)' }}>
-                <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 2, alignItems: 'flex-start' }}>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 4, alignItems: 'flex-start' }}>
                   <Box>
-                    <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
+                    <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 1 }}>
                       <StatusChip kind="primary-issue" />
                       <Typography variant="caption">Closes via GIS investigation</Typography>
                     </Stack>
                     <Typography variant="subtitle1" sx={{ color: INK }}>Week 3 supply gap: 620 t</Typography>
-                    <Typography variant="body2" sx={{ mt: 0.5 }}>
+                    <Typography variant="body2" sx={{ mt: 1 }}>
                       Candidate farms identified on the Week 3 map. Resolve before committing the coverage strategy.
                     </Typography>
                   </Box>
@@ -698,8 +698,8 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 { title: '7 farms changed this week', sub: 'Satellite condition, harvest timing, or expected supply', cta: 'Review changes' },
                 { title: '5 decisions blocked by missing evidence', sub: 'Cannot treat as firm supply until field or current satellite evidence arrives', cta: 'Resolve evidence' },
               ].map((item, i) => (
-                <DataStrip key={item.title} sx={{ px: space.related, bgcolor: PAPER, borderBottom: i === 2 ? 'none' : undefined }}>
-                  <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 2, alignItems: 'center' }}>
+                <DataStrip key={item.title} sx={{ bgcolor: PAPER, borderBottom: i === 2 ? 'none' : undefined }}>
+                  <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 4, alignItems: 'center' }}>
                     <Box>
                       <Typography variant="subtitle2" sx={{ color: INK }}>{item.title}</Typography>
                       <Typography variant="body2">{item.sub}</Typography>
@@ -718,7 +718,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         <Box sx={{ position: 'absolute', left: -4, top: 0, bottom: 0, width: 8, cursor: 'col-resize', touchAction: 'none', zIndex: 10 }} onPointerDown={startGeoPanelResize} role="separator" aria-orientation="vertical" aria-label="Resize supply geography panel">
           <Box sx={{ width: '1px', height: '100%', mx: 'auto', bgcolor: 'transparent', transition: 'background-color 0.15s' }} />
         </Box>
-        <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2 }}>
+        <Box sx={{ p: 4, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 4 }}>
           <Box>
             <SectionLabel>Week 3 · Supply Geography</SectionLabel>
             <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>580 t committed across AP region</Typography>
@@ -729,15 +729,15 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           <Box sx={{ flex: 1, minHeight: 0 }}>
             <RegionMap fullscreen variant="coverage" />
           </Box>
-          <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
+          <Box sx={{ p: 4, borderTop: 1, borderColor: 'divider' }}>
             <MapLegend items={DEFAULT_LEGEND} />
           </Box>
         </Box>
         <Box sx={{ p: space.related, borderTop: `1px solid ${RULE}`, bgcolor: m3.inverseSurface, color: m3.inverseOnSurface }}>
-          <Typography variant="caption" sx={{ color: m3.inversePrimary, display: 'block', mb: 1 }}>
+          <Typography variant="caption" sx={{ color: m3.inversePrimary, display: 'block', mb: 2 }}>
             Map · Week 3 geography
           </Typography>
-          <Typography variant="body2" sx={{ color: m3.inverseOnSurface, mb: 1.5, opacity: 0.85 }}>
+          <Typography variant="body2" sx={{ color: m3.inverseOnSurface, mb: 3, opacity: 0.85 }}>
             620 t gap · candidates highlighted for investigation
           </Typography>
           <PrimaryBtn fullWidth onClick={() => onNavigate('farms')}>
@@ -889,20 +889,20 @@ function FarmCard({
           <Box component="strong" sx={{ color: 'text.primary' }}>{farm.evidenceStatus}</Box> · {farm.evidenceNote}
         </Typography>
       )}
-      <Typography variant="overline" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>Why recommended</Typography>
-      <Typography variant="body2" sx={{ mb: 0.5 }}>{farm.why}</Typography>
+      <Typography variant="overline" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>Why recommended</Typography>
+      <Typography variant="body2" sx={{ mb: 1 }}>{farm.why}</Typography>
       {farm.missing && (
         <Typography variant="body2" color="text.primary"><Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>Missing:</Box> {farm.missing}</Typography>
       )}
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mt: space.related }}>
-        <Button onClick={() => onViewEvidence(farm.id)} size="small" color="primary" sx={{ minWidth: 0, px: 0.5, fontSize: 12 }}>View evidence</Button>
+        <Button onClick={() => onViewEvidence(farm.id)} size="small" color="primary" sx={{ minWidth: 0, px: 1, fontSize: 12 }}>View evidence</Button>
         <Button
           size="small"
           variant={inComparison ? 'contained' : 'outlined'}
           color="primary"
           onClick={() => onToggle(farm.id)}
           startIcon={inComparison ? <CheckIcon sx={{ fontSize: 14 }} /> : undefined}
-          sx={{ fontSize: 12, py: 0.5, px: 1.25, minWidth: 0 }}
+          sx={{ fontSize: 12, py: 1, px: 2.5, minWidth: 0 }}
         >
           {inComparison ? 'Added to comparison' : 'Add to comparison'}
         </Button>
@@ -928,8 +928,8 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     <Box sx={{ display: 'flex', height: '100%', position: 'relative' }}>
       {/* Map panel */}
       <Box sx={{ width: '34%', minWidth: 384, maxWidth: 440, flexShrink: 0, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper' }}>
-        <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
-          <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 0.5 }}>GIS Workspace · Week 3</Typography>
+        <Box sx={{ p: 4, borderBottom: 1, borderColor: 'divider' }}>
+          <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>GIS Workspace · Week 3</Typography>
           <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>Hover a farm card to highlight on map</Typography>
         </Box>
         <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
@@ -943,12 +943,12 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               onViewEvidence={setEvidenceFarm}
             />
           </Box>
-          <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
+          <Box sx={{ p: 4, borderTop: 1, borderColor: 'divider' }}>
             <MapLegend items={DEFAULT_LEGEND} />
           </Box>
         </Box>
-        <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
-          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 2 }}>{comparison.length} farms selected for comparison</Typography>
+        <Box sx={{ p: 4, borderTop: 1, borderColor: 'divider' }}>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 4 }}>{comparison.length} farms selected for comparison</Typography>
           <PrimaryBtn
             onClick={() => onNavigate('compare')}
             disabled={comparison.length < 2}
@@ -961,24 +961,24 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
       {/* Farm list */}
       <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 6 }}>
           {/* Gap header */}
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 6 }}>
             <Box>
-              <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 0.5 }}>Week 3 Supply Gap</Typography>
+              <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>Week 3 Supply Gap</Typography>
               <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>620 t still needed</Typography>
-              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 0.5 }}>1,200 t required · 580 t committed</Typography>
+              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>1,200 t required · 580 t committed</Typography>
             </Box>
-            <Box sx={{ display: 'flex', gap: 1 }}>
+            <Box sx={{ display: 'flex', gap: 2 }}>
               <SecondaryBtn onClick={() => setComparison(['mach', 'reddy', 'bhim', 'tanuku'])}>Use recommended set</SecondaryBtn>
               <PrimaryBtn onClick={() => onNavigate('compare')}>Compare selected →</PrimaryBtn>
             </Box>
           </Box>
 
           {/* Recommended */}
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 6 }}>
             <SectionLabel>Recommended for this gap</SectionLabel>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               {RECOMMENDED_FARMS.map(f => (
                 <FarmCard
                   key={f.id}
@@ -996,7 +996,7 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Other eligible */}
           <Box>
             <SectionLabel>Other eligible farms · May close remaining gap or diversify supply</SectionLabel>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               {OTHER_FARMS.map(f => (
                 <FarmCard
                   key={f.id}
@@ -1083,30 +1083,30 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       {/* Fixed header */}
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 3, py: 2, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 6, py: 4, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
         <Box>
           <SectionLabel>Candidate Comparison</SectionLabel>
           <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>4 farms · Week 3</Typography>
-          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 0.5 }}>Scenario planning can add or substitute farms from the full eligible pool.</Typography>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Scenario planning can add or substitute farms from the full eligible pool.</Typography>
         </Box>
         <PrimaryBtn onClick={() => onNavigate('scenarios')}>Plan a scenario →</PrimaryBtn>
       </Box>
 
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 3 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6 }}>
         {/* Interpretation cards */}
-        <Box sx={{ mb: 4 }}>
+        <Box sx={{ mb: 8 }}>
           <SectionLabel>Interpretation</SectionLabel>
-          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
             {COMPARE_FARMS.map(f => (
               <DashPaper key={f.id} sx={{ p: space.related }}>
-                <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: 'text.primary', mb: 0.5 }}>{f.name}</Typography>
-                <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary', mb: 1 }}>{f.headline}</Typography>
-                <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 2 }}>{f.summary}</Typography>
-                <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mb: 2 }}>
+                <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: 'text.primary', mb: 1 }}>{f.name}</Typography>
+                <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary', mb: 2 }}>{f.headline}</Typography>
+                <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 4 }}>{f.summary}</Typography>
+                <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mb: 4 }}>
                   Closes <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>{f.gapPct}%</Box> of the remaining 620 t Week 3 gap
                   {f.gapNote ? `, but ${f.gapNote}.` : '.'}
                 </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: 'text.primary' }}>{f.supply} t</Box>
                   <ConfBadge level={f.confidence} />
                   <Box component="span" sx={{ fontSize: 10, color: 'text.secondary' }}>
@@ -1144,7 +1144,7 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       if (key === 'confidence') return (
                         <TableCell key={f.id} sx={{ verticalAlign: 'top' }}>
                           <ConfBadge level={val as Conf} />
-                          <Typography variant="caption" sx={{ display: 'block',  mt: 0.5 }}>
+                          <Typography variant="caption" sx={{ display: 'block',  mt: 1 }}>
                             {val === 'HIGH' ? 'Evidence current' : val === 'MEDIUM' ? 'Evidence incomplete' : 'Evidence missing'}
                           </Typography>
                         </TableCell>
@@ -1169,8 +1169,8 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         </Box>
       </Box>
 
-      <Box sx={{ borderTop: 1, borderColor: 'divider', px: 3, py: 2, flexShrink: 0, display: 'flex', justifyContent: 'flex-end' }}>
-        <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mr: 'auto', pt: 0.5 }}>Scenario planning can consider these candidates and other eligible farms. The manually compared farms do not limit scenario generation.</Typography>
+      <Box sx={{ borderTop: 1, borderColor: 'divider', px: 6, py: 4, flexShrink: 0, display: 'flex', justifyContent: 'flex-end' }}>
+        <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mr: 'auto', pt: 1 }}>Scenario planning can consider these candidates and other eligible farms. The manually compared farms do not limit scenario generation.</Typography>
         <PrimaryBtn onClick={() => onNavigate('scenarios')}>Plan a scenario →</PrimaryBtn>
       </Box>
     </Box>
@@ -1276,8 +1276,8 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     <Box sx={{ display: 'flex', height: '100%' }}>
       {/* Main */}
       <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-        <Box sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 3 }}>
+        <Box sx={{ p: 6 }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 6 }}>
             <Box>
               <SectionLabel>Scenario Planning</SectionLabel>
               <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Week 3 · 620 t gap</Typography>
@@ -1344,47 +1344,47 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Impact panel (shown when maxVisits changed) */}
           {showImpact && (
             <DashPaper sx={{ p: space.section, mb: space.section, bgcolor: semantic.warnSoft }}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
                 <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'warning.dark' }}>Impact of This Change</Typography>
                 <Typography sx={{ fontSize: 10, color: 'warning.dark', fontWeight: 500 }}>Max. field verification visits: 10 visits → <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>{maxVisits} visit{maxVisits !== 1 ? 's' : ''}</Box></Typography>
               </Box>
               {/* Metrics grid */}
-              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderTop: 1, borderBottom: 1, borderColor: 'warning.light', py: 2, mb: 2 }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderTop: 1, borderBottom: 1, borderColor: 'warning.light', py: 4, mb: 4 }}>
                 {[
                   { label: 'Week 3 coverage', before: '96%', after: '89%', bad: true },
                   { label: 'Verification visits', before: '2', after: '1', bad: false },
                   { label: 'High-conf supply', before: '65%', after: '69%', bad: false },
                   { label: 'Max district conc.', before: '36%', after: '23%', bad: false },
                 ].map(({ label, before, after, bad }) => (
-                  <Box sx={{ px: 2, borderRight: 1, borderColor: 'warning.light' }} key={label}>
-                    <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 1 }}>{label}</Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box sx={{ px: 4, borderRight: 1, borderColor: 'warning.light' }} key={label}>
+                    <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 2 }}>{label}</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '0.875rem', color: 'text.secondary', textDecoration: 'line-through' }}>{before}</Box>
                       <Box component="span" sx={{ color: 'text.secondary' }}>→</Box>
                       <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '0.875rem', fontWeight: 700, color: bad ? 'error.dark' : 'text.primary' }}>{after}</Box>
                     </Box>
-                    {bad && <Typography sx={{ fontSize: 10, fontWeight: 700, color: 'error.dark', mt: 0.5, textTransform: 'uppercase' }}>Below target</Typography>}
+                    {bad && <Typography sx={{ fontSize: 10, fontWeight: 700, color: 'error.dark', mt: 1, textTransform: 'uppercase' }}>Below target</Typography>}
                   </Box>
                 ))}
               </Box>
               {/* Farm mix */}
-              <Box sx={{ mb: 2 }}>
-                <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'warning.dark', mb: 1 }}>Farm Mix Changed</Typography>
+              <Box sx={{ mb: 4 }}>
+                <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'warning.dark', mb: 2 }}>Farm Mix Changed</Typography>
                 <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
-                  <Box sx={{ pr: 2, borderRight: 1, borderColor: 'warning.light' }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'error.dark', mb: 1 }}>Removed</Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-                      <Box component="span" sx={{ color: 'error.main', fontWeight: 700, mt: 0.5 }}>✕</Box>
+                  <Box sx={{ pr: 4, borderRight: 1, borderColor: 'warning.light' }}>
+                    <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'error.dark', mb: 2 }}>Removed</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+                      <Box component="span" sx={{ color: 'error.main', fontWeight: 700, mt: 1 }}>✕</Box>
                       <Box>
                         <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.primary' }}>Tanuku Plot · <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }}>160 t</Box></Typography>
                         <Typography sx={{ fontSize: 10, color: 'text.secondary' }}>Requires a field verification visit — exceeds new limit of {maxVisits}</Typography>
                       </Box>
                     </Box>
                   </Box>
-                  <Box sx={{ pl: 2 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'success.dark', mb: 1 }}>Added</Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-                      <Box component="span" sx={{ color: 'success.main', fontWeight: 700, mt: 0.5 }}>+</Box>
+                  <Box sx={{ pl: 4 }}>
+                    <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'success.dark', mb: 2 }}>Added</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+                      <Box component="span" sx={{ color: 'success.main', fontWeight: 700, mt: 1 }}>+</Box>
                       <Box>
                         <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.primary' }}>Guntur Strip · <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }}>80 t</Box></Typography>
                         <Typography sx={{ fontSize: 10, color: 'text.secondary' }}>No field visit required — stays within {maxVisits}-visit limit</Typography>
@@ -1395,17 +1395,17 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </Box>
               {/* Coverage target not met */}
               <DashPaper sx={{ p: space.related, mb: space.related, bgcolor: semantic.alertSoft }}>
-                <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'error.dark', mb: 0.5 }}>Coverage target not met</Typography>
-                <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'error.dark', mb: 0.5 }}>Coverage-First cannot reach the 95% target with this constraint.</Typography>
+                <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'error.dark', mb: 1 }}>Coverage target not met</Typography>
+                <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'error.dark', mb: 1 }}>Coverage-First cannot reach the 95% target with this constraint.</Typography>
                 <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
                   Week 3 supply drops to <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>1,070 t (89%)</Box>. The 95% minimum requires <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>1,140 t</Box> — 70 t short.
                 </Typography>
-                <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 0.5 }}>
+                <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>
                   The farm substitution replaces <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>160 t</Box> with only <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>80 t</Box> — a net supply loss of <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>80 t</Box>.
                 </Typography>
               </DashPaper>
               {/* Interpretation */}
-              <Box sx={{ bgcolor: semantic.warnSoft, borderRadius: 1, p: 1.5 }}>
+              <Box sx={{ bgcolor: semantic.warnSoft, borderRadius: 1, p: 3 }}>
                 <Typography sx={{ fontSize: '0.75rem', color: '#9A6410', lineHeight: 1.6 }}>
                   Reducing the verification limit to {maxVisits} removes Tanuku Plot and substitutes Guntur Strip, reducing Week 3 supply by 80 t and coverage from 96% to 89%, below the 95% target.
                 </Typography>
@@ -1416,7 +1416,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           {/* Strategies */}
           <Box>
             <SectionLabel>Generated Strategies</SectionLabel>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               {STRATEGIES.map(s => {
                 const failCount = getFailCount(s)
                 const wk3 = isModified ? s.wk3Modified : s.wk3Default
@@ -1445,8 +1445,8 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       outlineOffset: -2,
                     }}
                   >
-                    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-                      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+                    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                      <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
                         <Box
                           sx={{
                             width: 18,
@@ -1466,7 +1466,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       </Stack>
                       <StatusChip kind={failCount === 0 ? 'constraint-pass' : 'constraint-fail'} />
                     </Stack>
-                    <Typography variant="body2" sx={{ mb: space.related, pl: 4.25 }}>{rationale}</Typography>
+                    <Typography variant="body2" sx={{ mb: space.related, pl: 8.5 }}>{rationale}</Typography>
 
                     <TradeoffBars coverage={wk3} visits={verif} />
 
@@ -1478,7 +1478,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                         { label: 'High conf.', value: `${hiconf}%`, fail: hiconf < minHighConf },
                         { label: 'Max district', value: `${dist}%`, fail: dist > maxDistConc },
                       ].map(({ label, value, fail }) => (
-                        <Box key={label} sx={{ py: 1.5, pr: 1.5, borderRight: `1px solid ${RULE}`, '&:last-child': { borderRight: 'none' } }}>
+                        <Box key={label} sx={{ py: 3, pr: 3, borderRight: `1px solid ${RULE}`, '&:last-child': { borderRight: 'none' } }}>
                           <Typography variant="caption" sx={{ display: 'block' }}>{label}</Typography>
                           <Typography variant="subtitle2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: fail ? semantic.alert : INK }}>{value}</Typography>
                           {fail && <StatusChip kind="constraint-fail" />}
@@ -1487,9 +1487,9 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     </Box>
 
                     {/* Farm mix */}
-                    <Box sx={{ ml: 3 }}>
-                      <Typography sx={{ fontSize: 10, fontWeight: 500, color: 'text.secondary', mb: 1 }}>Farm mix</Typography>
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', columnGap: 1.5, rowGap: 0.5 }}>
+                    <Box sx={{ ml: 6 }}>
+                      <Typography sx={{ fontSize: 10, fontWeight: 500, color: 'text.secondary', mb: 2 }}>Farm mix</Typography>
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', columnGap: 3, rowGap: 1 }}>
                       {farms.map(f => {
                         const needsVerif = f.includes('✶')
                         return (
@@ -1515,7 +1515,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               ) : (
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <Box>
-                    <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'error.dark', mb: 0.5 }}>Cannot proceed: {selectedStrategy?.name} fails {selectedFails} constraint{selectedFails > 1 ? 's' : ''}.</Typography>
+                    <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'error.dark', mb: 1 }}>Cannot proceed: {selectedStrategy?.name} fails {selectedFails} constraint{selectedFails > 1 ? 's' : ''}.</Typography>
                     {selectedWk3 !== null && selectedWk3 < minCoverage && (
                       <Typography sx={{ fontSize: '0.75rem', color: 'error.dark' }}>Coverage {selectedWk3}% is below the {minCoverage}% Week 3 coverage requirement.</Typography>
                     )}
@@ -1530,14 +1530,14 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
       {/* Right panel */}
       <Box sx={{ width: 288, display: 'flex', flexDirection: 'column', bgcolor: 'background.paper', flexShrink: 0 }}>
-        <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2 }}>
+        <Box sx={{ p: 4, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 4 }}>
           <SectionLabel>Select a Strategy</SectionLabel>
           <ExpandMapButton onClick={() => {
             setMapFocusId(null)
             setMapExpanded(true)
           }} />
         </Box>
-        <Box sx={{ flex: 1, p: 2, display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ flex: 1, p: 4, display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ minHeight: 0 }}>
             <RegionMap
               compact={true}
@@ -1553,13 +1553,13 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               removedIds={isModified ? ['tanuku'] : []}
             />
           </Box>
-          <Box sx={{ mt: 2, mb: 2 }}>
+          <Box sx={{ mt: 4, mb: 4 }}>
             <MapLegend items={DEFAULT_LEGEND} />
           </Box>
           {selected && selectedStrategy && (
-            <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 2, mt: 'auto' }}>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary', mb: 2 }}>Week 3 summary</Typography>
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+            <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 4, mt: 'auto' }}>
+              <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary', mb: 4 }}>Week 3 summary</Typography>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
                 {[
                   { label: 'Coverage', value: `${isModified ? selectedStrategy.wk3Modified : selectedStrategy.wk3Default}%` },
                   {
@@ -1579,7 +1579,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   { label: 'High-confidence share', value: `${isModified ? selectedStrategy.hiconfModified : selectedStrategy.hiconfDefault}%` },
                 ].map(({ label, value }) => (
                   <Box key={label}>
-                    <Typography sx={{ fontSize: 9, color: 'text.secondary', mb: 0.5 }}>{label}</Typography>
+                    <Typography sx={{ fontSize: 9, color: 'text.secondary', mb: 1 }}>{label}</Typography>
                     <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1rem', fontWeight: 700, color: 'text.primary' }}>{value}</Typography>
                   </Box>
                 ))}
@@ -1645,25 +1645,25 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 3, py: 2, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 6, py: 4, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
         <Box>
           <SectionLabel>Selective Field Verification</SectionLabel>
           <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Coverage-First · Farms requiring verification</Typography>
-          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 0.5 }}>2 selected · 0 remaining</Typography>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>2 selected · 0 remaining</Typography>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', textAlign: 'right', maxWidth: 220, lineHeight: 1.6 }}>Only farms with missing, insufficient, or conflicting evidence appear here.</Typography>
           <PrimaryBtn onClick={() => onNavigate('field')}>Assign 2 farms to Ravi →</PrimaryBtn>
         </Box>
       </Box>
 
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 3 }}>
-        <Box sx={{ maxWidth: 672, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6 }}>
+        <Box sx={{ maxWidth: 672, display: 'flex', flexDirection: 'column', gap: 4 }}>
           {farms.map(f => (
             <DashPaper key={f.id} sx={{ p: space.section, bgcolor: semantic.warnSoft }}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-                  <Box sx={{ width: 20, height: 20, borderRadius: 1, border: 1, borderColor: 'warning.dark', bgcolor: 'warning.dark', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, mt: 0.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 4 }}>
+                  <Box sx={{ width: 20, height: 20, borderRadius: 1, border: 1, borderColor: 'warning.dark', bgcolor: 'warning.dark', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, mt: 1 }}>
                     <svg style={{ width: 12, height: 12, color: '#fff' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
@@ -1674,12 +1674,12 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
                   </Box>
                 </Box>
                 <Box sx={{ textAlign: 'right' }}>
-                  <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: 'text.primary', mb: 0.5 }}>{f.supply} t</Typography>
+                  <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: 'text.primary', mb: 1 }}>{f.supply} t</Typography>
                   <Box
                     component="span"
                     sx={{
-                      px: 1,
-                      py: 0.5,
+                      px: 2,
+                      py: 1,
                       fontSize: 10,
                       fontWeight: 700,
                       textTransform: 'uppercase',
@@ -1695,11 +1695,11 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
                   </Box>
                 </Box>
               </Box>
-              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 2 }}>{f.reason}</Typography>
-              <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>Needs</Typography>
-              <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2, m: 0, p: 0, listStyle: 'none' }}>
+              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 4 }}>{f.reason}</Typography>
+              <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 2 }}>Needs</Typography>
+              <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4, m: 0, p: 0, listStyle: 'none' }}>
                 {f.needs.map(n => (
-                  <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: '0.75rem', fontWeight: 650, color: 'text.primary' }} key={n}>
+                  <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: '0.75rem', fontWeight: 650, color: 'text.primary' }} key={n}>
                     <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'grey.700', flexShrink: 0 }} />
                     {n}
                   </Stack>
@@ -1713,8 +1713,8 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
           ))}
 
           {/* Assignment summary */}
-          <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 2 }}>
-            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', lineHeight: 1.6, mb: 2 }}>
+          <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 4 }}>
+            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', lineHeight: 1.6, mb: 4 }}>
               2 farms will be assigned to Ravi for field verification. Ravi will visit each farm, verify the requested evidence, and submit findings. Only these specific evidence items are needed — Ravi does not need to assess the full farm.
             </Typography>
             <PrimaryBtn onClick={() => onNavigate('field')}>Assign to Ravi →</PrimaryBtn>
@@ -1793,32 +1793,32 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   }
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', height: '100%', bgcolor: 'grey.100', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', py: 3, px: 2 }}>
+    <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', height: '100%', bgcolor: 'grey.100', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', py: 6, px: 4 }}>
       <DashPaper sx={{ width: '100%', maxWidth: 410, overflow: 'hidden', boxShadow: 1, p: 0 }}>
         <Box sx={{ bgcolor: 'background.paper', overflow: 'hidden' }}>
           {/* Dark top bar */}
-          <Box sx={{ color: '#fff', px: 2, pt: 2, pb: 2 }} style={{ background: m3.inverseSurface, borderTop: `3px solid ${ACCENT}` }}>
+          <Box sx={{ color: '#fff', px: 4, pt: 4, pb: 4 }} style={{ background: m3.inverseSurface, borderTop: `3px solid ${ACCENT}` }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box>
-              <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 0.5 }}>
+              <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 1 }}>
                 {view === 'brief' ? 'Assigned Farm' : 'Capture + Submit'}
               </Typography>
               <Typography sx={{ fontSize: '0.875rem', fontWeight: 650 }}>{view === 'brief' ? 'Ravi · Field officer' : farm.name}</Typography>
             </Box>
             <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '0.875rem', fontWeight: 500, color: 'grey.300' }}>{farmIdx + 1} of 2</Box>
             </Box>
-            <Box sx={{ height: 4, bgcolor: 'grey.700', mt: 2, overflow: 'hidden' }}>
+            <Box sx={{ height: 4, bgcolor: 'grey.700', mt: 4, overflow: 'hidden' }}>
               <Box sx={{ height: '100%', bgcolor: 'background.paper', transition: 'all 0.2s' }} style={{ width: `${((farmIdx + 1) / FIELD_FARMS.length) * 100}%` }} />
             </Box>
           </Box>
 
           {view === 'brief' ? (
-            <Box sx={{ p: 2 }}>
-              <Typography variant="h3" sx={{ fontSize: '1.25rem', fontWeight: 700, color: 'text.primary', mb: 0.5 }}>{farm.name}</Typography>
-              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 2 }}>{farm.location}</Typography>
+            <Box sx={{ p: 4 }}>
+              <Typography variant="h3" sx={{ fontSize: '1.25rem', fontWeight: 700, color: 'text.primary', mb: 1 }}>{farm.name}</Typography>
+              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 4 }}>{farm.location}</Typography>
 
               {/* Mini map */}
-              <Box sx={{ bgcolor: 'grey.100', borderRadius: 1, border: 1, borderColor: 'divider', height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1, overflow: 'hidden', position: 'relative' }}>
+              <Box sx={{ bgcolor: 'grey.100', borderRadius: 1, border: 1, borderColor: 'divider', height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2, overflow: 'hidden', position: 'relative' }}>
                 <svg viewBox="0 0 200 120" style={{ width: '100%', height: '100%' }}>
                   <rect width="200" height="120" fill="#e5e7eb" />
                   <g style={{ filter: 'grayscale(0.3) saturate(0.72)' }}>
@@ -1844,7 +1844,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   <rect x="131" y="108" width="67" height="10" rx="2" fill="#ffffff" opacity=".9" />
                   <text x="135" y="115" fontSize="5.5" fill="#64748b">© OpenStreetMap</text>
                 </svg>
-                <Box sx={{ position: 'absolute', bottom: 8, left: 8, bgcolor: 'background.paper', border: 1, borderColor: 'divider', borderRadius: 1, px: 1, py: 0.5 }}>
+                <Box sx={{ position: 'absolute', bottom: 8, left: 8, bgcolor: 'background.paper', border: 1, borderColor: 'divider', borderRadius: 1, px: 2, py: 1 }}>
                   <Typography sx={{ fontSize: 9, color: 'text.secondary', fontWeight: 500 }}>Approximate destination · West Godavari</Typography>
                 </Box>
               </Box>
@@ -1853,34 +1853,34 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 variant="outlined"
                 color="primary"
                 onClick={() => window.open(farmIdx === 0 ? 'https://www.openstreetmap.org/?mlat=16.54&mlon=81.52#map=12/16.54/81.52' : 'https://www.openstreetmap.org/?mlat=16.75&mlon=81.68#map=12/16.75/81.68', '_blank', 'noopener,noreferrer')}
-                sx={{ mb: 2.5 }}
+                sx={{ mb: 5 }}
               >
                 Open in navigation
               </Button>
 
-              <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 2, mb: 2 }}>
-                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+              <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 4, mb: 4 }}>
+                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
                   <Box>
-                    <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 0.5 }}>Expected supply</Typography>
+                    <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 1 }}>Expected supply</Typography>
                     <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: 'text.primary' }}>{farm.supply} t</Typography>
                   </Box>
                   <Box>
-                    <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 0.5 }}>Harvest</Typography>
+                    <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 1 }}>Harvest</Typography>
                     <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'text.primary' }}>{farm.harvest}</Typography>
                   </Box>
                 </Box>
               </Box>
 
-              <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 2, mb: 2 }}>
-                <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 0.5 }}>Why this visit</Typography>
+              <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 4, mb: 4 }}>
+                <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 1 }}>Why this visit</Typography>
                 <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', lineHeight: 1.6 }}>{farm.whyVisit}</Typography>
               </Box>
 
-              <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 2, mb: 3 }}>
-                <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 1 }}>Verify</Typography>
-                <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, m: 0, p: 0, listStyle: 'none' }}>
+              <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 4, mb: 6 }}>
+                <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 2 }}>Verify</Typography>
+                <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: 3, m: 0, p: 0, listStyle: 'none' }}>
                   {farm.verifyItems.map(item => (
-                    <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: '0.75rem', color: 'text.primary' }} key={item}>
+                    <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: '0.75rem', color: 'text.primary' }} key={item}>
                       <Box sx={{ width: 6, height: 6, borderRadius: '50%', flexShrink: 0 }} />
                       {item}
                     </Stack>
@@ -1893,10 +1893,10 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </PrimaryBtn>
             </Box>
           ) : (
-            <Box sx={{ p: 2 }}>
-              <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 2 }}>Verification checklist</Typography>
+            <Box sx={{ p: 4 }}>
+              <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 4 }}>Verification checklist</Typography>
 
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4 }}>
                 {farm.verifyItems.map((item, i) => (
                   <FormControlLabel
                     key={item}
@@ -1907,8 +1907,8 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 ))}
               </Box>
 
-              <Box sx={{ mb: 2 }}>
-                <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 1 }}>Notes</Typography>
+              <Box sx={{ mb: 4 }}>
+                <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 2 }}>Notes</Typography>
                 <TextField
                   value={notes[farmIdx] || ''}
                   onChange={e => setNotes(prev => ({ ...prev, [farmIdx]: e.target.value }))}
@@ -1920,7 +1920,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </Box>
 
               {photos[farmIdx] ? (
-                <Box sx={{ borderTop: 1, borderBottom: 1, borderColor: 'divider', py: 2, mb: 2 }}>
+                <Box sx={{ borderTop: 1, borderBottom: 1, borderColor: 'divider', py: 4, mb: 4 }}>
                   <Box component="button" onClick={() => setPhotoPreviewOpen(true)} sx={{ width: '100%', display: 'block', bgcolor: 'grey.50', border: 0, p: 0, cursor: 'pointer' }}>
                     <img
                       src={farmIdx === 0 ? bhimavaramFieldPhoto : tanukuFieldPhoto}
@@ -1928,26 +1928,26 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       style={{ width: '100%', height: 'auto', maxHeight: 256, objectFit: 'contain' }}
                     />
                   </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2, mt: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 4, mt: 4 }}>
                     <Box>
                       <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'text.primary' }}>Field photo captured</Typography>
-                      <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 0.5 }}>Today · {farm.name}</Typography>
+                      <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Today · {farm.name}</Typography>
                     </Box>
                     <Button size="small" color="error" onClick={() => setPhotos(prev => ({ ...prev, [farmIdx]: false }))}>Remove</Button>
                   </Box>
                 </Box>
               ) : (
                 <>
-                  <Button fullWidth variant="outlined" color="primary" onClick={() => setPhotos(prev => ({ ...prev, [farmIdx]: true }))} sx={{ mb: 0.5 }}>
+                  <Button fullWidth variant="outlined" color="primary" onClick={() => setPhotos(prev => ({ ...prev, [farmIdx]: true }))} sx={{ mb: 1 }}>
                     Add photo
                   </Button>
-                  <Typography sx={{ fontSize: 10, color: 'text.secondary', textAlign: 'center', mb: 2 }}>0 photos added · Required to confirm evidence</Typography>
+                  <Typography sx={{ fontSize: 10, color: 'text.secondary', textAlign: 'center', mb: 4 }}>0 photos added · Required to confirm evidence</Typography>
                 </>
               )}
 
-              <Box sx={{ bottom: 0, bgcolor: 'background.paper', borderTop: 1, borderColor: 'divider', px: 2, pt: 2, pb: 2 }}>
-              <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 1 }}>Status and submit</Typography>
-              <PrimaryBtn fullWidth onClick={handleSubmit} disabled={!canConfirm} sx={{ mb: 1 }}>
+              <Box sx={{ bottom: 0, bgcolor: 'background.paper', borderTop: 1, borderColor: 'divider', px: 4, pt: 4, pb: 4 }}>
+              <Typography sx={{ fontSize: 10, fontWeight: 650, color: 'text.secondary', mb: 2 }}>Status and submit</Typography>
+              <PrimaryBtn fullWidth onClick={handleSubmit} disabled={!canConfirm} sx={{ mb: 2 }}>
                 Evidence confirmed · Submit findings
               </PrimaryBtn>
               <SecondaryBtn fullWidth onClick={handleSubmit}>
@@ -1960,9 +1960,9 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
       </DashPaper>
       {photoPreviewOpen && (
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3 }} onClick={() => setPhotoPreviewOpen(false)}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 6 }} onClick={() => setPhotoPreviewOpen(false)}>
           <Box onClick={e => e.stopPropagation()}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff', mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff', mb: 4 }}>
               <Box>
                 <Typography sx={{ fontSize: '0.875rem', fontWeight: 650 }}>Field photo captured</Typography>
                 <Typography sx={{ fontSize: '0.75rem', color: 'grey.300' }}>Today · {farm.name}</Typography>
@@ -2001,53 +2001,53 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 3, py: 2, flexShrink: 0 }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 6, py: 4, flexShrink: 0 }}>
         <SectionLabel>Field Officer Findings</SectionLabel>
         <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Review evidence</Typography>
-        <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 0.5 }}>Ravi has submitted findings for 2 farms. Evidence has been confirmed.</Typography>
+        <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Ravi has submitted findings for 2 farms. Evidence has been confirmed.</Typography>
       </Box>
 
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 3 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6 }}>
         <Box sx={{ maxWidth: 672, display: 'flex', flexDirection: 'column' }}>
           {findings.map(f => (
             <DashPaper key={f.id} sx={{ overflow: 'hidden', bgcolor: semantic.okSoft, p: 0 }}>
               {/* Header */}
-              <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 2, py: 2, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 4, py: 4, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <Box>
-                  <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: 'text.primary', mb: 0.5 }}>{f.name}</Typography>
+                  <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: 'text.primary', mb: 1 }}>{f.name}</Typography>
                   <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>{f.district}</Typography>
                 </Box>
                 <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: 'text.primary' }}>{f.supply} t</Typography>
               </Box>
 
-              <Box sx={{ p: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 3 }}>
+              <Box sx={{ p: 4 }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 4, mb: 6 }}>
                   <Box sx={{ flexShrink: 0 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: 'text.secondary', mb: 0.5 }}>Previous confidence</Typography>
+                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: 'text.secondary', mb: 1 }}>Previous confidence</Typography>
                     <ConfBadge level={f.before} />
-                    <Typography sx={{ fontSize: 10, color: 'text.secondary', mt: 0.5 }}>{f.before === 'LOW' ? 'Evidence missing' : 'Evidence incomplete'}</Typography>
+                    <Typography sx={{ fontSize: 10, color: 'text.secondary', mt: 1 }}>{f.before === 'LOW' ? 'Evidence missing' : 'Evidence incomplete'}</Typography>
                   </Box>
-                  <Box component="span" sx={{ color: 'grey.300', pt: 2 }}>→</Box>
+                  <Box component="span" sx={{ color: 'grey.300', pt: 4 }}>→</Box>
                   <Box sx={{ flex: 1 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: 'text.secondary', mb: 0.5 }}>Evidence collected</Typography>
+                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: 'text.secondary', mb: 1 }}>Evidence collected</Typography>
                     <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.primary' }}>Required evidence collected</Typography>
                   </Box>
-                  <Box component="span" sx={{ color: 'grey.300', pt: 2 }}>→</Box>
+                  <Box component="span" sx={{ color: 'grey.300', pt: 4 }}>→</Box>
                   <Box sx={{ flexShrink: 0 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: 'text.secondary', mb: 0.5 }}>Updated confidence</Typography>
+                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: 'text.secondary', mb: 1 }}>Updated confidence</Typography>
                     <ConfBadge level={f.after} />
-                    <Typography sx={{ fontSize: 10, color: 'text.secondary', mt: 0.5 }}>Evidence current · Field evidence aligned</Typography>
+                    <Typography sx={{ fontSize: 10, color: 'text.secondary', mt: 1 }}>Evidence current · Field evidence aligned</Typography>
                   </Box>
                   <Box sx={{ flexShrink: 0 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: 'text.secondary', mb: 0.5 }}>Verification</Typography>
-                    <Box component="span" sx={{ px: 1, py: 0.5, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', border: 1, borderRadius: '2px' }}>Verified</Box>
+                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: 'text.secondary', mb: 1 }}>Verification</Typography>
+                    <Box component="span" sx={{ px: 2, py: 1, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', border: 1, borderRadius: '2px' }}>Verified</Box>
                   </Box>
                 </Box>
-                <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 2, mb: 2 }}>
-                  <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.primary', mb: 1 }}>Evidence confirmed</Typography>
-                  <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, m: 0, p: 0, listStyle: 'none' }}>
+                <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 4, mb: 4 }}>
+                  <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.primary', mb: 2 }}>Evidence confirmed</Typography>
+                  <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: 3, m: 0, p: 0, listStyle: 'none' }}>
                     {f.evidence.map(item => (
-                      <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: '0.75rem', color: 'text.primary' }} key={item}>
+                      <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: '0.75rem', color: 'text.primary' }} key={item}>
                         <Box component="span" sx={{ color: 'success.dark', fontWeight: 650 }}>✓</Box>
                         {item}
                       </Stack>
@@ -2063,9 +2063,9 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           ))}
 
           {/* Summary */}
-          <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 2 }}>
-            <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'text.primary', mb: 1 }}>Verification complete — Coverage-First is ready to proceed</Typography>
-            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 2 }}>
+          <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 4 }}>
+            <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'text.primary', mb: 2 }}>Verification complete — Coverage-First is ready to proceed</Typography>
+            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 4 }}>
               Both farms are now HIGH · VERIFIED. All 4 farms in Coverage-First have sufficient evidence.
               Week 3 coverage confirmed at <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>1,150 t / 96%</Box>.
             </Typography>
@@ -2098,12 +2098,12 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 3, py: 2, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 6, py: 4, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
         <Box>
           <SectionLabel>Active Procurement Plan</SectionLabel>
           <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Coverage-First · Week 3 Active</Typography>
         </Box>
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box sx={{ display: 'flex', gap: 2 }}>
           <SecondaryBtn onClick={() => document.getElementById('active-farm-mix')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>View full plan</SecondaryBtn>
           <Button
             onClick={() => onNavigate('alert')}
@@ -2116,18 +2116,18 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         </Box>
       </Box>
 
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 3 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6 }}>
         <Box>
           {/* Week 3 status card */}
           <DashPaper sx={{ p: space.section, mb: space.section, boxShadow: `inset 3px 0 0 ${semantic.canopyHigh}` }}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
               <Box>
-                <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 0.5 }}>Week 3 Position</Typography>
+                <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>Week 3 Position</Typography>
                 <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: 'text.primary' }}>{wk3Supply.toLocaleString()} <Box component="span" sx={{ color: 'text.secondary', fontSize: '1.25rem' }}>/ {wk3Target.toLocaleString()} t</Box></Typography>
               </Box>
               <Box sx={{ textAlign: 'right' }}>
                 <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: 'success.dark' }}>{wk3Pct}%</Typography>
-                <Box component="span" sx={{ px: 1, py: 0.5, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', border: 1, borderRadius: '2px' }}>
+                <Box component="span" sx={{ px: 2, py: 1, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', border: 1, borderRadius: '2px' }}>
                   Target Met · 95% threshold
                 </Box>
               </Box>
@@ -2143,22 +2143,22 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </DashPaper>
 
           {/* Stats row */}
-          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderTop: 1, borderBottom: 1, borderColor: 'divider', py: 2, mb: 3 }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderTop: 1, borderBottom: 1, borderColor: 'divider', py: 4, mb: 6 }}>
             {[
               { label: 'High-confidence supply', value: '83%' },
               { label: 'Farms in plan', value: '8' },
               { label: 'Max district concentration', value: '36%' },
               { label: 'Monitoring status', value: 'Active' },
             ].map(({ label, value }) => (
-              <Box sx={{ px: 2, borderRight: 1, borderColor: 'divider' }} key={label}>
-                <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 0.5 }}>{label}</Typography>
+              <Box sx={{ px: 4, borderRight: 1, borderColor: 'divider' }} key={label}>
+                <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 1 }}>{label}</Typography>
                 <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: 'text.primary' }}>{value}</Typography>
               </Box>
             ))}
           </Box>
 
           {/* Farm table */}
-          <Box sx={{ mb: 3 }} id="active-farm-mix">
+          <Box sx={{ mb: 6 }} id="active-farm-mix">
             <SectionLabel>Active farm mix · Week 3</SectionLabel>
             <TableContainer component={Paper} elevation={0}>
               <Table size="small">
@@ -2179,7 +2179,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       <TableCell align="right" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 650, color: 'text.primary' }}>{f.supply} t</TableCell>
                       <TableCell>
                         <ConfBadge level={f.conf} />
-                        <Typography sx={{ fontSize: 10, color: 'text.secondary', mt: 0.5 }}>{f.conf === 'HIGH' ? 'Evidence current' : 'Evidence incomplete'}</Typography>
+                        <Typography sx={{ fontSize: 10, color: 'text.secondary', mt: 1 }}>{f.conf === 'HIGH' ? 'Evidence current' : 'Evidence incomplete'}</Typography>
                       </TableCell>
                       <TableCell sx={{ fontWeight: 500, color: f.status === 'At risk' ? 'warning.dark' : f.status.includes('Verified') ? 'success.dark' : 'text.secondary' }}>
                         {f.status}
@@ -2266,19 +2266,19 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   if (recovering) {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-        <Box sx={{ borderBottom: 1, px: 3, py: 2, flexShrink: 0 }}>
-          <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'success.dark', mb: 0.5 }}>Recovery accepted · Monitoring resumed</Typography>
+        <Box sx={{ borderBottom: 1, px: 6, py: 4, flexShrink: 0 }}>
+          <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'success.dark', mb: 1 }}>Recovery accepted · Monitoring resumed</Typography>
           <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Rajahmundry Block added to recovery plan</Typography>
-          <Typography sx={{ fontSize: '0.75rem', mt: 0.5 }}>Week 3 coverage restored to 95%. The monitoring exception is resolved.</Typography>
+          <Typography sx={{ fontSize: '0.75rem', mt: 1 }}>Week 3 coverage restored to 95%. The monitoring exception is resolved.</Typography>
         </Box>
-        <Box sx={{ flex: 1, overflowY: 'auto', p: 3 }}>
+        <Box sx={{ flex: 1, overflowY: 'auto', p: 6 }}>
           <Box sx={{ maxWidth: 768, display: 'flex', flexDirection: 'column' }}>
             <Box>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <Box>
-                  <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, mb: 1 }}>Recovery complete</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mb: 0.5 }}>Rajahmundry Block added to recovery plan.</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mb: 0.5 }}>Week 3 coverage restored to 95%.</Typography>
+                  <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, mb: 2 }}>Recovery complete</Typography>
+                  <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mb: 1 }}>Rajahmundry Block added to recovery plan.</Typography>
+                  <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mb: 1 }}>Week 3 coverage restored to 95%.</Typography>
                   <Typography sx={{ fontSize: '0.75rem', color: 'text.primary' }}>Field verification for Rajahmundry Block has been assigned to Ravi.</Typography>
                 </Box>
                 <Box sx={{ textAlign: 'right' }}>
@@ -2324,34 +2324,34 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', position: 'relative' }}>
       <Box sx={{ flexShrink: 0, px: space.section, py: space.related, bgcolor: semantic.alertSoft, borderBottom: `3px solid ${semantic.alert}` }}>
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1 }}>
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 2 }}>
           <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: semantic.alert }} />
           <Typography variant="overline" sx={{ color: semantic.alert }}>Severity · Week 3 below 95% threshold</Typography>
         </Stack>
         <Typography variant="h2" sx={{ color: INK }}>Godavari Combined Block — supply revised</Typography>
-        <Typography variant="body2" sx={{ mt: 0.5, color: semantic.alert, fontWeight: 600 }}>
+        <Typography variant="body2" sx={{ mt: 1, color: semantic.alert, fontWeight: 600 }}>
           Cause: new satellite NDVI · Impact: −120 t · Recovery required
         </Typography>
       </Box>
 
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 3 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6 }}>
         <Box sx={{ maxWidth: 768, display: 'flex', flexDirection: 'column' }}>
           {/* What changed */}
-          <Box sx={{ borderBottom: 1, borderColor: 'divider', pb: 2 }}>
-            <Box sx={{ mb: 2 }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', pb: 4 }}>
+            <Box sx={{ mb: 4 }}>
               <Typography variant="overline" sx={{ color: semantic.alert }}>1 · Cause</Typography>
               <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'text.primary' }}>What changed</Typography>
             </Box>
             <Box>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 4 }}>
                 <Box sx={{ flex: 1 }}>
-                  <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 0.5 }}>Before</Typography>
+                  <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 1 }}>Before</Typography>
                   <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>200 t</Typography>
                   <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>Godavari Combined Block</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', fontSize: '1.5rem' }}>→</Box>
-                <Box sx={{ flex: 1, pl: 2 }}>
-                  <Typography sx={{ fontSize: 10, color: 'error.dark', mb: 0.5 }}>Now</Typography>
+                <Box sx={{ flex: 1, pl: 4 }}>
+                  <Typography sx={{ fontSize: 10, color: 'error.dark', mb: 1 }}>Now</Typography>
                   <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.5rem', fontWeight: 700, color: 'error.dark' }}>80 t</Typography>
                   <Typography sx={{ fontSize: '0.75rem', color: 'error.dark', fontWeight: 500 }}>−120 t revised by satellite</Typography>
                 </Box>
@@ -2364,21 +2364,21 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </Box>
 
           {/* Why it matters */}
-          <Box sx={{ borderLeft: `3px solid ${semantic.alert}`, pl: space.related, py: 0.5 }}>
-            <Box sx={{ mb: 2 }}>
+          <Box sx={{ borderLeft: `3px solid ${semantic.alert}`, pl: space.related, py: 1 }}>
+            <Box sx={{ mb: 4 }}>
               <Typography variant="overline" sx={{ color: semantic.alert }}>2 · Business impact</Typography>
               <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, ...{ color: semantic.alert } }}>Why it matters</Typography>
             </Box>
             <Box>
-              <Box sx={{ display: 'grid', mb: 2 }}>
+              <Box sx={{ display: 'grid', mb: 4 }}>
                 {[
                   { label: 'Week 3 Supply', before: '1,150 t', after: '1,030 t', delta: '−120 t', bad: true },
                   { label: 'Week 3 Coverage', before: '96%', after: '86%', delta: '−10%', bad: true },
                   { label: 'vs. 95% threshold', before: '+10 t buffer', after: '−110 t gap', delta: '', bad: true },
                 ].map(({ label, before, after, delta, bad }) => (
-                  <Box sx={{ px: 2, borderRight: 1 }} key={label}>
-                    <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 1 }}>{label}</Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                  <Box sx={{ px: 4, borderRight: 1 }} key={label}>
+                    <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 2 }}>{label}</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
                       <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '0.75rem', color: 'text.secondary', textDecoration: 'line-through' }}>{before}</Box>
                       <Box component="span" sx={{ color: 'text.secondary' }}>→</Box>
                       <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '0.875rem', fontWeight: 700, color: 'error.dark' }}>{after}</Box>
@@ -2387,7 +2387,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   </Box>
                 ))}
               </Box>
-              <Box sx={{ borderTop: 1, pt: 2 }}>
+              <Box sx={{ borderTop: 1, pt: 4 }}>
                 <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, ...{ color: semantic.alert } }}>Week 3 is now 110 t below the 95% coverage target of 1,140 t.</Typography>
               </Box>
             </Box>
@@ -2395,16 +2395,16 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
           {/* Recovery recommendation */}
           <DashPaper sx={{ overflow: 'hidden', p: 0 }}>
-            <Box sx={{ px: 2, pt: 2 }}>
+            <Box sx={{ px: 4, pt: 4 }}>
               <Typography variant="overline" sx={{ color: ACCENT }}>3 · Recovery options</Typography>
               <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary' }}>Recommended recovery · compare before accepting</Typography>
             </Box>
-            <Box sx={{ px: 2, pb: 2, pt: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
+            <Box sx={{ px: 4, pb: 4, pt: 4 }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
                 <Box>
-                  <Typography sx={{ fontSize: '1.125rem', fontWeight: 700, color: 'text.primary', mb: 0.5 }}>Rajahmundry Block</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 1 }}>East Godavari district</Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography sx={{ fontSize: '1.125rem', fontWeight: 700, color: 'text.primary', mb: 1 }}>Rajahmundry Block</Typography>
+                  <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 2 }}>East Godavari district</Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <ConfBadge level="MEDIUM" />
                     <Box component="span" sx={{ fontSize: 10, color: 'text.secondary' }}>Evidence incomplete · Field verification required</Box>
                   </Box>
@@ -2419,33 +2419,33 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </Box>
 
               {/* Before / after recovery */}
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: 1, borderBottom: 1, borderColor: 'divider', py: 2, mb: 2 }}>
-                <Box sx={{ pr: 2, borderRight: 1, borderColor: 'divider' }}>
-                  <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 1 }}>Current</Typography>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: 1, borderBottom: 1, borderColor: 'divider', py: 4, mb: 4 }}>
+                <Box sx={{ pr: 4, borderRight: 1, borderColor: 'divider' }}>
+                  <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 2 }}>Current</Typography>
                   <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: 'error.dark' }}>1,030 t · 86%</Typography>
-                  <Box sx={{ height: 6, bgcolor: 'grey.100', borderRadius: '2px', mt: 1 }}>
+                  <Box sx={{ height: 6, bgcolor: 'grey.100', borderRadius: '2px', mt: 2 }}>
                     <Box sx={{ height: '100%', borderRadius: '2px', ...{ width: '86%' } }} />
                   </Box>
                 </Box>
-                <Box sx={{ pl: 2 }}>
-                  <Typography sx={{ fontSize: 10, color: 'success.dark', mb: 1 }}>After recovery</Typography>
+                <Box sx={{ pl: 4 }}>
+                  <Typography sx={{ fontSize: 10, color: 'success.dark', mb: 2 }}>After recovery</Typography>
                   <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: 'success.dark' }}>1,140 t · 95%</Typography>
-                  <Box sx={{ height: 6, bgcolor: 'grey.100', borderRadius: '2px', mt: 1 }}>
+                  <Box sx={{ height: 6, bgcolor: 'grey.100', borderRadius: '2px', mt: 2 }}>
                     <Box sx={{ height: '100%', borderRadius: '2px', ...{ width: '95%' } }} />
                   </Box>
-                  <Typography sx={{ fontSize: 9, fontWeight: 700, color: 'success.dark', mt: 0.5 }}>Target Met</Typography>
+                  <Typography sx={{ fontSize: 9, fontWeight: 700, color: 'success.dark', mt: 1 }}>Target Met</Typography>
                 </Box>
               </Box>
 
               {/* Tradeoffs */}
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.primary', mb: 2 }}>Business tradeoffs</Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
+              <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.primary', mb: 4 }}>Business tradeoffs</Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4 }}>
                 {[
                   { icon: '↑', color: 'success.dark', bg: semantic.okSoft, label: 'Supply impact', detail: '+110 t · Restores Week 3 to 95% coverage target' },
                   { icon: '!', color: 'warning.dark', bg: semantic.warnSoft, label: 'Verification impact', detail: '+1 field verification required before committing' },
                   { icon: '⚑', color: 'warning.dark', bg: semantic.warnSoft, label: 'Geographic impact', detail: 'East Godavari concentration: 8% → 17%' },
                 ].map(({ icon, color, bg, label, detail }) => (
-                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }} key={label}>
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 4 }} key={label}>
                     <Box sx={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, color, bgcolor: bg, borderRadius: 0.5 }}>{icon}</Box>
                     <Box>
                       <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.primary' }}>{label}</Typography>
@@ -2456,7 +2456,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               </Box>
 
               {/* Interpretation */}
-              <Box sx={{ borderColor: 'divider', mb: 3 }}>
+              <Box sx={{ borderColor: 'divider', mb: 6 }}>
                 <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', lineHeight: 1.6 }}>
                   "Rajahmundry Block restores Week 3 to the 95% coverage target, but requires one field verification and increases East Godavari concentration from 8% to 17%."
                 </Typography>
@@ -2464,7 +2464,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
               {/* Actions */}
               {!recovering ? (
-                <Box sx={{ display: 'flex', gap: 2 }}>
+                <Box sx={{ display: 'flex', gap: 4 }}>
                   <PrimaryBtn onClick={() => setRecovering(true)} sx={{ flex: 1 }}>
                     Add to recovery plan
                   </PrimaryBtn>
@@ -2475,7 +2475,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </Box>
               ) : (
                 <DashPaper sx={{ p: space.related, bgcolor: semantic.okSoft }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                     <Box sx={{ borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <svg style={{ width: 16, height: 16, color: '#047857' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -2483,7 +2483,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     </Box>
                     <Typography sx={{ fontSize: '0.875rem', fontWeight: 650 }}>Rajahmundry Block added to recovery plan</Typography>
                   </Box>
-                  <Typography sx={{ fontSize: '0.75rem', color: 'success.dark', mb: 2 }}>Week 3 coverage restored to 95%. Field verification for Rajahmundry Block has been assigned to Ravi.</Typography>
+                  <Typography sx={{ fontSize: '0.75rem', color: 'success.dark', mb: 4 }}>Week 3 coverage restored to 95%. Field verification for Rajahmundry Block has been assigned to Ravi.</Typography>
                   <PrimaryBtn onClick={() => onNavigate('plan')}>Return to active plan →</PrimaryBtn>
                 </DashPaper>
               )}
@@ -2583,19 +2583,19 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
         },
       }}
     >
-      <Box sx={{ px: 3, pt: 3, pb: 2 }}>
-        <Typography variant="overline" sx={{ color: ACCENT, display: 'block', mb: 0.5 }}>
+      <Box sx={{ px: space.related, pt: space.section, pb: space.related }}>
+        <Typography variant="overline" sx={{ color: ACCENT, display: 'block', mb: space.xs }}>
           ITC Procurement
         </Typography>
         <Typography variant="h6" sx={{ color: m3.onSurface, lineHeight: 1.25, fontSize: '1.05rem' }}>
           Decision Support
         </Typography>
-        <Typography variant="body2" sx={{ color: m3.onSurfaceVariant, display: 'block', mt: 0.5 }}>
+        <Typography variant="body2" sx={{ color: m3.onSurfaceVariant, display: 'block', mt: space.xs }}>
           Eucalyptus · 4,000 t
         </Typography>
       </Box>
 
-      <List sx={{ flex: 1, overflowY: 'auto', py: 1, px: 0, scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      <List sx={{ flex: 1, overflowY: 'auto', py: space.tight, px: 0, scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         {NAV_ITEMS.map(({ screen, num, label, sub }) => {
           const itemIdx = FLOW_ORDER.indexOf(screen)
           const isActive = current === screen
@@ -2649,7 +2649,7 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
                   },
                   secondary: {
                     variant: 'caption',
-                    sx: { color: m3.onSurfaceVariant, mt: 0.25 },
+                    sx: { color: m3.onSurfaceVariant, mt: 0.5 },
                   },
                 }}
               />
@@ -2661,9 +2661,9 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
         })}
       </List>
 
-      <Box sx={{ mx: 1.5, mb: 2, p: 2, borderRadius: '16px', bgcolor: m3.surfaceContainerLowest }}>
+      <Box sx={{ mx: space.compact, mb: space.related, p: space.related, borderRadius: '16px', bgcolor: m3.surfaceContainerLowest }}>
         <Typography variant="body2" sx={{ fontWeight: 700, color: m3.onSurface }}>Shrikant</Typography>
-        <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block' }}>Procurement Mgr · AP Region</Typography>
+        <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mt: space.xs }}>Procurement Mgr · AP Region</Typography>
       </Box>
     </Drawer>
   )
@@ -2696,8 +2696,8 @@ function TopBar({ screen }: { screen: Screen }) {
 
   return (
     <AppBar position="static" color="inherit" sx={{ bgcolor: m3.surface }}>
-      <Toolbar variant="dense" sx={{ minHeight: 64, px: 3, gap: 2 }}>
-        <Typography variant="h6" component="h1" sx={{ mr: 1, fontWeight: 700, fontSize: '1.05rem', color: m3.onSurface }}>
+      <Toolbar variant="dense" sx={{ minHeight: 64, px: space.related, gap: space.tight }}>
+        <Typography variant="h6" component="h1" sx={{ mr: space.tight, fontWeight: 700, fontSize: '1.05rem', color: m3.onSurface }}>
           {BREADCRUMB_TITLE[screen]}
         </Typography>
         <Box sx={{ flex: 1 }} />

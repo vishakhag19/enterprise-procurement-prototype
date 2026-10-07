@@ -70,11 +70,27 @@ export const RULE = m3.outlineVariant
 export const ACCENT_SOFT = m3.primaryContainer
 export const ACCENT_DARK = m3.primaryBrandDark
 
+/**
+ * Material Design 3 spacing — theme.spacing unit = 4dp.
+ * xs 1=4 · sm 2=8 · md 3=12 · lg 4=16 · xl 6=24 · xxl 8=32
+ */
 export const space = {
-  tight: 1,
-  related: 2,
-  section: 3,
-  gutter: 4,
+  xs: 1,
+  sm: 2,
+  md: 3,
+  lg: 4,
+  xl: 6,
+  xxl: 8,
+  /** 8dp — icon/chip gaps, tight stacks */
+  tight: 2,
+  /** 16dp — card padding, list padding, related gaps */
+  related: 4,
+  /** 24dp — pane padding, section gaps, dialogs */
+  section: 6,
+  /** 32dp — major layout gutters */
+  gutter: 8,
+  /** 12dp — nav item outer margin */
+  compact: 3,
 } as const
 
 /** Domain semantics mapped onto M3 roles */

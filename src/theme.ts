@@ -6,7 +6,8 @@ export { ACCENT, SIDEBAR_BG, SURFACE, PAPER, space, semantic, m3 } from './desig
 /** Material Design 3 theme — tonal surfaces, MD3 shape, type roles */
 export const theme = createTheme({
   cssVariables: true,
-  spacing: 8,
+  // MD3 baseline grid: 4dp
+  spacing: 4,
   shape: { borderRadius: 12 },
   palette: {
     mode: 'light',
@@ -102,8 +103,9 @@ export const theme = createTheme({
       defaultProps: { disableElevation: true },
       styleOverrides: {
         root: {
-          borderRadius: 20, // MD3 full corner for buttons
+          borderRadius: 20,
           fontWeight: 650,
+          // MD3 label-large button: 24 horizontal, 10 vertical, 40 height
           paddingLeft: 24,
           paddingRight: 24,
           paddingTop: 10,
@@ -192,7 +194,8 @@ export const theme = createTheme({
     },
     MuiToolbar: {
       styleOverrides: {
-        dense: { minHeight: 64, paddingLeft: 24, paddingRight: 24, gap: 16 },
+        // MD3 top app bar: 64dp tall, 16dp horizontal padding on medium+
+        dense: { minHeight: 64, paddingLeft: 16, paddingRight: 16, gap: 8 },
       },
     },
     MuiDrawer: {
@@ -207,11 +210,12 @@ export const theme = createTheme({
     MuiListItemButton: {
       styleOverrides: {
         root: {
-          borderRadius: 28, // MD3 nav pill
+          borderRadius: 28,
+          // MD3 nav drawer: 12dp side inset, 16dp item padding
           marginInline: 12,
-          marginBlock: 2,
-          paddingTop: 10,
-          paddingBottom: 10,
+          marginBlock: 4,
+          paddingTop: 12,
+          paddingBottom: 12,
           paddingLeft: 16,
           paddingRight: 16,
           '&.Mui-selected': {
@@ -254,22 +258,26 @@ export const theme = createTheme({
         root: {
           fontFamily: '"Manrope", "Roboto", system-ui, sans-serif',
           borderColor: m3.outlineVariant,
-          padding: '12px 16px',
+          // MD3 data table: 16dp horizontal, 12–16 vertical
+          padding: '16px',
         },
         head: {
           fontWeight: 650,
           backgroundColor: m3.surfaceContainerLow,
           color: m3.onSurfaceVariant,
+          padding: '12px 16px',
         },
       },
     },
     MuiDialog: {
       styleOverrides: {
-        paper: { borderRadius: 28 }, // MD3 dialog
+        paper: { borderRadius: 28 },
       },
     },
-    MuiDialogTitle: { styleOverrides: { root: { padding: '24px 24px 8px' } } },
-    MuiDialogContent: { styleOverrides: { root: { padding: 24 } } },
+    // MD3 dialog: 24dp padding
+    MuiDialogTitle: { styleOverrides: { root: { padding: '24px 24px 16px' } } },
+    MuiDialogContent: { styleOverrides: { root: { padding: '0 24px 24px' } } },
+    MuiDialogActions: { styleOverrides: { root: { padding: '16px 24px 24px', gap: 8 } } },
     MuiStack: { defaultProps: { useFlexGap: true } },
     MuiLinearProgress: {
       styleOverrides: {

@@ -24,7 +24,7 @@ export function StatusChip({ kind }: { kind: StatusKind }) {
         color: meta.fg,
         bgcolor: meta.bg === 'transparent' ? 'transparent' : meta.bg,
         border: meta.border === 'transparent' ? 'none' : `1px solid ${meta.border}`,
-        '& .MuiChip-label': { px: 1.25 },
+        '& .MuiChip-label': { px: 2.5 },
       }}
     />
   )
@@ -66,7 +66,8 @@ export function DashPaper({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       sx={{
-        p: space.section,
+        // MD3 card: 16dp content padding
+        p: space.related,
         bgcolor: m3.surfaceContainerLowest,
         borderRadius: '16px',
         border: 'none',
@@ -84,8 +85,9 @@ export function DataStrip({ children, sx }: { children: React.ReactNode; sx?: ob
   return (
     <Box
       sx={{
+        // MD3 list row: 16dp vertical + horizontal
         py: space.related,
-        px: space.section,
+        px: space.related,
         borderBottom: `1px solid ${m3.outlineVariant}`,
         ...sx,
       }}
@@ -129,7 +131,7 @@ export function SecondaryBtn(props: React.ComponentProps<typeof Button> & { full
 export function GhostBtn(props: React.ComponentProps<typeof Button>) {
   const { children, sx, ...rest } = props
   return (
-    <Button variant="text" color="primary" sx={{ flexShrink: 0, minWidth: 0, px: 1.5, ...sx }} {...rest}>
+    <Button variant="text" color="primary" sx={{ flexShrink: 0, minWidth: 0, px: 3, ...sx }} {...rest}>
       {children}
     </Button>
   )
@@ -168,8 +170,9 @@ export function WeekRail({
           <Box
             key={w.n}
             sx={{
-              py: 2,
-              px: space.section,
+              // MD3: 16dp row padding; full-bleed bg to card edges
+              py: space.related,
+              px: space.related,
               borderBottom: isLast ? 'none' : `1px solid ${m3.outlineVariant}`,
               bgcolor: w.issue ? m3.errorContainer : 'transparent',
               boxShadow: w.issue ? `inset 4px 0 0 ${m3.error}` : 'none',
@@ -177,14 +180,14 @@ export function WeekRail({
               boxSizing: 'border-box',
             }}
           >
-            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: space.tight }}>
+              <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
                 <Typography variant="subtitle2" sx={{ color: INK }}>
                   Week {w.n}
                 </Typography>
                 {w.issue && <StatusChip kind="primary-issue" />}
               </Stack>
-              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'baseline' }}>
+              <Stack direction="row" spacing={space.compact} sx={{ alignItems: 'baseline' }}>
                 <Typography variant="subtitle2" sx={{ color: INK, fontVariantNumeric: 'tabular-nums' }}>
                   {w.committed.toLocaleString()}
                 </Typography>
@@ -261,7 +264,7 @@ export function ThresholdControl({
         borderRadius: 3,
       }}
     >
-      <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
+      <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1 }}>
         <Typography variant="body2" sx={{ color: INK, fontWeight: 600 }}>
           {label}
         </Typography>
@@ -291,9 +294,9 @@ export function TradeoffBars({
   maxVisits?: number
 }) {
   return (
-    <Stack spacing={1} sx={{ mt: 1 }}>
+    <Stack spacing={2} sx={{ mt: 2 }}>
       <Box>
-        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
+        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1 }}>
           <Typography variant="caption">Week 3 coverage</Typography>
           <Typography variant="caption" sx={{ fontWeight: 700, color: INK, fontVariantNumeric: 'tabular-nums' }}>
             {coverage}%
@@ -304,7 +307,7 @@ export function TradeoffBars({
         </Box>
       </Box>
       <Box>
-        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
+        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1 }}>
           <Typography variant="caption">Verification load</Typography>
           <Typography variant="caption" sx={{ fontWeight: 700, color: INK, fontVariantNumeric: 'tabular-nums' }}>
             {visits} visit{visits === 1 ? '' : 's'}
