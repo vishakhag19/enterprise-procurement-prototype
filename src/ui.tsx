@@ -11,7 +11,7 @@ import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape,
 
 /**
  * Desktop tab chrome matching Compare: fixed header, scroll body, fixed footer.
- * Header/footer content is horizontally and vertically centered.
+ * Header/footer children sit in a full-width row with vertical centering.
  */
 export function MainPane({
   header,
@@ -34,17 +34,14 @@ export function MainPane({
     flexShrink: 0,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
   } as const
 
   const barInnerSx = {
     width: '100%',
-    maxWidth: 720,
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
+    justifyContent: 'space-between',
     gap: space.related,
   } as const
 
