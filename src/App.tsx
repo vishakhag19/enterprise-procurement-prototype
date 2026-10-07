@@ -1392,11 +1392,11 @@ function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: space.related }}>
             {COMPARE_FARMS.map(f => (
               <DashPaper key={f.id} sx={{ p: space.related }}>
-                <Stack spacing={1.5}>
+                <Stack spacing={space.related}>
                   <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <Box>
                       <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: 'text.primary' }}>{f.name}</Typography>
-                      <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary', mt: 0.5 }}>{f.headline}</Typography>
+                      <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary', mt: 1 }}>{f.headline}</Typography>
                     </Box>
                     <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700 }}>{f.supply} t</Typography>
                   </Stack>
