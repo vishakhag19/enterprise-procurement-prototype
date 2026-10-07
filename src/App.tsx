@@ -2330,7 +2330,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6 }}>
         <Box>
           {/* Week 3 status card */}
-          <DashPaper sx={{ p: space.section, mb: space.section, boxShadow: `inset 3px 0 0 ${semantic.canopyHigh}` }}>
+          <DashPaper sx={{ p: space.section, mb: space.section }}>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
               <Box>
                 <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>Week 3 Position</Typography>

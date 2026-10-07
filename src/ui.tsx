@@ -162,7 +162,6 @@ export function WeekRail({
               px: space.related,
               borderBottom: isLast ? 'none' : `1px solid ${PANEL_BORDER}`,
               bgcolor: w.issue ? m3.errorContainer : 'transparent',
-              boxShadow: w.issue ? `inset 4px 0 0 ${m3.error}` : 'none',
               width: '100%',
               boxSizing: 'border-box',
             }}
