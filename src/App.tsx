@@ -2456,48 +2456,38 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <Box
                   sx={{
                     display: 'grid',
-                    gridTemplateColumns: 'auto auto auto 1fr',
-                    alignItems: 'end',
+                    gridTemplateColumns: 'auto 20px auto auto',
                     columnGap: space.related,
-                    rowGap: space.tight,
+                    rowGap: 0.75,
                     mb: space.related,
+                    alignItems: 'center',
+                    width: 'fit-content',
+                    maxWidth: '100%',
+                    '& .MuiChip-root': { m: 0, height: 24, boxSizing: 'border-box' },
                   }}
                 >
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.onSurfaceVariant, lineHeight: 1.2 }}>
-                      Before
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', height: 24 }}>
-                      <ConfBadge level={f.before} />
-                    </Box>
-                  </Box>
-                  <Typography
-                    sx={{
-                      fontSize: 14,
-                      color: m3.onSurfaceVariant,
-                      lineHeight: 1,
-                      pb: '5px',
-                      alignSelf: 'end',
-                    }}
-                    aria-hidden
-                  >
-                    →
+                  <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.onSurfaceVariant, lineHeight: 1 }}>
+                    Before
                   </Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.onSurfaceVariant, lineHeight: 1.2 }}>
-                      After
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', height: 24 }}>
-                      <ConfBadge level={f.after} />
-                    </Box>
+                  <Box aria-hidden />
+                  <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.onSurfaceVariant, lineHeight: 1 }}>
+                    After
+                  </Typography>
+                  <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.onSurfaceVariant, lineHeight: 1 }}>
+                    Result
+                  </Typography>
+
+                  <Box sx={{ height: 24, display: 'flex', alignItems: 'center' }}>
+                    <ConfBadge level={f.before} />
                   </Box>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75, justifySelf: 'start' }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.onSurfaceVariant, lineHeight: 1.2 }}>
-                      Result
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', height: 24 }}>
-                      <StatusChip kind="verified" />
-                    </Box>
+                  <Box sx={{ height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-hidden>
+                    <Typography sx={{ fontSize: 14, color: m3.onSurfaceVariant, lineHeight: 1 }}>→</Typography>
+                  </Box>
+                  <Box sx={{ height: 24, display: 'flex', alignItems: 'center' }}>
+                    <ConfBadge level={f.after} />
+                  </Box>
+                  <Box sx={{ height: 24, display: 'flex', alignItems: 'center' }}>
+                    <StatusChip kind="verified" />
                   </Box>
                 </Box>
                 <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: space.tight, m: 0, p: 0, listStyle: 'none', mb: space.related }}>

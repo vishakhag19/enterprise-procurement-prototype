@@ -108,15 +108,23 @@ export function StatusChip({ kind }: { kind: StatusKind }) {
       size="small"
       label={meta.label}
       sx={{
+        m: 0,
         height: 24,
+        boxSizing: 'border-box',
         fontSize: 11,
         fontWeight: 650,
         letterSpacing: '0.02em',
         textTransform: kind === 'primary-issue' || kind.startsWith('confidence') ? 'uppercase' : 'none',
         color: meta.fg,
         bgcolor: meta.bg === 'transparent' ? 'transparent' : meta.bg,
-        border: meta.border === 'transparent' ? 'none' : `1px solid ${meta.border}`,
-        '& .MuiChip-label': { px: 2.5 },
+        border: meta.border === 'transparent' ? '1px solid transparent' : `1px solid ${meta.border}`,
+        '& .MuiChip-label': {
+          px: 2.5,
+          py: 0,
+          lineHeight: '22px',
+          display: 'flex',
+          alignItems: 'center',
+        },
       }}
     />
   )
