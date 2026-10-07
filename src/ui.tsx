@@ -7,7 +7,89 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3 } from './designSystem'
+import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3, shellChrome } from './designSystem'
+
+/**
+ * Desktop tab chrome matching Compare: fixed header, scroll body, fixed footer.
+ * Header/footer content is horizontally and vertically centered.
+ */
+export function MainPane({
+  header,
+  footer,
+  children,
+  map,
+  headerSx,
+  footerSx,
+}: {
+  header: React.ReactNode
+  footer?: React.ReactNode
+  children: React.ReactNode
+  map?: React.ReactNode
+  headerSx?: Record<string, unknown>
+  footerSx?: Record<string, unknown>
+}) {
+  const barSx = {
+    px: space.section,
+    py: space.related,
+    flexShrink: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  } as const
+
+  const barInnerSx = {
+    width: '100%',
+    maxWidth: 720,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    gap: space.related,
+  } as const
+
+  return (
+    <Box sx={{ display: 'flex', height: '100%', gap: space.tight, overflow: 'hidden' }}>
+      <Box
+        sx={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minWidth: 0,
+          minHeight: 0,
+          ...shellChrome,
+          bgcolor: m3.surfaceContainerLowest,
+        }}
+      >
+        <Box sx={{ ...barSx, borderBottom: `1px solid ${PANEL_BORDER}`, ...headerSx }}>
+          <Box sx={barInnerSx}>{header}</Box>
+        </Box>
+
+        <Box
+          sx={{
+            flex: 1,
+            minHeight: 0,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+            p: space.section,
+            '&::-webkit-scrollbar': { display: 'none' },
+          }}
+        >
+          {children}
+        </Box>
+
+        {footer != null && (
+          <Box sx={{ ...barSx, borderTop: `1px solid ${PANEL_BORDER}`, ...footerSx }}>
+            <Box sx={barInnerSx}>{footer}</Box>
+          </Box>
+        )}
+      </Box>
+      {map}
+    </Box>
+  )
+}
 
 export function StatusChip({ kind }: { kind: StatusKind }) {
   const meta = STATUS_META[kind]

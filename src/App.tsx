@@ -50,6 +50,7 @@ import { alpha } from '@mui/material/styles'
 import { space, semantic, m3 } from './theme'
 import {
   DashPaper,
+  MainPane,
   SectionLabel,
   PrimaryBtn,
   SecondaryBtn,
@@ -734,136 +735,149 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   ]
 
   return (
-    <Box sx={{ display: 'flex', height: '100%', gap: space.tight }}>
-      {/* Main */}
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6, minWidth: 0 }}>
-        <Box sx={{ maxWidth: 768 }}>
+    <MainPane
+      header={
+        <>
           <SectionLabel>Procurement Command Centre</SectionLabel>
           <Typography
             variant="h1"
-            sx={{ color: INK, mb: 1, fontSize: { xs: '2rem', md: '2.75rem' } }}
+            sx={{ color: INK, fontSize: { xs: '2rem', md: '2.75rem' } }}
           >
             4,000 t Eucalyptus
           </Typography>
-          <Typography variant="body2" sx={{ mb: space.section }}>
+          <Typography variant="body2">
             4-week procurement window · AP Region · Satellite + field evidence
           </Typography>
-
-          {/* Operational center: 620 t gap */}
-          <Box
-            sx={{
-              mb: space.section,
-              p: space.section,
-              ...panelSurface,
-              backgroundImage: `linear-gradient(135deg, rgba(209,67,58,0.08) 0%, ${PAPER} 42%)`,
-            }}
-          >
-            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', gap: 4, flexWrap: 'wrap' }}>
-              <Box sx={{ flex: 1, minWidth: 200 }}>
-                <Typography variant="overline" sx={{ color: semantic.alert, display: 'block', mb: 1 }}>
-                  Operational focus · Week 3
-                </Typography>
-                <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '2.75rem', fontWeight: 700, letterSpacing: '-0.03em', color: INK, lineHeight: 1 }}>
-                  620 t
-                </Typography>
-                <Typography variant="subtitle2" sx={{ color: INK, mt: 2 }}>
-                  Supply gap still uncovered
-                </Typography>
-                <Typography variant="body2" sx={{ mt: 1, maxWidth: 360 }}>
-                  1,200 t needed · 580 t committed. This is the most constrained delivery window in the procurement plan.
-                </Typography>
-              </Box>
-              <Stack spacing={2} sx={{ alignItems: 'flex-end' }}>
-                <PrimaryBtn onClick={() => onNavigate('farms')}>Investigate farms →</PrimaryBtn>
-                <GhostBtn onClick={() => onNavigate('farms')}>View candidates on map</GhostBtn>
-              </Stack>
-            </Stack>
-          </Box>
-
-          {/* Target as open strip — not a KPI card wall */}
-          <Box sx={{ mb: space.section }}>
-            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'baseline', mb: 2 }}>
-              <SectionLabel>Procurement position</SectionLabel>
-              <Typography variant="h2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>4,000 t</Typography>
-            </Stack>
-            <SupplyBar firm={2568} atRisk={570} total={4000} />
-            <Stack direction="row" spacing={6} sx={{ mt: 3 }}>
-              {[
-                { label: 'Firm', value: '2,568 t', color: semantic.firm },
-                { label: 'At risk', value: '570 t', color: semantic.atRisk },
-                { label: 'Open gap', value: '862 t', color: semantic.gap },
-              ].map(m => (
-                <Stack key={m.label} direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m.color }} />
-                  <Typography variant="caption">{m.label}</Typography>
-                  <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>{m.value}</Typography>
-                </Stack>
-              ))}
-              <Typography variant="caption" sx={{ ml: 'auto !important', color: INK_MUTED }}>78% committed</Typography>
-            </Stack>
-          </Box>
-
-          {/* Weekly rail — one composition with map relationship */}
-          <Box sx={{ mb: space.section }}>
-            <SectionLabel>Weekly position · linked to Week 3 geography</SectionLabel>
-            <Box sx={{ ...panelSurface, overflow: 'hidden' }}>
-              <WeekRail weeks={weeks} />
+        </>
+      }
+      footer={
+        <>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
+            Week 3 still has a 620 t uncovered gap — investigate candidates next.
+          </Typography>
+          <Stack direction="row" spacing={2} sx={{ justifyContent: 'center', flexWrap: 'wrap' }}>
+            <PrimaryBtn onClick={() => onNavigate('farms')}>Investigate farms →</PrimaryBtn>
+            <GhostBtn onClick={() => onNavigate('farms')}>View candidates on map</GhostBtn>
+          </Stack>
+        </>
+      }
+      map={
+        <MapPane
+          variant="coverage"
+          footer={
+            <Box>
+              <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.tight }}>
+                620 t gap · candidates highlighted for investigation
+              </Typography>
+              <PrimaryBtn fullWidth onClick={() => onNavigate('farms')}>
+                Close the 620 t gap →
+              </PrimaryBtn>
             </Box>
-          </Box>
-
-          {/* Decision queue — primary elevated, rest as strips */}
-          <Box>
-            <SectionLabel>Needs a decision</SectionLabel>
-            <Stack spacing={0} sx={{ ...panelSurface, overflow: 'hidden' }}>
-              <Box sx={{ p: space.related, bgcolor: CARD_SELECTION_BG, color: m3.onSurface }}>
-                <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 4, alignItems: 'flex-start' }}>
-                  <Box>
-                    <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 1 }}>
-                      <StatusChip kind="primary-issue" />
-                      <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>Closes via GIS investigation</Typography>
-                    </Stack>
-                    <Typography variant="subtitle1" sx={{ color: m3.onSurface }}>Week 3 supply gap: 620 t</Typography>
-                    <Typography variant="body2" sx={{ mt: 1, color: m3.onSurfaceVariant }}>
-                      Candidate farms identified on the Week 3 map. Resolve before committing the coverage strategy.
-                    </Typography>
-                  </Box>
-                  <PrimaryBtn onClick={() => onNavigate('farms')}>Resolve gap</PrimaryBtn>
-                </Stack>
-              </Box>
-              {[
-                { title: '3 procurement commitments at risk', sub: '570 t delivery risk · Narsapur + Avanigadda', cta: 'Review risks' },
-                { title: '7 farms changed this week', sub: 'Satellite condition, harvest timing, or expected supply', cta: 'Review changes' },
-                { title: '5 decisions blocked by missing evidence', sub: 'Cannot treat as firm supply until field or current satellite evidence arrives', cta: 'Resolve evidence' },
-              ].map((item, i) => (
-                <DataStrip key={item.title} sx={{ bgcolor: PAPER, borderBottom: i === 2 ? 'none' : undefined }}>
-                  <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 4, alignItems: 'center' }}>
-                    <Box>
-                      <Typography variant="subtitle2" sx={{ color: INK }}>{item.title}</Typography>
-                      <Typography variant="body2">{item.sub}</Typography>
-                    </Box>
-                    <GhostBtn onClick={() => onNavigate('farms')}>{item.cta}</GhostBtn>
-                  </Stack>
-                </DataStrip>
-              ))}
+          }
+        />
+      }
+    >
+      <Box sx={{ maxWidth: 768 }}>
+        {/* Operational center: 620 t gap */}
+        <Box
+          sx={{
+            mb: space.section,
+            p: space.section,
+            ...panelSurface,
+            backgroundImage: `linear-gradient(135deg, rgba(209,67,58,0.08) 0%, ${PAPER} 42%)`,
+          }}
+        >
+          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', gap: 4, flexWrap: 'wrap' }}>
+            <Box sx={{ flex: 1, minWidth: 200 }}>
+              <Typography variant="overline" sx={{ color: semantic.alert, display: 'block', mb: 1 }}>
+                Operational focus · Week 3
+              </Typography>
+              <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '2.75rem', fontWeight: 700, letterSpacing: '-0.03em', color: INK, lineHeight: 1 }}>
+                620 t
+              </Typography>
+              <Typography variant="subtitle2" sx={{ color: INK, mt: 2 }}>
+                Supply gap still uncovered
+              </Typography>
+              <Typography variant="body2" sx={{ mt: 1, maxWidth: 360 }}>
+                1,200 t needed · 580 t committed. This is the most constrained delivery window in the procurement plan.
+              </Typography>
+            </Box>
+            <Stack spacing={2} sx={{ alignItems: 'flex-end' }}>
+              <PrimaryBtn onClick={() => onNavigate('farms')}>Investigate farms →</PrimaryBtn>
+              <GhostBtn onClick={() => onNavigate('farms')}>View candidates on map</GhostBtn>
             </Stack>
+          </Stack>
+        </Box>
+
+        {/* Target as open strip — not a KPI card wall */}
+        <Box sx={{ mb: space.section }}>
+          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'baseline', mb: 2 }}>
+            <SectionLabel>Procurement position</SectionLabel>
+            <Typography variant="h2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>4,000 t</Typography>
+          </Stack>
+          <SupplyBar firm={2568} atRisk={570} total={4000} />
+          <Stack direction="row" spacing={6} sx={{ mt: 3 }}>
+            {[
+              { label: 'Firm', value: '2,568 t', color: semantic.firm },
+              { label: 'At risk', value: '570 t', color: semantic.atRisk },
+              { label: 'Open gap', value: '862 t', color: semantic.gap },
+            ].map(m => (
+              <Stack key={m.label} direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m.color }} />
+                <Typography variant="caption">{m.label}</Typography>
+                <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>{m.value}</Typography>
+              </Stack>
+            ))}
+            <Typography variant="caption" sx={{ ml: 'auto !important', color: INK_MUTED }}>78% committed</Typography>
+          </Stack>
+        </Box>
+
+        {/* Weekly rail — one composition with map relationship */}
+        <Box sx={{ mb: space.section }}>
+          <SectionLabel>Weekly position · linked to Week 3 geography</SectionLabel>
+          <Box sx={{ ...panelSurface, overflow: 'hidden' }}>
+            <WeekRail weeks={weeks} />
           </Box>
         </Box>
-      </Box>
 
-      <MapPane
-        variant="coverage"
-        footer={
-          <Box>
-            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.tight }}>
-              620 t gap · candidates highlighted for investigation
-            </Typography>
-            <PrimaryBtn fullWidth onClick={() => onNavigate('farms')}>
-              Close the 620 t gap →
-            </PrimaryBtn>
-          </Box>
-        }
-      />
-    </Box>
+        {/* Decision queue — primary elevated, rest as strips */}
+        <Box>
+          <SectionLabel>Needs a decision</SectionLabel>
+          <Stack spacing={0} sx={{ ...panelSurface, overflow: 'hidden' }}>
+            <Box sx={{ p: space.related, bgcolor: CARD_SELECTION_BG, color: m3.onSurface }}>
+              <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 4, alignItems: 'flex-start' }}>
+                <Box>
+                  <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 1 }}>
+                    <StatusChip kind="primary-issue" />
+                    <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>Closes via GIS investigation</Typography>
+                  </Stack>
+                  <Typography variant="subtitle1" sx={{ color: m3.onSurface }}>Week 3 supply gap: 620 t</Typography>
+                  <Typography variant="body2" sx={{ mt: 1, color: m3.onSurfaceVariant }}>
+                    Candidate farms identified on the Week 3 map. Resolve before committing the coverage strategy.
+                  </Typography>
+                </Box>
+                <PrimaryBtn onClick={() => onNavigate('farms')}>Resolve gap</PrimaryBtn>
+              </Stack>
+            </Box>
+            {[
+              { title: '3 procurement commitments at risk', sub: '570 t delivery risk · Narsapur + Avanigadda', cta: 'Review risks' },
+              { title: '7 farms changed this week', sub: 'Satellite condition, harvest timing, or expected supply', cta: 'Review changes' },
+              { title: '5 decisions blocked by missing evidence', sub: 'Cannot treat as firm supply until field or current satellite evidence arrives', cta: 'Resolve evidence' },
+            ].map((item, i) => (
+              <DataStrip key={item.title} sx={{ bgcolor: PAPER, borderBottom: i === 2 ? 'none' : undefined }}>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 4, alignItems: 'center' }}>
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ color: INK }}>{item.title}</Typography>
+                    <Typography variant="body2">{item.sub}</Typography>
+                  </Box>
+                  <GhostBtn onClick={() => onNavigate('farms')}>{item.cta}</GhostBtn>
+                </Stack>
+              </DataStrip>
+            ))}
+          </Stack>
+        </Box>
+      </Box>
+    </MainPane>
   )
 }
 
@@ -1041,95 +1055,87 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   const highlightIds = activeFarmId ? [activeFarmId] : []
 
   return (
-    <Box sx={{ display: 'flex', height: '100%', overflow: 'hidden', position: 'relative', gap: space.tight }}>
-      {/* Farm list — shellChrome overflow must not win over overflowY */}
-      <Box
-        sx={{
-          flex: 1,
-          minWidth: 0,
-          minHeight: 0,
-          ...shellChrome,
-          bgcolor: m3.surfaceContainerLowest,
-          overflowX: 'hidden',
-          overflowY: 'auto',
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-          '&::-webkit-scrollbar': { display: 'none' },
-        }}
-      >
-        <Box sx={{ p: 6 }}>
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 6 }}>
-            <Box>
-              <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>Week 3 Supply Gap</Typography>
-              <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>620 t still needed</Typography>
-              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>1,200 t required · 580 t committed</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <SecondaryBtn onClick={() => setComparison(['mach', 'reddy', 'bhim', 'tanuku'])}>Use recommended set</SecondaryBtn>
-              <PrimaryBtn onClick={() => onNavigate('compare')}>Compare selected →</PrimaryBtn>
-            </Box>
-          </Box>
-
-          <Box sx={{ mb: 6 }}>
-            <SectionLabel>Recommended for this gap</SectionLabel>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {RECOMMENDED_FARMS.map(f => (
-                <FarmCard
-                  key={f.id}
-                  farm={f}
-                  inComparison={comparison.includes(f.id)}
-                  onToggle={toggle}
-                  onViewEvidence={setEvidenceFarm}
-                  hoverId={activeFarmId}
-                  onHover={setHoverId}
-                />
-              ))}
-            </Box>
-          </Box>
-
-          <Box>
-            <SectionLabel>Other eligible farms · May close remaining gap or diversify supply</SectionLabel>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {OTHER_FARMS.map(f => (
-                <FarmCard
-                  key={f.id}
-                  farm={f}
-                  inComparison={comparison.includes(f.id)}
-                  onToggle={toggle}
-                  onViewEvidence={setEvidenceFarm}
-                  hoverId={activeFarmId}
-                  onHover={setHoverId}
-                />
-              ))}
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-
-      <MapPane
-        variant="investigation"
-        highlightIds={highlightIds}
-        activeId={activeFarmId}
-        onFarmHover={setHoverId}
-        onFarmSelect={setFocusedId}
-        onViewEvidence={setEvidenceFarm}
+    <>
+      <MainPane
+        header={
+          <>
+            <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary' }}>Week 3 Supply Gap</Typography>
+            <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>620 t still needed</Typography>
+            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>1,200 t required · 580 t committed</Typography>
+          </>
+        }
         footer={
-          <Box>
-            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.tight }}>
+          <>
+            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
               {comparison.length} farms selected for comparison
             </Typography>
-            <PrimaryBtn
-              onClick={() => onNavigate('compare')}
-              disabled={comparison.length < 2}
-              fullWidth
-            >
-              Compare selected →
-            </PrimaryBtn>
-          </Box>
+            <Stack direction="row" spacing={2} sx={{ justifyContent: 'center', flexWrap: 'wrap' }}>
+              <SecondaryBtn onClick={() => setComparison(['mach', 'reddy', 'bhim', 'tanuku'])}>Use recommended set</SecondaryBtn>
+              <PrimaryBtn onClick={() => onNavigate('compare')} disabled={comparison.length < 2}>Compare selected →</PrimaryBtn>
+            </Stack>
+          </>
         }
-      />
+        map={
+          <MapPane
+            variant="investigation"
+            highlightIds={highlightIds}
+            activeId={activeFarmId}
+            onFarmHover={setHoverId}
+            onFarmSelect={setFocusedId}
+            onViewEvidence={setEvidenceFarm}
+            footer={
+              <Box>
+                <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.tight }}>
+                  {comparison.length} farms selected for comparison
+                </Typography>
+                <PrimaryBtn
+                  onClick={() => onNavigate('compare')}
+                  disabled={comparison.length < 2}
+                  fullWidth
+                >
+                  Compare selected →
+                </PrimaryBtn>
+              </Box>
+            }
+          />
+        }
+      >
+        <Box sx={{ mb: 6 }}>
+          <SectionLabel>Recommended for this gap</SectionLabel>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {RECOMMENDED_FARMS.map(f => (
+              <FarmCard
+                key={f.id}
+                farm={f}
+                inComparison={comparison.includes(f.id)}
+                onToggle={toggle}
+                onViewEvidence={setEvidenceFarm}
+                hoverId={activeFarmId}
+                onHover={setHoverId}
+              />
+            ))}
+          </Box>
+        </Box>
+
+        <Box>
+          <SectionLabel>Other eligible farms · May close remaining gap or diversify supply</SectionLabel>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {OTHER_FARMS.map(f => (
+              <FarmCard
+                key={f.id}
+                farm={f}
+                inComparison={comparison.includes(f.id)}
+                onToggle={toggle}
+                onViewEvidence={setEvidenceFarm}
+                hoverId={activeFarmId}
+                onHover={setHoverId}
+              />
+            ))}
+          </Box>
+        </Box>
+      </MainPane>
       {evidenceFarm && <EvidenceModal farmId={evidenceFarm} onClose={() => setEvidenceFarm(null)} />}
-    </Box>
+    </>
   )
 }
 
@@ -1197,115 +1203,112 @@ const TABLE_ROWS = [
 
 function CompareScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
-    <Box sx={{ display: 'flex', height: '100%', gap: space.tight, overflow: 'hidden' }}>
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
-      {/* Fixed header */}
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 6, py: 4, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
-        <Box>
+    <MainPane
+      header={
+        <>
           <SectionLabel>Candidate Comparison</SectionLabel>
           <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>4 farms · Week 3</Typography>
-          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Scenario planning can add or substitute farms from the full eligible pool.</Typography>
-        </Box>
-        <PrimaryBtn onClick={() => onNavigate('scenarios')}>Plan a scenario →</PrimaryBtn>
-      </Box>
-
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6 }}>
-        {/* Interpretation cards */}
-        <Box sx={{ mb: 8 }}>
-          <SectionLabel>Interpretation</SectionLabel>
-          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
-            {COMPARE_FARMS.map(f => (
-              <DashPaper key={f.id} sx={{ p: space.related }}>
-                <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: 'text.primary', mb: 1 }}>{f.name}</Typography>
-                <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary', mb: 2 }}>{f.headline}</Typography>
-                <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 4 }}>{f.summary}</Typography>
-                <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mb: 4 }}>
-                  Closes <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>{f.gapPct}%</Box> of the remaining 620 t Week 3 gap
-                  {f.gapNote ? `, but ${f.gapNote}.` : '.'}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: 'text.primary' }}>{f.supply} t</Box>
-                  <ConfBadge level={f.confidence} />
-                  <Box component="span" sx={{ fontSize: 10, color: 'text.secondary' }}>
-                    {f.confidence === 'HIGH' ? 'Evidence current' : f.confidence === 'MEDIUM' ? 'Evidence incomplete' : 'Evidence missing'}
-                  </Box>
-                  {f.verifReq && <Box component="span" sx={{ fontSize: 10, color: 'text.secondary', fontWeight: 500 }}>verif. req.</Box>}
-                </Box>
-              </DashPaper>
-            ))}
-          </Box>
-        </Box>
-
-        {/* Detailed table */}
-        <Box>
-          <SectionLabel>Detailed Comparison</SectionLabel>
-          <TableContainer component={Paper} elevation={0}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ width: 176, position: 'sticky', left: 0, bgcolor: m3.surfaceContainerLow, zIndex: 1 }}>Attribute</TableCell>
-                  {COMPARE_FARMS.map(f => (
-                    <TableCell key={f.id} sx={{ minWidth: 180 }}>
-                      <Typography variant="subtitle2" sx={{ color: m3.onSurface }}>{f.name}</Typography>
-                      <Typography variant="caption" sx={{ display: 'block', mt: space.xs }}>{f.district}</Typography>
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {TABLE_ROWS.map(({ key, label }) => (
-                  <TableRow key={key} hover>
-                    <TableCell sx={{ color: 'text.secondary', fontWeight: 500, position: 'sticky', left: 0, bgcolor: m3.surfaceContainerLowest, verticalAlign: 'top' }}>{label}</TableCell>
-                    {COMPARE_FARMS.map(f => {
-                      const val = f[key as keyof typeof f]
-                      if (key === 'confidence') return (
-                        <TableCell key={f.id} sx={{ verticalAlign: 'top' }}>
-                          <ConfBadge level={val as Conf} />
-                          <Typography variant="caption" sx={{ display: 'block', mt: space.xs }}>
-                            {val === 'HIGH' ? 'Evidence current' : val === 'MEDIUM' ? 'Evidence incomplete' : 'Evidence missing'}
-                          </Typography>
-                        </TableCell>
-                      )
-                      if (key === 'verifReq') return (
-                        <TableCell key={f.id} sx={{ verticalAlign: 'top', fontWeight: 650, color: val ? 'warning.dark' : 'text.primary' }}>
-                          {val ? 'Yes' : 'No'}
-                        </TableCell>
-                      )
-                      if (key === 'supply') return (
-                        <TableCell key={f.id} sx={{ fontVariantNumeric: 'tabular-nums', verticalAlign: 'top', fontWeight: 650 }}>{val} t</TableCell>
-                      )
-                      return (
-                        <TableCell key={f.id} sx={{ verticalAlign: 'top', color: 'text.secondary' }}>{String(val)}</TableCell>
-                      )
-                    })}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      </Box>
-
-      <Box sx={{ borderTop: 1, borderColor: 'divider', px: 6, py: 4, flexShrink: 0, display: 'flex', justifyContent: 'flex-end' }}>
-        <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mr: 'auto', pt: 1 }}>Scenario planning can consider these candidates and other eligible farms. The manually compared farms do not limit scenario generation.</Typography>
-        <PrimaryBtn onClick={() => onNavigate('scenarios')}>Plan a scenario →</PrimaryBtn>
-      </Box>
-      </Box>
-      <MapPane
-        variant="investigation"
-        farmRoles={{
-          mach: 'selected',
-          reddy: 'selected',
-          bhim: 'needs-verification',
-          tanuku: 'needs-verification',
-        }}
-        footer={
-          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-            4 farms in comparison · map mirrors candidate set
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>Scenario planning can add or substitute farms from the full eligible pool.</Typography>
+        </>
+      }
+      footer={
+        <>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
+            Scenario planning can consider these candidates and other eligible farms. The manually compared farms do not limit scenario generation.
           </Typography>
-        }
-      />
-    </Box>
+          <PrimaryBtn onClick={() => onNavigate('scenarios')}>Plan a scenario →</PrimaryBtn>
+        </>
+      }
+      map={
+        <MapPane
+          variant="investigation"
+          farmRoles={{
+            mach: 'selected',
+            reddy: 'selected',
+            bhim: 'needs-verification',
+            tanuku: 'needs-verification',
+          }}
+          footer={
+            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+              4 farms in comparison · map mirrors candidate set
+            </Typography>
+          }
+        />
+      }
+    >
+      <Box sx={{ mb: 8 }}>
+        <SectionLabel>Interpretation</SectionLabel>
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
+          {COMPARE_FARMS.map(f => (
+            <DashPaper key={f.id} sx={{ p: space.related }}>
+              <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: 'text.primary', mb: 1 }}>{f.name}</Typography>
+              <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'text.secondary', mb: 2 }}>{f.headline}</Typography>
+              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 4 }}>{f.summary}</Typography>
+              <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mb: 4 }}>
+                Closes <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>{f.gapPct}%</Box> of the remaining 620 t Week 3 gap
+                {f.gapNote ? `, but ${f.gapNote}.` : '.'}
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: 'text.primary' }}>{f.supply} t</Box>
+                <ConfBadge level={f.confidence} />
+                <Box component="span" sx={{ fontSize: 10, color: 'text.secondary' }}>
+                  {f.confidence === 'HIGH' ? 'Evidence current' : f.confidence === 'MEDIUM' ? 'Evidence incomplete' : 'Evidence missing'}
+                </Box>
+                {f.verifReq && <Box component="span" sx={{ fontSize: 10, color: 'text.secondary', fontWeight: 500 }}>verif. req.</Box>}
+              </Box>
+            </DashPaper>
+          ))}
+        </Box>
+      </Box>
+
+      <Box>
+        <SectionLabel>Detailed Comparison</SectionLabel>
+        <TableContainer component={Paper} elevation={0}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ width: 176, position: 'sticky', left: 0, bgcolor: m3.surfaceContainerLow, zIndex: 1 }}>Attribute</TableCell>
+                {COMPARE_FARMS.map(f => (
+                  <TableCell key={f.id} sx={{ minWidth: 180 }}>
+                    <Typography variant="subtitle2" sx={{ color: m3.onSurface }}>{f.name}</Typography>
+                    <Typography variant="caption" sx={{ display: 'block', mt: space.xs }}>{f.district}</Typography>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {TABLE_ROWS.map(({ key, label }) => (
+                <TableRow key={key} hover>
+                  <TableCell sx={{ color: 'text.secondary', fontWeight: 500, position: 'sticky', left: 0, bgcolor: m3.surfaceContainerLowest, verticalAlign: 'top' }}>{label}</TableCell>
+                  {COMPARE_FARMS.map(f => {
+                    const val = f[key as keyof typeof f]
+                    if (key === 'confidence') return (
+                      <TableCell key={f.id} sx={{ verticalAlign: 'top' }}>
+                        <ConfBadge level={val as Conf} />
+                        <Typography variant="caption" sx={{ display: 'block', mt: space.xs }}>
+                          {val === 'HIGH' ? 'Evidence current' : val === 'MEDIUM' ? 'Evidence incomplete' : 'Evidence missing'}
+                        </Typography>
+                      </TableCell>
+                    )
+                    if (key === 'verifReq') return (
+                      <TableCell key={f.id} sx={{ verticalAlign: 'top', fontWeight: 650, color: val ? 'warning.dark' : 'text.primary' }}>
+                        {val ? 'Yes' : 'No'}
+                      </TableCell>
+                    )
+                    if (key === 'supply') return (
+                      <TableCell key={f.id} sx={{ fontVariantNumeric: 'tabular-nums', verticalAlign: 'top', fontWeight: 650 }}>{val} t</TableCell>
+                    )
+                    return (
+                      <TableCell key={f.id} sx={{ verticalAlign: 'top', color: 'text.secondary' }}>{String(val)}</TableCell>
+                    )
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+    </MainPane>
   )
 }
 
@@ -1405,22 +1408,98 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     : null
 
   return (
-    <Box sx={{ display: 'flex', height: '100%', gap: space.tight }}>
-      {/* Main */}
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-        <Box sx={{ p: 6 }}>
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 6 }}>
+    <>
+    <MainPane
+      header={
+        <>
+          <SectionLabel>Scenario Planning</SectionLabel>
+          <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Week 3 · 620 t gap</Typography>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
+            Set constraints, then select a feasible strategy for Week 3 coverage.
+          </Typography>
+        </>
+      }
+      footer={
+        selected ? (
+          canProceed ? (
+            <>
+              <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'text.primary' }}>
+                {selectedStrategy?.name} selected — all constraints satisfied.
+              </Typography>
+              <PrimaryBtn onClick={() => onNavigate('verification')}>Proceed with {selectedStrategy?.name} →</PrimaryBtn>
+            </>
+          ) : (
+            <>
+              <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: m3.error }}>
+                Cannot proceed: {selectedStrategy?.name} fails {selectedFails} constraint{selectedFails > 1 ? 's' : ''}.
+              </Typography>
+              {selectedWk3 !== null && selectedWk3 < minCoverage && (
+                <Typography sx={{ fontSize: '0.75rem', color: m3.error }}>
+                  Coverage {selectedWk3}% is below the {minCoverage}% Week 3 coverage requirement.
+                </Typography>
+              )}
+              <PrimaryBtn disabled>Proceed with {selectedStrategy?.name} →</PrimaryBtn>
+            </>
+          )
+        ) : (
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
+            Select a strategy to continue to verification.
+          </Typography>
+        )
+      }
+      map={
+        <MapPane
+          variant="scenario"
+          farmRoles={isModified ? {
+            mach: 'selected',
+            reddy: 'selected',
+            bhim: 'needs-verification',
+            tanuku: 'other',
+            guntur: 'selected',
+          } : {}}
+          addedIds={isModified ? ['guntur'] : []}
+          removedIds={isModified ? ['tanuku'] : []}
+          activeId={mapFocusId}
+          expanded={mapExpanded}
+          onExpandedChange={setMapExpanded}
+          footer={selected && selectedStrategy ? (
             <Box>
-              <SectionLabel>Scenario Planning</SectionLabel>
-              <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Week 3 · 620 t gap</Typography>
+              <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.tight, fontWeight: 650 }}>
+                Week 3 summary · {selectedStrategy.name}
+              </Typography>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: space.tight }}>
+                {[
+                  { label: 'Coverage', value: `${isModified ? selectedStrategy.wk3Modified : selectedStrategy.wk3Default}%` },
+                  {
+                    label: 'Total Week 3 supply',
+                    value: selectedStrategy.key === 'coverage-first' && !isModified
+                      ? '1,150 t'
+                      : `${(isModified ? selectedStrategy.wk3Modified : selectedStrategy.wk3Default) * 12} t`,
+                  },
+                  {
+                    label: 'Supply added',
+                    value: selectedStrategy.key === 'coverage-first' && !isModified
+                      ? '570 t'
+                      : `${(isModified ? selectedStrategy.farmsModified : selectedStrategy.farmsDefault)
+                        .reduce((sum, farm) => sum + Number(farm.match(/(\d+) t/)?.[1] ?? 0), 0)} t`,
+                  },
+                  { label: 'Verification visits', value: String(isModified ? selectedStrategy.verifModified : selectedStrategy.verifDefault) },
+                ].map(({ label, value }) => (
+                  <Box key={label}>
+                    <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>{label}</Typography>
+                    <Typography variant="subtitle2" sx={{ fontVariantNumeric: 'tabular-nums' }}>{value}</Typography>
+                  </Box>
+                ))}
+              </Box>
             </Box>
-            {selected && (
-              <PrimaryBtn onClick={() => onNavigate('verification')} disabled={!canProceed}>
-                Proceed with {selectedStrategy?.name} →
-              </PrimaryBtn>
-            )}
-          </Box>
-
+          ) : (
+            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+              Select a strategy to see Week 3 map summary
+            </Typography>
+          )}
+        />
+      }
+    >
           {/* Constraints — threshold rails, not consumer sliders */}
           <Box sx={{ mb: space.section }}>
             <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: space.tight }}>
@@ -1694,80 +1773,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             </Box>
           </Box>
 
-          {/* Footer CTA when selected */}
-          {selected && (
-            <DashPaper sx={{ mt: space.section, p: space.related, bgcolor: canProceed ? 'background.paper' : m3.errorContainer, color: canProceed ? m3.onSurface : m3.onErrorContainer }}>
-              {canProceed ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: m3.onSurface }}>{selectedStrategy?.name} selected — all constraints satisfied.</Typography>
-                  <PrimaryBtn onClick={() => onNavigate('verification')}>Proceed with {selectedStrategy?.name} →</PrimaryBtn>
-                </Box>
-              ) : (
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Box>
-                    <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: m3.onErrorContainer, mb: 1 }}>Cannot proceed: {selectedStrategy?.name} fails {selectedFails} constraint{selectedFails > 1 ? 's' : ''}.</Typography>
-                    {selectedWk3 !== null && selectedWk3 < minCoverage && (
-                      <Typography sx={{ fontSize: '0.75rem', color: m3.onErrorContainer }}>Coverage {selectedWk3}% is below the {minCoverage}% Week 3 coverage requirement.</Typography>
-                    )}
-                  </Box>
-                  <PrimaryBtn disabled>Proceed with {selectedStrategy?.name} →</PrimaryBtn>
-                </Box>
-              )}
-            </DashPaper>
-          )}
-        </Box>
-      </Box>
-
-      <MapPane
-        variant="scenario"
-        farmRoles={isModified ? {
-          mach: 'selected',
-          reddy: 'selected',
-          bhim: 'needs-verification',
-          tanuku: 'other',
-          guntur: 'selected',
-        } : {}}
-        addedIds={isModified ? ['guntur'] : []}
-        removedIds={isModified ? ['tanuku'] : []}
-        activeId={mapFocusId}
-        expanded={mapExpanded}
-        onExpandedChange={setMapExpanded}
-        footer={selected && selectedStrategy ? (
-          <Box>
-            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.tight, fontWeight: 650 }}>
-              Week 3 summary · {selectedStrategy.name}
-            </Typography>
-            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: space.tight }}>
-              {[
-                { label: 'Coverage', value: `${isModified ? selectedStrategy.wk3Modified : selectedStrategy.wk3Default}%` },
-                {
-                  label: 'Total Week 3 supply',
-                  value: selectedStrategy.key === 'coverage-first' && !isModified
-                    ? '1,150 t'
-                    : `${(isModified ? selectedStrategy.wk3Modified : selectedStrategy.wk3Default) * 12} t`,
-                },
-                {
-                  label: 'Supply added',
-                  value: selectedStrategy.key === 'coverage-first' && !isModified
-                    ? '570 t'
-                    : `${(isModified ? selectedStrategy.farmsModified : selectedStrategy.farmsDefault)
-                      .reduce((sum, farm) => sum + Number(farm.match(/(\d+) t/)?.[1] ?? 0), 0)} t`,
-                },
-                { label: 'Verification visits', value: String(isModified ? selectedStrategy.verifModified : selectedStrategy.verifDefault) },
-              ].map(({ label, value }) => (
-                <Box key={label}>
-                  <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>{label}</Typography>
-                  <Typography variant="subtitle2" sx={{ fontVariantNumeric: 'tabular-nums' }}>{value}</Typography>
-                </Box>
-              ))}
-            </Box>
-          </Box>
-        ) : (
-          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-            Select a strategy to see Week 3 map summary
-          </Typography>
-        )}
-      />
+    </MainPane>
       {inspectedFarm && (
         <FarmDecisionPanel
           farmName={inspectedFarm}
@@ -1779,7 +1785,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           }}
         />
       )}
-    </Box>
+    </>
   )
 }
 
@@ -1806,78 +1812,72 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
   ]
 
   return (
-    <Box sx={{ display: 'flex', height: '100%', gap: space.tight, overflow: 'hidden' }}>
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 6, py: 4, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
-        <Box>
+    <MainPane
+      header={
+        <>
           <SectionLabel>Selective Field Verification</SectionLabel>
           <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Coverage-First · Farms requiring verification</Typography>
-          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>2 selected · 0 remaining</Typography>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', textAlign: 'right', maxWidth: 220, lineHeight: 1.6 }}>Only farms with missing, insufficient, or conflicting evidence appear here.</Typography>
-          <PrimaryBtn onClick={() => onNavigate('field')}>Assign 2 farms to Ravi →</PrimaryBtn>
-        </Box>
-      </Box>
-
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6 }}>
-        <Box sx={{ maxWidth: 672, display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {farms.map(f => (
-            <DashPaper key={f.id} sx={{ p: space.section, bgcolor: m3.warningContainer, color: m3.onWarningContainer }}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 4 }}>
-                  <Box sx={{ width: 20, height: 20, borderRadius: `${shape.xs}px`, bgcolor: m3.warning, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, mt: 1 }}>
-                    <svg style={{ width: 12, height: 12, color: m3.onWarning }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </Box>
-                  <Box>
-                    <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: m3.onWarningContainer }}>{f.name}</Typography>
-                    <Typography sx={{ fontSize: '0.75rem', color: m3.onWarningContainer, opacity: 0.85 }}>{f.district}</Typography>
-                  </Box>
-                </Box>
-                <Box sx={{ textAlign: 'right' }}>
-                  <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: m3.onWarningContainer, mb: 1 }}>{f.supply} t</Typography>
-                  <StatusChip kind={f.evidenceKind === 'missing' ? 'evidence-missing' : 'evidence-aging'} />
-                </Box>
-              </Box>
-              <Typography sx={{ fontSize: '0.75rem', color: m3.onWarningContainer, mb: 4 }}>{f.reason}</Typography>
-              <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: m3.onWarningContainer, mb: 2 }}>Needs</Typography>
-              <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4, m: 0, p: 0, listStyle: 'none' }}>
-                {f.needs.map(n => (
-                  <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: '0.75rem', fontWeight: 650, color: m3.onWarningContainer }} key={n}>
-                    <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: m3.onWarningContainer, flexShrink: 0 }} />
-                    {n}
-                  </Stack>
-                ))}
-              </Box>
-              <Typography sx={{ fontSize: '0.75rem', color: m3.onWarningContainer }}>
-                Confidence before verification: <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>{f.confidence}</Box>
-                <Box component="span"> · {f.confidence === 'LOW' ? 'Evidence missing' : 'Evidence incomplete'}</Box>
-              </Typography>
-            </DashPaper>
-          ))}
-
-          {/* Assignment summary */}
-          <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 4 }}>
-            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', lineHeight: 1.6, mb: 4 }}>
-              2 farms will be assigned to Ravi for field verification. Ravi will visit each farm, verify the requested evidence, and submit findings. Only these specific evidence items are needed — Ravi does not need to assess the full farm.
-            </Typography>
-            <PrimaryBtn onClick={() => onNavigate('field')}>Assign to Ravi →</PrimaryBtn>
-          </Box>
-        </Box>
-      </Box>
-      </Box>
-      <MapPane
-        variant="investigation"
-        farmRoles={{ bhim: 'needs-verification', tanuku: 'needs-verification', mach: 'selected', reddy: 'selected' }}
-        footer={
-          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-            2 farms require field verification · assigned next
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>2 selected · 0 remaining · Only farms with missing, insufficient, or conflicting evidence appear here.</Typography>
+        </>
+      }
+      footer={
+        <>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
+            2 farms will be assigned to Ravi for field verification. Only the listed evidence items are needed.
           </Typography>
-        }
-      />
-    </Box>
+          <PrimaryBtn onClick={() => onNavigate('field')}>Assign 2 farms to Ravi →</PrimaryBtn>
+        </>
+      }
+      map={
+        <MapPane
+          variant="investigation"
+          farmRoles={{ bhim: 'needs-verification', tanuku: 'needs-verification', mach: 'selected', reddy: 'selected' }}
+          footer={
+            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+              2 farms require field verification · assigned next
+            </Typography>
+          }
+        />
+      }
+    >
+      <Box sx={{ maxWidth: 672, display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {farms.map(f => (
+          <DashPaper key={f.id} sx={{ p: space.section, bgcolor: m3.warningContainer, color: m3.onWarningContainer }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 4 }}>
+                <Box sx={{ width: 20, height: 20, borderRadius: `${shape.xs}px`, bgcolor: m3.warning, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, mt: 1 }}>
+                  <svg style={{ width: 12, height: 12, color: m3.onWarning }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </Box>
+                <Box>
+                  <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: m3.onWarningContainer }}>{f.name}</Typography>
+                  <Typography sx={{ fontSize: '0.75rem', color: m3.onWarningContainer, opacity: 0.85 }}>{f.district}</Typography>
+                </Box>
+              </Box>
+              <Box sx={{ textAlign: 'right' }}>
+                <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.25rem', fontWeight: 700, color: m3.onWarningContainer, mb: 1 }}>{f.supply} t</Typography>
+                <StatusChip kind={f.evidenceKind === 'missing' ? 'evidence-missing' : 'evidence-aging'} />
+              </Box>
+            </Box>
+            <Typography sx={{ fontSize: '0.75rem', color: m3.onWarningContainer, mb: 4 }}>{f.reason}</Typography>
+            <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: m3.onWarningContainer, mb: 2 }}>Needs</Typography>
+            <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4, m: 0, p: 0, listStyle: 'none' }}>
+              {f.needs.map(n => (
+                <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: '0.75rem', fontWeight: 650, color: m3.onWarningContainer }} key={n}>
+                  <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: m3.onWarningContainer, flexShrink: 0 }} />
+                  {n}
+                </Stack>
+              ))}
+            </Box>
+            <Typography sx={{ fontSize: '0.75rem', color: m3.onWarningContainer }}>
+              Confidence before verification: <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>{f.confidence}</Box>
+              <Box component="span"> · {f.confidence === 'LOW' ? 'Evidence missing' : 'Evidence incomplete'}</Box>
+            </Typography>
+          </DashPaper>
+        ))}
+      </Box>
+    </MainPane>
   )
 }
 // ─── FIELD SCREEN (RAVI MOBILE) ───────────────────────────────────────────────
@@ -2198,88 +2198,88 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   ]
 
   return (
-    <Box sx={{ display: 'flex', height: '100%', gap: space.tight, overflow: 'hidden' }}>
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 6, py: 4, flexShrink: 0 }}>
-        <SectionLabel>Field Officer Findings</SectionLabel>
-        <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Review evidence</Typography>
-        <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 1 }}>Ravi has submitted findings for 2 farms. Evidence has been confirmed.</Typography>
-      </Box>
-
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6 }}>
-        <Box sx={{ maxWidth: 672, display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {findings.map(f => (
-            <DashPaper key={f.id} sx={{ overflow: 'hidden', bgcolor: CARD_SELECTION_BG, color: m3.onSurface, p: 0 }}>
-              {/* Header */}
-              <Box sx={{ borderBottom: `1px solid ${PANEL_BORDER}`, px: 4, py: 4, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: m3.onSurface, mb: 1 }}>{f.name}</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant }}>{f.district}</Typography>
-                </Box>
-                <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: m3.onSurface }}>{f.supply} t</Typography>
-              </Box>
-
-              <Box sx={{ px: space.related, py: space.related }}>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: space.related, mb: space.section }}>
-                  <Box sx={{ flexShrink: 0 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Previous confidence</Typography>
-                    <ConfBadge level={f.before} />
-                    <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, mt: 1 }}>{f.before === 'LOW' ? 'Evidence missing' : 'Evidence incomplete'}</Typography>
-                  </Box>
-                  <Box component="span" sx={{ color: m3.onSurfaceVariant, opacity: 0.55, pt: 4 }}>→</Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Evidence collected</Typography>
-                    <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface }}>Required evidence collected</Typography>
-                  </Box>
-                  <Box component="span" sx={{ color: m3.onSurfaceVariant, opacity: 0.55, pt: 4 }}>→</Box>
-                  <Box sx={{ flexShrink: 0 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Updated confidence</Typography>
-                    <ConfBadge level={f.after} />
-                    <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, mt: 1 }}>Evidence current · Field evidence aligned</Typography>
-                  </Box>
-                  <Box sx={{ flexShrink: 0 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Verification</Typography>
-                    <StatusChip kind="verified" />
-                  </Box>
-                </Box>
-              </Box>
-              <Box sx={{ borderTop: `1px solid ${PANEL_BORDER}`, px: space.related, py: space.related }}>
-                <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface, mb: space.tight }}>Evidence confirmed</Typography>
-                <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: space.tight, m: 0, p: 0, listStyle: 'none', mb: space.related }}>
-                  {f.evidence.map(item => (
-                    <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: space.tight, fontSize: '0.75rem', color: m3.onSurface }} key={item}>
-                      <Box component="span" sx={{ color: m3.success, fontWeight: 650 }}>✓</Box>
-                      {item}
-                    </Stack>
-                  ))}
-                </Box>
-                <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant, lineHeight: 1.6 }}>{f.impact}</Typography>
-              </Box>
-            </DashPaper>
-          ))}
-
-          {/* Summary */}
-          <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 4 }}>
-            <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'text.primary', mb: 2 }}>Verification complete — Coverage-First is ready to proceed</Typography>
-            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 4 }}>
-              Both farms are now HIGH · VERIFIED. All 4 farms in Coverage-First have sufficient evidence.
-              Week 3 coverage confirmed at <Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>1,150 t / 96%</Box>.
-            </Typography>
-            <PrimaryBtn onClick={() => onNavigate('plan')}>Activate procurement plan →</PrimaryBtn>
-          </Box>
-        </Box>
-      </Box>
-      </Box>
-      <MapPane
-        variant="investigation"
-        farmRoles={{ bhim: 'selected', tanuku: 'selected', mach: 'selected', reddy: 'selected' }}
-        footer={
-          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-            Field evidence confirmed · farms ready for plan activation
+    <MainPane
+      header={
+        <>
+          <SectionLabel>Field Officer Findings</SectionLabel>
+          <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Review evidence</Typography>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>Ravi has submitted findings for 2 farms. Evidence has been confirmed.</Typography>
+        </>
+      }
+      footer={
+        <>
+          <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: 'text.primary' }}>
+            Verification complete — Coverage-First is ready to proceed
           </Typography>
-        }
-      />
-    </Box>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
+            Both farms are now HIGH · VERIFIED. Week 3 coverage confirmed at 1,150 t / 96%.
+          </Typography>
+          <PrimaryBtn onClick={() => onNavigate('plan')}>Activate procurement plan →</PrimaryBtn>
+        </>
+      }
+      map={
+        <MapPane
+          variant="investigation"
+          farmRoles={{ bhim: 'selected', tanuku: 'selected', mach: 'selected', reddy: 'selected' }}
+          footer={
+            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+              Field evidence confirmed · farms ready for plan activation
+            </Typography>
+          }
+        />
+      }
+    >
+      <Box sx={{ maxWidth: 672, display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {findings.map(f => (
+          <DashPaper key={f.id} sx={{ overflow: 'hidden', bgcolor: CARD_SELECTION_BG, color: m3.onSurface, p: 0 }}>
+            <Box sx={{ borderBottom: `1px solid ${PANEL_BORDER}`, px: 4, py: 4, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+              <Box>
+                <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: m3.onSurface, mb: 1 }}>{f.name}</Typography>
+                <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant }}>{f.district}</Typography>
+              </Box>
+              <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: m3.onSurface }}>{f.supply} t</Typography>
+            </Box>
+
+            <Box sx={{ px: space.related, py: space.related }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: space.related, mb: space.section }}>
+                <Box sx={{ flexShrink: 0 }}>
+                  <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Previous confidence</Typography>
+                  <ConfBadge level={f.before} />
+                  <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, mt: 1 }}>{f.before === 'LOW' ? 'Evidence missing' : 'Evidence incomplete'}</Typography>
+                </Box>
+                <Box component="span" sx={{ color: m3.onSurfaceVariant, opacity: 0.55, pt: 4 }}>→</Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Evidence collected</Typography>
+                  <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface }}>Required evidence collected</Typography>
+                </Box>
+                <Box component="span" sx={{ color: m3.onSurfaceVariant, opacity: 0.55, pt: 4 }}>→</Box>
+                <Box sx={{ flexShrink: 0 }}>
+                  <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Updated confidence</Typography>
+                  <ConfBadge level={f.after} />
+                  <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, mt: 1 }}>Evidence current · Field evidence aligned</Typography>
+                </Box>
+                <Box sx={{ flexShrink: 0 }}>
+                  <Typography sx={{ fontSize: 10, fontWeight: 500, color: m3.onSurfaceVariant, mb: 1 }}>Verification</Typography>
+                  <StatusChip kind="verified" />
+                </Box>
+              </Box>
+            </Box>
+            <Box sx={{ borderTop: `1px solid ${PANEL_BORDER}`, px: space.related, py: space.related }}>
+              <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface, mb: space.tight }}>Evidence confirmed</Typography>
+              <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: space.tight, m: 0, p: 0, listStyle: 'none', mb: space.related }}>
+                {f.evidence.map(item => (
+                  <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: space.tight, fontSize: '0.75rem', color: m3.onSurface }} key={item}>
+                    <Box component="span" sx={{ color: m3.success, fontWeight: 650 }}>✓</Box>
+                    {item}
+                  </Stack>
+                ))}
+              </Box>
+              <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant, lineHeight: 1.6 }}>{f.impact}</Typography>
+            </Box>
+          </DashPaper>
+        ))}
+      </Box>
+    </MainPane>
   )
 }
 
@@ -2302,14 +2302,16 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   const wk3Pct = Math.round(wk3Supply / wk3Target * 100)
 
   return (
-    <Box sx={{ display: 'flex', height: '100%', gap: space.tight, overflow: 'hidden' }}>
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 6, py: 4, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
-        <Box>
+    <MainPane
+      header={
+        <>
           <SectionLabel>Active Procurement Plan</SectionLabel>
           <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Coverage-First · Week 3 Active</Typography>
-        </Box>
-        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>Monitoring active · 1 open alert</Typography>
+        </>
+      }
+      footer={
+        <Stack direction="row" spacing={2} sx={{ justifyContent: 'center', flexWrap: 'wrap' }}>
           <SecondaryBtn onClick={() => document.getElementById('active-farm-mix')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>View full plan</SecondaryBtn>
           <Button
             onClick={() => onNavigate('alert')}
@@ -2319,105 +2321,102 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           >
             1 monitoring alert
           </Button>
-        </Box>
-      </Box>
-
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6 }}>
-        <Box>
-          {/* Week 3 status card */}
-          <DashPaper sx={{ p: space.section, mb: space.section }}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
-              <Box>
-                <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>Week 3 Position</Typography>
-                <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: 'text.primary' }}>{wk3Supply.toLocaleString()} <Box component="span" sx={{ color: 'text.secondary', fontSize: '1.25rem' }}>/ {wk3Target.toLocaleString()} t</Box></Typography>
-              </Box>
-              <Box sx={{ textAlign: 'right' }}>
-                <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: m3.success }}>{wk3Pct}%</Typography>
-                <StatusChip kind="constraint-pass" />
-              </Box>
-            </Box>
-            <Box sx={{ height: 8, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px`, overflow: 'hidden' }}>
-              <Box sx={{ height: '100%', borderRadius: `${shape.xs}px`, bgcolor: m3.success, width: `${wk3Pct}%` }} />
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: space.tight }}>
-              <Box component="span" sx={{ fontSize: 10, color: m3.onSurfaceVariant }}>0%</Box>
-              <Box component="span" sx={{ fontSize: 10, color: m3.success, fontWeight: 650 }}>95% threshold · {(0.95 * wk3Target).toLocaleString()} t</Box>
-              <Box component="span" sx={{ fontSize: 10, color: m3.onSurfaceVariant }}>100%</Box>
-            </Box>
-          </DashPaper>
-
-          {/* Stats row */}
-          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderTop: 1, borderBottom: 1, borderColor: 'divider', py: 4, mb: 6 }}>
-            {[
-              { label: 'High-confidence supply', value: '83%' },
-              { label: 'Farms in plan', value: '8' },
-              { label: 'Max district concentration', value: '36%' },
-              { label: 'Monitoring status', value: 'Active' },
-            ].map(({ label, value }) => (
-              <Box sx={{ px: 4, borderRight: 1, borderColor: 'divider' }} key={label}>
-                <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 1 }}>{label}</Typography>
-                <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: 'text.primary' }}>{value}</Typography>
-              </Box>
-            ))}
+        </Stack>
+      }
+      map={
+        <MapPane
+          variant="plan"
+          farmRoles={{
+            mach: 'selected', reddy: 'selected', bhim: 'selected', tanuku: 'selected',
+            godavari: 'selected', narsapur: 'committed', palakol: 'selected', avanigadda: 'selected',
+            kv: 'other', eluru: 'other', guntur: 'other', kovvur: 'other', raj: 'other',
+          }}
+          legend={[
+            { role: 'selected', label: 'In plan' },
+            { role: 'committed', label: 'At risk' },
+            { role: 'other', label: 'Not in plan' },
+          ]}
+          footer={
+            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+              Active plan geographic distribution
+            </Typography>
+          }
+        />
+      }
+    >
+      {/* Week 3 status card */}
+      <DashPaper sx={{ p: space.section, mb: space.section }}>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
+          <Box>
+            <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: 1 }}>Week 3 Position</Typography>
+            <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: 'text.primary' }}>{wk3Supply.toLocaleString()} <Box component="span" sx={{ color: 'text.secondary', fontSize: '1.25rem' }}>/ {wk3Target.toLocaleString()} t</Box></Typography>
           </Box>
-
-          {/* Farm table */}
-          <Box sx={{ mb: 6 }} id="active-farm-mix">
-            <SectionLabel>Active farm mix · Week 3</SectionLabel>
-            <TableContainer component={Paper} elevation={0}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Farm</TableCell>
-                    <TableCell>District</TableCell>
-                    <TableCell align="right">Supply</TableCell>
-                    <TableCell>Confidence</TableCell>
-                    <TableCell>Status</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {planFarms.map(f => (
-                    <TableRow key={f.name} hover>
-                      <TableCell sx={{ fontWeight: 500, color: 'text.primary' }}>{f.name}</TableCell>
-                      <TableCell sx={{ color: 'text.secondary' }}>{f.district}</TableCell>
-                      <TableCell align="right" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 650, color: 'text.primary' }}>{f.supply} t</TableCell>
-                      <TableCell>
-                        <ConfBadge level={f.conf} />
-                        <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', mt: space.xs }}>
-                          {f.conf === 'HIGH' ? 'Evidence current' : 'Evidence incomplete'}
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ fontWeight: 500, color: f.status === 'At risk' ? 'warning.dark' : f.status.includes('Verified') ? 'success.dark' : 'text.secondary' }}>
-                        {f.status}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+          <Box sx={{ textAlign: 'right' }}>
+            <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: m3.success }}>{wk3Pct}%</Typography>
+            <StatusChip kind="constraint-pass" />
           </Box>
         </Box>
+        <Box sx={{ height: 8, bgcolor: m3.surfaceContainerHighest, borderRadius: `${shape.xs}px`, overflow: 'hidden' }}>
+          <Box sx={{ height: '100%', borderRadius: `${shape.xs}px`, bgcolor: m3.success, width: `${wk3Pct}%` }} />
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: space.tight }}>
+          <Box component="span" sx={{ fontSize: 10, color: m3.onSurfaceVariant }}>0%</Box>
+          <Box component="span" sx={{ fontSize: 10, color: m3.success, fontWeight: 650 }}>95% threshold · {(0.95 * wk3Target).toLocaleString()} t</Box>
+          <Box component="span" sx={{ fontSize: 10, color: m3.onSurfaceVariant }}>100%</Box>
+        </Box>
+      </DashPaper>
+
+      {/* Stats row */}
+      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderTop: 1, borderBottom: 1, borderColor: 'divider', py: 4, mb: 6 }}>
+        {[
+          { label: 'High-confidence supply', value: '83%' },
+          { label: 'Farms in plan', value: '8' },
+          { label: 'Max district concentration', value: '36%' },
+          { label: 'Monitoring status', value: 'Active' },
+        ].map(({ label, value }) => (
+          <Box sx={{ px: 4, borderRight: 1, borderColor: 'divider' }} key={label}>
+            <Typography sx={{ fontSize: 10, color: 'text.secondary', mb: 1 }}>{label}</Typography>
+            <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '1.125rem', fontWeight: 700, color: 'text.primary' }}>{value}</Typography>
+          </Box>
+        ))}
       </Box>
+
+      {/* Farm table */}
+      <Box sx={{ mb: 6 }} id="active-farm-mix">
+        <SectionLabel>Active farm mix · Week 3</SectionLabel>
+        <TableContainer component={Paper} elevation={0}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Farm</TableCell>
+                <TableCell>District</TableCell>
+                <TableCell align="right">Supply</TableCell>
+                <TableCell>Confidence</TableCell>
+                <TableCell>Status</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {planFarms.map(f => (
+                <TableRow key={f.name} hover>
+                  <TableCell sx={{ fontWeight: 500, color: 'text.primary' }}>{f.name}</TableCell>
+                  <TableCell sx={{ color: 'text.secondary' }}>{f.district}</TableCell>
+                  <TableCell align="right" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 650, color: 'text.primary' }}>{f.supply} t</TableCell>
+                  <TableCell>
+                    <ConfBadge level={f.conf} />
+                    <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', mt: space.xs }}>
+                      {f.conf === 'HIGH' ? 'Evidence current' : 'Evidence incomplete'}
+                    </Typography>
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 500, color: f.status === 'At risk' ? 'warning.dark' : f.status.includes('Verified') ? 'success.dark' : 'text.secondary' }}>
+                    {f.status}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
-      <MapPane
-        variant="plan"
-        farmRoles={{
-          mach: 'selected', reddy: 'selected', bhim: 'selected', tanuku: 'selected',
-          godavari: 'selected', narsapur: 'committed', palakol: 'selected', avanigadda: 'selected',
-          kv: 'other', eluru: 'other', guntur: 'other', kovvur: 'other', raj: 'other',
-        }}
-        legend={[
-          { role: 'selected', label: 'In plan' },
-          { role: 'committed', label: 'At risk' },
-          { role: 'other', label: 'Not in plan' },
-        ]}
-        footer={
-          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-            Active plan geographic distribution
-          </Typography>
-        }
-      />
-    </Box>
+    </MainPane>
   )
 }
 
@@ -2446,67 +2445,94 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   if (recovering) {
     return (
-      <Box sx={{ display: 'flex', height: '100%', gap: space.tight, overflow: 'hidden' }}>
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
-        <Box sx={{ borderBottom: 1, px: 6, py: 4, flexShrink: 0 }}>
-          <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'success.dark', mb: 1 }}>Recovery accepted · Monitoring resumed</Typography>
-          <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Rajahmundry Block added to recovery plan</Typography>
-          <Typography sx={{ fontSize: '0.75rem', mt: 1 }}>Week 3 coverage restored to 95%. The monitoring exception is resolved.</Typography>
-        </Box>
-        <Box sx={{ flex: 1, overflowY: 'auto', p: 6 }}>
-          <Box sx={{ maxWidth: 768, display: 'flex', flexDirection: 'column' }}>
+      <MainPane
+        header={
+          <>
+            <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: 'success.dark' }}>Recovery accepted · Monitoring resumed</Typography>
+            <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'text.primary' }}>Rajahmundry Block added to recovery plan</Typography>
+            <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>Week 3 coverage restored to 95%. The monitoring exception is resolved.</Typography>
+          </>
+        }
+        footer={
+          <PrimaryBtn onClick={() => onNavigate('plan')}>Return to active plan →</PrimaryBtn>
+        }
+        map={
+          <MapPane
+            variant="recovery"
+            farmRoles={recoveryRoles}
+            legend={recoveryLegend}
+            activeId={mapFocusId}
+            expanded={mapExpanded}
+            onExpandedChange={setMapExpanded}
+            footer={
+              <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+                Recovery geography · coverage restored
+              </Typography>
+            }
+          />
+        }
+      >
+        <Box sx={{ maxWidth: 768 }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
             <Box>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, mb: 2 }}>Recovery complete</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mb: 1 }}>Rajahmundry Block added to recovery plan.</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mb: 1 }}>Week 3 coverage restored to 95%.</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: 'text.primary' }}>Field verification for Rajahmundry Block has been assigned to Ravi.</Typography>
-                </Box>
-                <Box sx={{ textAlign: 'right' }}>
-                  <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: 'success.dark' }}>1,140 t</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>95% · threshold restored</Typography>
-                </Box>
-              </Box>
-              <Box>
-                <PrimaryBtn onClick={() => onNavigate('plan')}>Return to active plan →</PrimaryBtn>
-              </Box>
+              <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, mb: 2 }}>Recovery complete</Typography>
+              <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mb: 1 }}>Rajahmundry Block added to recovery plan.</Typography>
+              <Typography sx={{ fontSize: '0.75rem', color: 'text.primary', mb: 1 }}>Week 3 coverage restored to 95%.</Typography>
+              <Typography sx={{ fontSize: '0.75rem', color: 'text.primary' }}>Field verification for Rajahmundry Block has been assigned to Ravi.</Typography>
+            </Box>
+            <Box sx={{ textAlign: 'right' }}>
+              <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: 'success.dark' }}>1,140 t</Typography>
+              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>95% · threshold restored</Typography>
             </Box>
           </Box>
         </Box>
-      </Box>
-      <MapPane
-        variant="recovery"
-        farmRoles={recoveryRoles}
-        legend={recoveryLegend}
-        activeId={mapFocusId}
-        expanded={mapExpanded}
-        onExpandedChange={setMapExpanded}
-        footer={
-          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-            Recovery geography · coverage restored
-          </Typography>
-        }
-      />
-    </Box>
+      </MainPane>
     )
   }
 
   return (
-    <Box sx={{ display: 'flex', height: '100%', gap: space.tight, overflow: 'hidden' }}>
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, ...shellChrome, bgcolor: m3.surfaceContainerLowest }}>
-      <Box sx={{ flexShrink: 0, px: space.section, py: space.related, bgcolor: m3.errorContainer, color: m3.onErrorContainer, borderBottom: `3px solid ${m3.error}` }}>
-        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 2 }}>
-          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m3.error }} />
-          <Typography variant="overline" sx={{ color: m3.onErrorContainer }}>Severity · Week 3 below 95% threshold</Typography>
+    <>
+    <MainPane
+      headerSx={{
+        bgcolor: m3.errorContainer,
+        color: m3.onErrorContainer,
+        borderBottom: `3px solid ${m3.error}`,
+      }}
+      header={
+        <>
+          <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'center' }}>
+            <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m3.error }} />
+            <Typography variant="overline" sx={{ color: m3.onErrorContainer }}>Severity · Week 3 below 95% threshold</Typography>
+          </Stack>
+          <Typography variant="h2" sx={{ color: m3.onErrorContainer }}>Godavari Combined Block — supply revised</Typography>
+          <Typography variant="body2" sx={{ color: m3.onErrorContainer, fontWeight: 600 }}>
+            Cause: new satellite NDVI · Impact: −120 t · Recovery required
+          </Typography>
+        </>
+      }
+      footer={
+        <Stack direction="row" spacing={2} sx={{ justifyContent: 'center', flexWrap: 'wrap' }}>
+          <PrimaryBtn onClick={() => setRecovering(true)}>Add to recovery plan</PrimaryBtn>
+          <SecondaryBtn onClick={() => onNavigate('compare')}>Compare alternatives</SecondaryBtn>
+          <SecondaryBtn onClick={() => onNavigate('scenarios')}>Reopen scenario planning</SecondaryBtn>
         </Stack>
-        <Typography variant="h2" sx={{ color: m3.onErrorContainer }}>Godavari Combined Block — supply revised</Typography>
-        <Typography variant="body2" sx={{ mt: 1, color: m3.onErrorContainer, fontWeight: 600 }}>
-          Cause: new satellite NDVI · Impact: −120 t · Recovery required
-        </Typography>
-      </Box>
-
-      <Box sx={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', p: 6 }}>
+      }
+      map={
+        <MapPane
+          variant="recovery"
+          farmRoles={recoveryRoles}
+          legend={recoveryLegend}
+          activeId={mapFocusId}
+          expanded={mapExpanded}
+          onExpandedChange={setMapExpanded}
+          footer={
+            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+              Exception geography · recovery candidates
+            </Typography>
+          }
+        />
+      }
+    >
         <Box sx={{ maxWidth: 768, display: 'flex', flexDirection: 'column' }}>
           {/* What changed */}
           <Box sx={{ borderBottom: 1, borderColor: 'divider', pb: 4 }}>
@@ -2634,50 +2660,11 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </Typography>
               </Box>
 
-              {/* Actions */}
-              {!recovering ? (
-                <Box sx={{ display: 'flex', gap: 4 }}>
-                  <PrimaryBtn onClick={() => setRecovering(true)} sx={{ flex: 1 }}>
-                    Add to recovery plan
-                  </PrimaryBtn>
-                  <SecondaryBtn onClick={() => onNavigate('compare')} sx={{ flex: 1 }}>Compare alternatives</SecondaryBtn>
-                  <SecondaryBtn onClick={() => onNavigate('scenarios')} sx={{ flex: 1 }}>
-                    Reopen scenario planning
-                  </SecondaryBtn>
-                </Box>
-              ) : (
-                <DashPaper sx={{ p: space.related, bgcolor: CARD_SELECTION_BG, color: m3.onSurface }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                    <Box sx={{ borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <svg style={{ width: 16, height: 16, color: m3.success }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    </Box>
-                    <Typography sx={{ fontSize: '0.875rem', fontWeight: 650, color: m3.onSurface }}>Rajahmundry Block added to recovery plan</Typography>
-                  </Box>
-                  <Typography sx={{ fontSize: '0.75rem', color: m3.onSurfaceVariant, mb: 4 }}>Week 3 coverage restored to 95%. Field verification for Rajahmundry Block has been assigned to Ravi.</Typography>
-                  <PrimaryBtn onClick={() => onNavigate('plan')}>Return to active plan →</PrimaryBtn>
-                </DashPaper>
-              )}
             </Box>
           </DashPaper>
 
         </Box>
-      </Box>
-      </Box>
-      <MapPane
-        variant="recovery"
-        farmRoles={recoveryRoles}
-        legend={recoveryLegend}
-        activeId={mapFocusId}
-        expanded={mapExpanded}
-        onExpandedChange={setMapExpanded}
-        footer={
-          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-            Exception geography · recovery candidates
-          </Typography>
-        }
-      />
+    </MainPane>
       {evidenceOpen && <EvidenceModal farmId="godavari" recovery onClose={() => setEvidenceOpen(false)} />}
       {inspectedFarm && (
         <FarmDecisionPanel
@@ -2690,7 +2677,7 @@ function AlertScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           }}
         />
       )}
-    </Box>
+    </>
   )
 }
 
