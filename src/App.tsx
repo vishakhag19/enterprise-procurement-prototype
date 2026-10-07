@@ -2827,10 +2827,8 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
           </ListItemAvatar>
           <ListItemText
             primary="Shrikant"
-            secondary="Procurement Mgr · AP Region"
             slotProps={{
               primary: { variant: 'body1', sx: { fontWeight: 650, color: m3.onSurface } },
-              secondary: { variant: 'caption', sx: { color: m3.onSurfaceVariant } },
             }}
           />
         </ListItem>
