@@ -361,10 +361,10 @@ function RegionMap({
 type LegendItem = { role: FarmRole; label: string }
 
 const DOT_STYLE: Record<FarmRole, React.CSSProperties> = {
-  selected: { background: m3.primary, border: `2px solid ${m3.primary}`, boxShadow: `0 0 0 3px ${m3.primaryContainer}` },
+  selected: { background: m3.primary, border: `2px solid ${m3.primary}`, boxShadow: `0 0 0 3px ${alpha(m3.primary, 0.1)}` },
   committed: { background: m3.primary, border: `2px solid ${m3.primary}` },
   'needs-verification': { background: m3.surfaceContainerLowest, border: `2px dashed ${m3.warning}` },
-  recommended: { background: m3.surfaceContainerLowest, border: `2px solid ${m3.primary}` },
+  recommended: { background: m3.surfaceContainerLowest, border: `2px solid ${alpha(m3.primary, 0.35)}` },
   other: { background: semantic.mapOtherFill, border: `1px solid ${semantic.mapOther}` },
   alert: { background: m3.error, border: `2px solid ${m3.error}` },
 }
@@ -702,17 +702,17 @@ function EvidenceModal({ farmId, onClose, recovery = false }: { farmId: string; 
             elevation={0}
             sx={{
               p: space.related,
-              bgcolor: recovery ? m3.errorContainer : m3.primaryContainer,
-              color: recovery ? m3.onErrorContainer : m3.onPrimaryContainer,
+              bgcolor: recovery ? m3.errorContainer : alpha(m3.primary, 0.1),
+              color: recovery ? m3.onErrorContainer : m3.onSurface,
             }}
           >
             <Typography
               variant="overline"
-              sx={{ display: 'block', mb: 1, color: recovery ? m3.onErrorContainer : m3.onPrimaryContainer }}
+              sx={{ display: 'block', mb: 1, color: recovery ? m3.onErrorContainer : m3.primaryInk }}
             >
               Procurement interpretation
             </Typography>
-            <Typography variant="body2" sx={{ color: recovery ? m3.onErrorContainer : m3.onPrimaryContainer }}>
+            <Typography variant="body2" sx={{ color: recovery ? m3.onErrorContainer : m3.onSurface }}>
               {recovery
                 ? 'Vegetation decline and cloud-corrected canopy analysis indicate lower standing stock. Expected supply was revised from 200 t to 80 t.'
                 : `${farm.evidence}. The ${farm.confidence} confidence state summarizes evidence strength, recency, and agreement.`}
@@ -815,15 +815,15 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           <Box>
             <SectionLabel>Needs a decision</SectionLabel>
             <Stack spacing={0} sx={{ ...panelSurface, overflow: 'hidden' }}>
-              <Box sx={{ p: space.related, bgcolor: m3.primaryContainer, color: m3.onPrimaryContainer }}>
+              <Box sx={{ p: space.related, bgcolor: alpha(m3.primary, 0.1), color: m3.onSurface }}>
                 <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 4, alignItems: 'flex-start' }}>
                   <Box>
                     <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 1 }}>
                       <StatusChip kind="primary-issue" />
-                      <Typography variant="caption" sx={{ color: m3.onPrimaryContainer }}>Closes via GIS investigation</Typography>
+                      <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>Closes via GIS investigation</Typography>
                     </Stack>
-                    <Typography variant="subtitle1" sx={{ color: m3.onPrimaryContainer }}>Week 3 supply gap: 620 t</Typography>
-                    <Typography variant="body2" sx={{ mt: 1, color: m3.onPrimaryContainer }}>
+                    <Typography variant="subtitle1" sx={{ color: m3.onSurface }}>Week 3 supply gap: 620 t</Typography>
+                    <Typography variant="body2" sx={{ mt: 1, color: m3.onSurfaceVariant }}>
                       Candidate farms identified on the Week 3 map. Resolve before committing the coverage strategy.
                     </Typography>
                   </Box>
@@ -970,9 +970,9 @@ function FarmCard({
   onHover: (id: string | null) => void
 }) {
   const isHovered = hoverId === farm.id
-  // Distinct washes: hover ~5%, selected ~10%, selected+hover ~14%
+  // Highlight washes stay at ≤10% accent; hover alone is subtler
   const cardBg = inComparison
-    ? alpha(m3.primary, isHovered ? 0.14 : 0.1)
+    ? alpha(m3.primary, 0.1)
     : isHovered
       ? alpha(m3.primary, 0.05)
       : 'background.paper'
@@ -984,9 +984,7 @@ function FarmCard({
         cursor: 'pointer',
         transition: 'background-color 0.15s, border-color 0.15s',
         bgcolor: cardBg,
-        border: inComparison
-          ? `1px solid ${alpha(m3.primary, 0.35)}`
-          : `1px solid ${PANEL_BORDER}`,
+        border: `1px solid ${PANEL_BORDER}`,
       }}
     >
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: space.tight }}>
@@ -1576,13 +1574,11 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       p: 0,
                       cursor: 'pointer',
                       overflow: 'hidden',
-                      // 10% accent wash when selected
+                      // Selection highlight = 10% accent wash (no bright accent border)
                       bgcolor: isSelected ? alpha(m3.primary, 0.1) : m3.surfaceContainerLowest,
-                      border: isSelected
-                        ? `2px solid ${m3.primary}`
-                        : failCount > 0
-                          ? `2px solid ${m3.error}`
-                          : `1px solid ${PANEL_BORDER}`,
+                      border: failCount > 0 && !isSelected
+                        ? `2px solid ${m3.error}`
+                        : `1px solid ${PANEL_BORDER}`,
                     }}
                   >
                     {/* Header */}
@@ -1957,7 +1953,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <DashPaper sx={{ width: '100%', maxWidth: 410, overflow: 'hidden', boxShadow: 1, p: 0 }}>
         <Box sx={{ bgcolor: 'background.paper', overflow: 'hidden' }}>
           {/* Dark top bar — inverse roles only (never light-theme text.* on inverse) */}
-          <Box sx={{ color: m3.inverseOnSurface, px: 4, pt: 4, pb: 4, bgcolor: m3.inverseSurface, borderTop: `3px solid ${m3.primary}` }}>
+          <Box sx={{ color: m3.inverseOnSurface, px: 4, pt: 4, pb: 4, bgcolor: m3.inverseSurface, borderTop: `3px solid ${alpha(m3.primary, 0.35)}` }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box>
               <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.inverseOnSurface, opacity: 0.8, mb: 1 }}>
@@ -2044,7 +2040,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: space.tight, m: 0, p: 0, listStyle: 'none' }}>
                   {farm.verifyItems.map(item => (
                     <Stack component="li" direction="row" sx={{ display: 'flex', alignItems: 'center', gap: space.tight, fontSize: '0.75rem', color: 'text.primary' }} key={item}>
-                      <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: m3.primary, flexShrink: 0 }} />
+                      <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: m3.primaryInk, flexShrink: 0 }} />
                       {item}
                     </Stack>
                   ))}

@@ -75,7 +75,7 @@ export const theme = createTheme({
     divider: PANEL_BORDER,
     action: {
       hover: alpha(m3.onSurface, 0.08),
-      selected: alpha(m3.primary, 0.12),
+      selected: alpha(m3.primary, 0.1),
       disabled: alpha(m3.onSurface, 0.38),
       disabledBackground: alpha(m3.onSurface, 0.12),
       focus: alpha(m3.onSurface, 0.12),
@@ -163,7 +163,7 @@ export const theme = createTheme({
           color: m3.primaryInk,
           '&:hover': {
             borderColor: m3.primaryInk,
-            backgroundColor: alpha(m3.primary, 0.12),
+            backgroundColor: alpha(m3.primary, 0.1),
           },
         },
         text: {
@@ -260,7 +260,7 @@ export const theme = createTheme({
           '&.Mui-selected': {
             backgroundColor: alpha(m3.primary, 0.1),
             color: m3.onSurface,
-            '&:hover': { backgroundColor: alpha(m3.primary, 0.14) },
+            '&:hover': { backgroundColor: alpha(m3.primary, 0.1) },
             '& .MuiListItemIcon-root': { color: m3.primaryInk },
             '& .MuiListItemText-primary': { color: m3.onSurface, fontWeight: 700 },
           },

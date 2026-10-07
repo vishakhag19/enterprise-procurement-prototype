@@ -12,14 +12,16 @@ export const m3 = {
    * controls. Do not use as small body text on white; use `primaryInk`.
    */
   primary: ACCENT,
-  /** White label/icon on solid accent fills */
+  /** White label/icon on solid accent fills (buttons, avatar, controls) */
   onPrimary: '#FFFFFF',
-  primaryContainer: '#9EF2F1',
-  onPrimaryContainer: '#002020',
   /**
-   * ~10% accent wash on white — selected/hover cards and soft chrome.
-   * Prefer `alpha(m3.primary, 0.1)` in sx when blending over other surfaces.
+   * Highlight / soft accent surface — ~10% of brand accent on white.
+   * Use for selected cards, emphasized strips, and other highlight chrome.
+   * Solid `#0BAFAF` stays on interactive fills only (buttons, checks, etc.).
    */
+  primaryContainer: '#E6F7F7',
+  onPrimaryContainer: '#161D1D',
+  /** Alias of primaryContainer (10% accent wash) */
   primarySoft: '#E6F7F7',
   /**
    * AA-safe teal for small text / outlined labels on light surfaces.
@@ -217,7 +219,7 @@ export const STATUS_META: Record<
   'evidence-current': { label: 'Evidence current', fg: m3.success, bg: 'transparent', border: m3.success },
   'evidence-aging': { label: 'Evidence aging', fg: m3.warning, bg: 'transparent', border: m3.warning },
   'evidence-missing': { label: 'Evidence missing', fg: m3.error, bg: 'transparent', border: m3.error },
-  'candidate-strong': { label: 'Strong candidate', fg: m3.onPrimaryContainer, bg: m3.primaryContainer, border: 'transparent' },
+  'candidate-strong': { label: 'Strong candidate', fg: m3.primaryInk, bg: m3.primaryContainer, border: 'transparent' },
   'visit-required': { label: 'Field visit required', fg: m3.onTertiaryContainer, bg: m3.tertiaryContainer, border: 'transparent' },
   'concentration-risk': { label: 'Concentration risk', fg: m3.onErrorContainer, bg: m3.errorContainer, border: 'transparent' },
   'outside-harvest': { label: 'Outside harvest window', fg: m3.onSurfaceVariant, bg: m3.surfaceContainerHigh, border: 'transparent' },
