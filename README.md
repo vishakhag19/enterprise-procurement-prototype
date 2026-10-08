@@ -17,6 +17,20 @@ Production-style preview (after `pnpm build`):
 pnpm preview --host 0.0.0.0 --port 8443
 ```
 
+## Shareable deploy (GitHub Pages)
+
+This repo includes `.github/workflows/deploy-pages.yml`. After the project is on GitHub:
+
+1. In the repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**
+2. Push to a watched branch (or run the workflow manually)
+3. Share `https://<your-user>.github.io/<repo>/`
+
+Local production build with the Pages base path:
+
+```bash
+VITE_BASE=/<repo>/ npm run build
+```
+
 ## Stack
 
 Vite, React, TypeScript, and [Material UI](https://mui.com/material-ui/) for the full UI surface (`ThemeProvider`, layout primitives, Paper, Dialog, Drawer, Table, Slider, Chip, TextField, etc.).

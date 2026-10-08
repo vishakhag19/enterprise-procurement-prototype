@@ -6,6 +6,8 @@ import path from 'node:path'
 const port = Number(process.env.PORT || 8443)
 
 export default defineConfig({
+  // GitHub Pages project sites need /<repo>/; local/dev uses /
+  base: process.env.VITE_BASE || '/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
