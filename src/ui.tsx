@@ -8,7 +8,21 @@ import {
   Typography,
 } from '@mui/material'
 import { alpha } from '@mui/material/styles'
-import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3, meter, shellChrome, FONT_FAMILY, listRowDivider } from './designSystem'
+import {
+  STATUS_META,
+  StatusKind,
+  space,
+  INK,
+  PANEL_BORDER,
+  panelSurface,
+  shape,
+  m3,
+  meter,
+  shellChrome,
+  FONT_FAMILY,
+  listRowDivider,
+  typographyScale,
+} from './designSystem'
 
 /**
  * Shared control size - Primary / Secondary / Ghost must render identical 40dp.
@@ -183,20 +197,21 @@ export function EvidenceProvenance({
       {cells.map(({ label, value, valueColor }) => (
         <Box key={label} sx={{ minWidth: 0 }}>
           <Typography
+            variant="overline"
             sx={{
-              fontSize: 10,
-              fontWeight: 650,
-              color: m3.onSurfaceVariant,
-              textTransform: 'uppercase',
-              letterSpacing: '0.06em',
+              display: 'block',
               mb: space.xs,
+              color: m3.onSurfaceVariant,
+              letterSpacing: '0.06em',
             }}
           >
             {label}
           </Typography>
           <Typography
+            variant="caption"
             sx={{
-              fontSize: dense ? '0.6875rem' : '0.75rem',
+              display: 'block',
+              fontSize: dense ? typographyScale.overline.size : typographyScale.meta.size,
               fontWeight: 650,
               color: valueColor ?? m3.onSurface,
               fontVariantNumeric: 'tabular-nums',
@@ -227,8 +242,8 @@ export function EvidenceCueBar({
   return (
     <Box sx={{ minWidth: 0, flex: 1 }}>
       <Stack direction="row" sx={{ justifyContent: 'space-between', mb: space.xs, alignItems: 'baseline', gap: space.xs }}>
-        <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.onSurfaceVariant }}>{label}</Typography>
-        <Typography sx={{ fontSize: 10, fontWeight: 700, color: m3.onSurface, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+        <Typography variant="caption" sx={{ fontWeight: 650, color: m3.onSurfaceVariant }}>{label}</Typography>
+        <Typography variant="caption" sx={{ fontWeight: 700, color: m3.onSurface, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
           {valueLabel}
         </Typography>
       </Stack>
@@ -237,15 +252,80 @@ export function EvidenceCueBar({
   )
 }
 
-export function SectionLabel({ children }: { children: React.ReactNode }) {
+/** Pane / section eyebrow - sole overline role (replaces ad-hoc fontSize: 10 uppercase). */
+export function SectionLabel({
+  children,
+  sx,
+  gutter = true,
+}: {
+  children: React.ReactNode
+  sx?: object
+  /** When false, omit default bottom margin (inline stacks). */
+  gutter?: boolean
+}) {
   return (
     <Typography
       variant="overline"
       component="p"
       sx={{
         display: 'block',
-        mb: space.tight,
+        mb: gutter ? space.tight : 0,
         color: m3.onSurfaceVariant,
+        ...sx,
+      }}
+    >
+      {children}
+    </Typography>
+  )
+}
+
+/**
+ * MainPane title - sole title role across every tab.
+ * Uses typographyScale.title (not ad-hoc h1/h2 fontSize overrides).
+ */
+export function PaneTitle({
+  children,
+  sx,
+}: {
+  children: React.ReactNode
+  sx?: object
+}) {
+  const t = typographyScale.title
+  return (
+    <Typography
+      variant="h3"
+      component="h2"
+      sx={{
+        fontFamily: FONT_FAMILY,
+        fontSize: t.size,
+        fontWeight: t.weight,
+        letterSpacing: t.tracking,
+        lineHeight: t.line,
+        color: m3.onSurface,
+        ...sx,
+      }}
+    >
+      {children}
+    </Typography>
+  )
+}
+
+/** Dense meta caption under controls / KPI cells - typographyScale.meta via caption. */
+export function MetaCaption({
+  children,
+  sx,
+}: {
+  children: React.ReactNode
+  sx?: object
+}) {
+  return (
+    <Typography
+      variant="caption"
+      sx={{
+        display: 'block',
+        fontWeight: 650,
+        color: m3.onSurfaceVariant,
+        ...sx,
       }}
     >
       {children}
@@ -504,11 +584,11 @@ export function DashKpiStrip({ items }: { items: DashKpi[] }) {
           <Typography
             sx={{
               fontVariantNumeric: 'tabular-nums',
-              fontSize: '1.75rem',
-              fontWeight: 700,
-              letterSpacing: '-0.02em',
+              fontSize: typographyScale.dataLg.size,
+              fontWeight: typographyScale.dataLg.weight,
+              letterSpacing: typographyScale.dataLg.tracking,
               color: kpi.danger ? m3.error : INK,
-              lineHeight: 1.1,
+              lineHeight: typographyScale.dataLg.line,
             }}
           >
             {kpi.value}
@@ -806,10 +886,10 @@ export function FieldSyncStrip({
           boxShadow: state === 'syncing' ? `0 0 0 3px ${alpha(m3.warning, 0.28)}` : 'none',
         }}
       />
-      <Typography sx={{ fontSize: 11, fontWeight: 700, color: meta.color, letterSpacing: '0.02em' }}>
+      <Typography variant="caption" sx={{ fontWeight: 700, color: meta.color, letterSpacing: '0.02em' }}>
         {meta.label}
       </Typography>
-      <Typography sx={{ fontSize: 11, fontWeight: 500, color: m3.onSurfaceVariant }}>
+      <Typography variant="caption" sx={{ fontWeight: 500, color: m3.onSurfaceVariant }}>
         · {meta.detail}
       </Typography>
     </Box>

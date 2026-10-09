@@ -12,6 +12,7 @@ import {
   FONT_FAMILY,
   PANEL_BORDER,
   STRATEGY_VISUAL,
+  CARD_HOVER_BG,
   CARD_SELECTION_BG,
   listRowDivider,
   m3,
@@ -169,6 +170,8 @@ function ParcelDemo({
 const NAV = [
   { id: 'type', label: 'Typography' },
   { id: 'space', label: 'Spacing' },
+  { id: 'shape', label: 'Shape' },
+  { id: 'cards', label: 'Cards' },
   { id: 'color', label: 'Semantic color' },
   { id: 'confidence', label: 'Confidence' },
   { id: 'evidence', label: 'Evidence' },
@@ -186,7 +189,15 @@ export function DesignSystemDoc() {
   const [note, setNote] = useState('Standing stock confirmed at edge rows.')
 
   const confidenceKinds: StatusKind[] = ['confidence-high', 'confidence-medium', 'confidence-low']
-  const evidenceKinds: StatusKind[] = ['evidence-current', 'evidence-aging', 'evidence-missing', 'verified', 'visit-required']
+  const evidenceKinds: StatusKind[] = [
+    'evidence-current',
+    'evidence-aging',
+    'evidence-missing',
+    'verified',
+    'visit-required',
+    'candidate-strong',
+    'outside-harvest',
+  ]
   const constraintKinds: StatusKind[] = ['constraint-pass', 'constraint-fail', 'primary-issue', 'concentration-risk']
 
   return (
@@ -340,6 +351,69 @@ export function DesignSystemDoc() {
                     {s.units * 4}dp
                   </Typography>
                   <Box sx={{ height: s.units * 4, bgcolor: m3.primaryContainer, borderRadius: `${shape.xs}px` }} />
+                </DashPaper>
+              ))}
+            </Box>
+          </DocSection>
+
+          <DocSection id="shape" title="Shape">
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(3, 1fr)' },
+                gap: space.related,
+              }}
+            >
+              {(
+                [
+                  ['xs', shape.xs, 'Meters, swatches'],
+                  ['sm', shape.sm, 'Chips, embeds'],
+                  ['md', shape.md, 'Text fields'],
+                  ['lg', shape.lg, 'Cards, panels'],
+                  ['xl', shape.xl, 'Dialogs'],
+                  ['full', shape.full, 'Pills / nav'],
+                ] as const
+              ).map(([token, dp, use]) => (
+                <DashPaper key={token} sx={{ p: space.related }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                    shape.{token}
+                  </Typography>
+                  <Typography variant="caption" sx={{ display: 'block', color: m3.onSurfaceVariant, mb: space.tight }}>
+                    {dp}dp · {use}
+                  </Typography>
+                  <Box
+                    sx={{
+                      height: 40,
+                      bgcolor: m3.primaryContainer,
+                      borderRadius: token === 'full' ? `${shape.full}px` : `${dp}px`,
+                      border: `1px solid ${PANEL_BORDER}`,
+                    }}
+                  />
+                </DashPaper>
+              ))}
+            </Box>
+          </DocSection>
+
+          <DocSection id="cards" title="Cards">
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+                gap: space.related,
+              }}
+            >
+              {[
+                { label: 'Default', bg: m3.surfaceContainerLowest },
+                { label: 'Hover', bg: CARD_HOVER_BG },
+                { label: 'Selected', bg: CARD_SELECTION_BG },
+              ].map(card => (
+                <DashPaper key={card.label} sx={{ p: space.related, bgcolor: card.bg }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                    {card.label}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+                    Padding space.related (16dp)
+                  </Typography>
                 </DashPaper>
               ))}
             </Box>
