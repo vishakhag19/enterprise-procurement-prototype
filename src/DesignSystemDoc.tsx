@@ -200,14 +200,8 @@ export function DesignSystemDoc() {
           sx={{ justifyContent: 'space-between', alignItems: { md: 'center' }, maxWidth: 1100, mx: 'auto' }}
         >
           <Box>
-            <Typography variant="overline" sx={{ display: 'block', mb: space.xs }}>
-              Case-study artifact
-            </Typography>
             <Typography variant="h2" sx={{ fontSize: { xs: '1.35rem', md: '1.75rem' }, fontWeight: 700 }}>
-              ITC Procurement · Design System
-            </Typography>
-            <Typography variant="body2" sx={{ mt: space.xs, color: m3.onSurfaceVariant }}>
-              Tokens and components from the live prototype. Product screens are unchanged.
+              ITC Procurement Design System
             </Typography>
           </Box>
           <Stack direction="row" spacing={space.tight} sx={{ flexWrap: 'wrap' }}>
