@@ -2,7 +2,7 @@ name: Deploy GitHub Pages
 
 on:
   push:
-    branches: [main, master, cursor/mui-everywhere-e66b, cursor/procurement-workspace-e66b]
+    branches: [main, master]
   workflow_dispatch:
 
 permissions:

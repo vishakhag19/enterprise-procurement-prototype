@@ -19,6 +19,11 @@ pnpm preview --host 0.0.0.0 --port 8443
 
 ## Shareable deploy (GitHub Pages)
 
+**Live site:** https://vishakhag19.github.io/enterprise-procurement-prototype/
+
+Repo: https://github.com/vishakhag19/enterprise-procurement-prototype
+
+
 This repo includes `.github/workflows/deploy-pages.yml`. After the project is on GitHub:
 
 1. In the repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**
