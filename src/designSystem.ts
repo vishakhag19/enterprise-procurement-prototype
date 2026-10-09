@@ -5,6 +5,9 @@
 
 export const ACCENT = '#0BAFAF'
 
+/** Sole UI typeface - no system / Inter / Roboto fallbacks in product surfaces */
+export const FONT_FAMILY = '"Manrope"'
+
 /** M3 tonal palette from accent seed #0BAFAF */
 export const m3 = {
   /**

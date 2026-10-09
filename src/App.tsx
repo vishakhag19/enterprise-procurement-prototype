@@ -70,7 +70,7 @@ import {
 } from './ui'
 import type { EvidenceSyncState } from './ui'
 import type { StatusKind, StrategyKey } from './designSystem'
-import { CARD_HOVER_BG, CARD_SELECTION_BG, INK, INK_MUTED, PAPER, PANEL_BORDER, panelSurface, shellChrome, shape, STRATEGY_VISUAL } from './designSystem'
+import { CARD_HOVER_BG, CARD_SELECTION_BG, FONT_FAMILY, INK, INK_MUTED, PAPER, PANEL_BORDER, panelSurface, shellChrome, shape, STRATEGY_VISUAL } from './designSystem'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 'field' | 'findings' | 'plan' | 'alert'
@@ -357,20 +357,23 @@ function RegionMap({
     recovery: '150 20 190 150',
     default: '0 0 360 260',
   }[variant]
-  const sizeStyle: React.CSSProperties = fullscreen
-    ? { width: '100%', height: '100%', maxHeight: 'none', display: 'block' }
-    : {
-        coverage: expanded
-          ? { width: 'calc(100% + 2rem)', marginInline: '-1rem', height: '100%', minHeight: 288, maxHeight: 'none', display: 'block' }
-          : { width: '100%', maxHeight: 224, display: 'block' },
-        investigation: { width: '100%', height: '100%', maxHeight: 'none', display: 'block' },
-        scenario: { width: '100%', height: 208, maxHeight: 208, display: 'block' },
-        plan: { width: '100%', height: 192, maxHeight: 192, display: 'block' },
-        recovery: { width: '100%', height: 208, maxHeight: 208, display: 'block' },
-        default: compact
-          ? { width: '100%', maxHeight: 144, display: 'block' }
-          : { width: '100%', maxHeight: 224, display: 'block' },
-      }[variant]
+  const sizeStyle: React.CSSProperties = {
+    fontFamily: FONT_FAMILY,
+    ...(fullscreen
+      ? { width: '100%', height: '100%', maxHeight: 'none', display: 'block' }
+      : {
+          coverage: expanded
+            ? { width: 'calc(100% + 2rem)', marginInline: '-1rem', height: '100%', minHeight: 288, maxHeight: 'none', display: 'block' }
+            : { width: '100%', maxHeight: 224, display: 'block' },
+          investigation: { width: '100%', height: '100%', maxHeight: 'none', display: 'block' },
+          scenario: { width: '100%', height: 208, maxHeight: 208, display: 'block' },
+          plan: { width: '100%', height: 192, maxHeight: 192, display: 'block' },
+          recovery: { width: '100%', height: 208, maxHeight: 208, display: 'block' },
+          default: compact
+            ? { width: '100%', maxHeight: 144, display: 'block' }
+            : { width: '100%', maxHeight: 224, display: 'block' },
+        }[variant]),
+  }
   const attributionPosition = {
     coverage: { x: 108, y: 244 },
     investigation: { x: 130, y: 240 },
@@ -802,7 +805,7 @@ function FarmDecisionPanel({
 
 function SatelliteThumbnail({ degraded = false }: { degraded?: boolean }) {
   return (
-    <svg viewBox="0 0 180 96" style={{ width: '100%', height: 96, borderRadius: shape.lg, border: `1px solid ${PANEL_BORDER}` }} role="img" aria-label={degraded ? 'Current satellite field condition' : 'Previous satellite field condition'}>
+    <svg viewBox="0 0 180 96" style={{ width: '100%', height: 96, borderRadius: shape.lg, border: `1px solid ${PANEL_BORDER}`, fontFamily: FONT_FAMILY }} role="img" aria-label={degraded ? 'Current satellite field condition' : 'Previous satellite field condition'}>
       <rect width="180" height="96" fill="#d8d7c7" />
       <path d="M0 0 H70 L61 43 L0 37 Z" fill={degraded ? '#a9a77e' : '#718b55'} />
       <path d="M73 0 H132 L126 42 L64 42 Z" fill={degraded ? '#b3ad75' : '#809a5c'} />
@@ -2235,7 +2238,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                               bgcolor: m3.surfaceContainerLowest,
                               color: f.includes('✶') ? m3.primaryInk : m3.onSurface,
                               border: f.includes('✶') ? `1px solid ${m3.primaryInk}` : `1px solid ${m3.outlineVariant}`,
-                              fontFamily: '"Manrope", system-ui, sans-serif',
+                              fontFamily: FONT_FAMILY,
                               fontWeight: 600,
                               borderRadius: `${shape.sm}px`,
                               height: 28,
@@ -2513,7 +2516,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: space.related }}>{farm.location}</Typography>
 
                 <Box sx={{ bgcolor: m3.surfaceContainerHigh, borderRadius: `${shape.md}px`, border: `1px solid ${PANEL_BORDER}`, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center', mb: space.tight, overflow: 'hidden', position: 'relative' }}>
-                  <svg viewBox="0 0 200 120" style={{ width: '100%', height: '100%' }}>
+                  <svg viewBox="0 0 200 120" style={{ width: '100%', height: '100%', fontFamily: FONT_FAMILY }}>
                     <rect width="200" height="120" fill="#e5e7eb" />
                     <g style={{ filter: 'grayscale(0.3) saturate(0.72)' }}>
                       {[0, 1, 2].flatMap(col =>

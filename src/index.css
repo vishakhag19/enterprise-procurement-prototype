@@ -8,9 +8,9 @@
   --md-sys-color-on-primary-container: #161D1D;
   --md-sys-color-primary-soft: #E6F7F7;
   --md-sys-color-primary-ink: #006A6A;
-  --md-sys-color-secondary: #4A6363;
-  --md-sys-color-secondary-container: #CCE8E7;
-  --md-sys-color-on-secondary-container: #051F1F;
+  --md-sys-color-secondary: #5B6B6B;
+  --md-sys-color-secondary-container: #DCE4E3;
+  --md-sys-color-on-secondary-container: #151D1D;
   --md-sys-color-surface: #F4FBFA;
   --md-sys-color-on-surface: #161D1D;
   --md-sys-color-on-surface-variant: #3F4948;
@@ -18,6 +18,7 @@
   --md-sys-color-surface-container-low: #EFF5F4;
   --md-sys-color-outline: #6F7978;
   --md-sys-color-outline-variant: #BEC9C8;
+  --font-family: "Manrope";
 }
 
 * { box-sizing: border-box; }
@@ -26,5 +27,15 @@ html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: "Manrope", system-ui, sans-serif;
+  font-family: "Manrope";
+}
+
+button, input, textarea, select, option {
+  font-family: "Manrope";
+}
+
+/* SVG map / diagram labels inherit browser defaults unless forced */
+svg text,
+svg tspan {
+  font-family: "Manrope";
 }

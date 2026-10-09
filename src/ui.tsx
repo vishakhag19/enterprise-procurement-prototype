@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material'
 import { alpha } from '@mui/material/styles'
-import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3, meter, shellChrome } from './designSystem'
+import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3, meter, shellChrome, FONT_FAMILY } from './designSystem'
 
 /**
  * Shared control size - Primary / Secondary / Ghost must render identical 40dp.
@@ -25,7 +25,7 @@ const btnBaseSx = {
   fontSize: '0.875rem',
   fontWeight: 600,
   lineHeight: '24px',
-  fontFamily: '"Manrope", system-ui, sans-serif',
+  fontFamily: FONT_FAMILY,
   borderStyle: 'solid',
   borderWidth: 1.5,
 } as const
@@ -119,7 +119,7 @@ export function StatusChip({ kind }: { kind: StatusKind }) {
         m: 0,
         height: 24,
         boxSizing: 'border-box',
-        fontFamily: '"Manrope", system-ui, sans-serif',
+        fontFamily: FONT_FAMILY,
         fontSize: 11,
         fontWeight: 600,
         letterSpacing: '0.02em',
