@@ -7,6 +7,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3, meter, shellChrome } from './designSystem'
 
 /** Shared control size - every Primary / Secondary / Ghost button matches */
@@ -149,8 +150,9 @@ export function EvidenceProvenance({
   sync?: EvidenceSyncState
   dense?: boolean
 }) {
-  const syncLabel = sync === 'synced' ? 'Synced' : sync === 'pending' ? 'Sync pending' : 'Offline'
-  const syncColor = sync === 'synced' ? m3.success : sync === 'pending' ? m3.warning : m3.error
+  // teal = confirmed sync · amber = pending/uncertainty · neutral = offline/inactive
+  const syncLabel = sync === 'synced' ? 'Synced' : sync === 'pending' ? 'Sync pending' : 'Offline · queued'
+  const syncColor = sync === 'synced' ? m3.primaryInk : sync === 'pending' ? m3.warning : m3.onSurfaceVariant
 
   const cells = [
     { label: 'Captured by', value: capturedBy },
@@ -541,7 +543,7 @@ export function WeekRail({
                 <Typography
                   variant="caption"
                   sx={{
-                    color: w.issue ? m3.error : w.delta >= 0 ? m3.success : m3.error,
+                    color: w.issue ? m3.error : w.delta >= 0 ? m3.primaryInk : m3.error,
                     fontWeight: 700,
                     fontVariantNumeric: 'tabular-nums',
                   }}
@@ -613,27 +615,134 @@ export function ThresholdControl({
 export function TradeoffBars({
   coverage,
   visits,
+  highConf,
+  district,
   maxVisits = 10,
+  emphasis = 'coverage',
 }: {
   coverage: number
   visits: number
+  highConf?: number
+  district?: number
   maxVisits?: number
+  /** Which metric the strategy optimizes - drives visual emphasis */
+  emphasis?: 'coverage' | 'confidence' | 'dispersion'
 }) {
+  const bars: Array<{
+    key: string
+    label: string
+    display: string
+    value: number
+    tone: MeterTone
+    markerPct?: number
+  }> = [
+    {
+      key: 'coverage',
+      label: 'Week 3 coverage',
+      display: `${coverage}%`,
+      value: coverage,
+      tone: emphasis === 'coverage' ? 'primary' : coverage < 95 ? 'danger' : 'muted',
+      markerPct: 95,
+    },
+    {
+      key: 'visits',
+      label: 'Verification load',
+      display: `${visits} visit${visits === 1 ? '' : 's'}`,
+      value: (visits / maxVisits) * 100,
+      tone: visits > 0 ? 'caution' : 'muted',
+    },
+  ]
+
+  if (highConf != null) {
+    bars.push({
+      key: 'confidence',
+      label: 'High-confidence supply',
+      display: `${highConf}%`,
+      value: highConf,
+      tone: emphasis === 'confidence' ? 'primary' : 'muted',
+    })
+  }
+
+  if (district != null) {
+    bars.push({
+      key: 'district',
+      label: 'Max district share',
+      display: `${district}%`,
+      // Lower concentration is better for dispersed - invert meter fill emphasis
+      value: district,
+      tone: emphasis === 'dispersion' ? 'primary' : district > 40 ? 'caution' : 'muted',
+      markerPct: emphasis === 'dispersion' ? 30 : undefined,
+    })
+  }
+
+  // Lead with the strategy's primary lever
+  const order =
+    emphasis === 'confidence'
+      ? ['confidence', 'coverage', 'visits', 'district']
+      : emphasis === 'dispersion'
+        ? ['district', 'coverage', 'visits', 'confidence']
+        : ['coverage', 'visits', 'confidence', 'district']
+  bars.sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key))
+
   return (
     <Stack spacing={space.related} sx={{ mt: 0 }}>
-      <PercentBar
-        label="Week 3 coverage"
-        display={`${coverage}%`}
-        value={coverage}
-        tone="primary"
-        markerPct={95}
-      />
-      <PercentBar
-        label="Verification load"
-        display={`${visits} visit${visits === 1 ? '' : 's'}`}
-        value={(visits / maxVisits) * 100}
-        tone="caution"
-      />
+      {bars.map(bar => (
+        <PercentBar
+          key={bar.key}
+          label={bar.label}
+          display={bar.display}
+          value={bar.value}
+          tone={bar.tone}
+          markerPct={bar.markerPct}
+        />
+      ))}
     </Stack>
+  )
+}
+
+/** Subtle connectivity strip for Ravi's mobile field flow */
+export function FieldSyncStrip({
+  state,
+}: {
+  state: 'online' | 'syncing' | 'offline'
+}) {
+  const meta =
+    state === 'online'
+      ? { label: 'Online', detail: 'Evidence syncs when confirmed', color: m3.primaryInk, bg: m3.primaryContainer }
+      : state === 'syncing'
+        ? { label: 'Syncing', detail: 'Uploading field evidence…', color: m3.warning, bg: m3.warningContainer }
+        : { label: 'Offline', detail: 'Changes queued on device', color: m3.onSurfaceVariant, bg: m3.surfaceContainerHigh }
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: space.tight,
+        px: space.related,
+        py: 1.5,
+        bgcolor: meta.bg,
+        borderBottom: `1px solid ${PANEL_BORDER}`,
+      }}
+      aria-live="polite"
+      aria-label={`Connection ${meta.label}`}
+    >
+      <Box
+        sx={{
+          width: 7,
+          height: 7,
+          borderRadius: '50%',
+          bgcolor: meta.color,
+          flexShrink: 0,
+          boxShadow: state === 'syncing' ? `0 0 0 3px ${alpha(m3.warning, 0.28)}` : 'none',
+        }}
+      />
+      <Typography sx={{ fontSize: 11, fontWeight: 700, color: meta.color, letterSpacing: '0.02em' }}>
+        {meta.label}
+      </Typography>
+      <Typography sx={{ fontSize: 11, fontWeight: 500, color: m3.onSurfaceVariant }}>
+        · {meta.detail}
+      </Typography>
+    </Box>
   )
 }

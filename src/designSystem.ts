@@ -178,23 +178,48 @@ export const space = {
   compact: 3,
 } as const
 
-/** Domain semantics mapped onto M3 roles (AA-safe for text/UI where used as meaning) */
+/**
+ * Domain semantics - locked color meaning across every screen:
+ * - teal (primary) = confirmed / selected / actionable
+ * - amber (warning) = uncertainty / verification / caution
+ * - red (error) = constraint failure / material risk
+ * - neutral (outline / onSurfaceVariant) = supporting / inactive
+ */
 export const semantic = {
+  confirmed: m3.primary,
+  confirmedInk: m3.primaryInk,
+  confirmedSoft: m3.primaryContainer,
+  selected: m3.primary,
+  actionable: m3.primary,
+
+  uncertainty: m3.warning,
+  verification: m3.warning,
+  caution: m3.warning,
+  cautionSoft: m3.warningContainer,
+
+  risk: m3.error,
+  constraintFail: m3.error,
+  riskSoft: m3.errorContainer,
+
+  inactive: m3.outline,
+  supporting: m3.onSurfaceVariant,
+  supportingSoft: m3.surfaceContainerHighest,
+
   firm: m3.primary,
   /** At-risk supply uses caution amber */
   atRisk: m3.warning,
-  /** Was outlineVariant (1.7:1) - use on-surface-variant for legends/text */
   gap: m3.onSurfaceVariant,
-  canopyHigh: m3.success,
+  /** Canopy health uses the same teal/amber/red/neutral model */
+  canopyHigh: m3.primary,
   canopyMed: m3.warning,
   canopyLow: m3.error,
-  evidenceFresh: m3.success,
+  evidenceFresh: m3.primaryInk,
   evidenceAging: m3.warning,
   evidenceMissing: m3.error,
   signal: m3.primary,
   alert: m3.error,
   alertSoft: m3.errorContainer,
-  okSoft: m3.successContainer,
+  okSoft: m3.primaryContainer,
   warnSoft: m3.warningContainer,
   accentSoft: m3.primaryContainer,
   mapWater: m3.tertiary,
@@ -204,6 +229,42 @@ export const semantic = {
   mapOtherFill: m3.surfaceContainerHighest,
   mapAttribution: m3.onSurfaceVariant,
 } as const
+
+/** Visual identity for the three Scenario Planning strategies */
+export type StrategyKey = 'coverage-first' | 'confidence-first' | 'dispersed'
+
+export const STRATEGY_VISUAL: Record<
+  StrategyKey,
+  {
+    accent: string
+    accentSoft: string
+    ink: string
+    tagline: string
+    emphasis: 'coverage' | 'confidence' | 'dispersion'
+  }
+> = {
+  'coverage-first': {
+    accent: m3.primary,
+    accentSoft: m3.primaryContainer,
+    ink: m3.primaryInk,
+    tagline: 'Maximize supply',
+    emphasis: 'coverage',
+  },
+  'confidence-first': {
+    accent: m3.warning,
+    accentSoft: m3.warningContainer,
+    ink: m3.warning,
+    tagline: 'Minimize uncertainty',
+    emphasis: 'confidence',
+  },
+  dispersed: {
+    accent: m3.secondary,
+    accentSoft: m3.secondaryContainer,
+    ink: m3.onSecondaryContainer,
+    tagline: 'Reduce concentration',
+    emphasis: 'dispersion',
+  },
+}
 
 /** Shared meter / progress-strip geometry used by SupplyBar, WeekRail, Plan, etc. */
 export const meter = {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import bhimavaramFieldPhoto from './assets/bhimavaram-field.jpg'
 import tanukuFieldPhoto from './assets/tanuku-field.jpg'
 import {
@@ -65,9 +65,11 @@ import {
   PercentBar,
   EvidenceProvenance,
   EvidenceCueBar,
+  FieldSyncStrip,
 } from './ui'
-import type { StatusKind } from './designSystem'
-import { CARD_HOVER_BG, CARD_SELECTION_BG, INK, INK_MUTED, PAPER, PANEL_BORDER, panelSurface, shellChrome, shape } from './designSystem'
+import type { EvidenceSyncState } from './ui'
+import type { StatusKind, StrategyKey } from './designSystem'
+import { CARD_HOVER_BG, CARD_SELECTION_BG, INK, INK_MUTED, PAPER, PANEL_BORDER, panelSurface, shellChrome, shape, STRATEGY_VISUAL } from './designSystem'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 'field' | 'findings' | 'plan' | 'alert'
@@ -155,17 +157,17 @@ const FARM_MAP_META: Record<string, FarmMapMeta> = {
 }
 
 const CANOPY_FILL: Record<CanopyKind, string> = {
-  healthy: alpha(m3.success, 0.38),
-  moderate: alpha(m3.warning, 0.42),
-  weak: alpha(m3.error, 0.38),
-  inconclusive: alpha(m3.outline, 0.28),
+  healthy: alpha(semantic.canopyHigh, 0.38),
+  moderate: alpha(semantic.canopyMed, 0.42),
+  weak: alpha(semantic.canopyLow, 0.38),
+  inconclusive: alpha(semantic.inactive, 0.28),
 }
 
 const CANOPY_STROKE: Record<CanopyKind, string> = {
-  healthy: m3.success,
-  moderate: m3.warning,
-  weak: m3.error,
-  inconclusive: m3.outline,
+  healthy: semantic.canopyHigh,
+  moderate: semantic.canopyMed,
+  weak: semantic.canopyLow,
+  inconclusive: semantic.inactive,
 }
 
 /** Irregular parcel polygon around a farm center; size scales with supply. */
@@ -1731,7 +1733,7 @@ function CompareScreen({
 // ─── SCENARIOS SCREEN ────────────────────────────────────────────────────────
 
 type Strategy = {
-  key: string
+  key: StrategyKey
   name: string
   rationale: string
   wk3Default: number
@@ -2018,9 +2020,9 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     </Box>
                   </Box>
                   <Box sx={{ pl: 4 }}>
-                    <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.success, mb: 2 }}>Added</Typography>
+                    <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.primaryInk, mb: 2 }}>Added</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-                      <Box component="span" sx={{ color: m3.success, fontWeight: 700, mt: 1 }}>+</Box>
+                      <Box component="span" sx={{ color: m3.primaryInk, fontWeight: 700, mt: 1 }}>+</Box>
                       <Box>
                         <Typography sx={{ fontSize: '0.75rem', fontWeight: 650, color: m3.onSurface }}>Guntur Strip · <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }}>80 t</Box></Typography>
                         <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant }}>No field visit required; stays within {maxVisits}-visit limit</Typography>
@@ -2069,6 +2071,8 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   ? 'Meets the Week 3 target, but is infeasible under the current 1-visit verification constraint.'
                   : s.rationale
 
+                const visual = STRATEGY_VISUAL[s.key]
+
                 return (
                   <DashPaper
                     key={s.key}
@@ -2077,19 +2081,34 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       p: 0,
                       cursor: 'pointer',
                       overflow: 'hidden',
-                      // Same wash as Farms selected cards
+                      position: 'relative',
+                      // Selected = teal actionable wash; fail outline = red constraint risk
                       bgcolor: isSelected ? CARD_SELECTION_BG : m3.surfaceContainerLowest,
                       border: failCount > 0 && !isSelected
                         ? `2px solid ${m3.error}`
-                        : `1px solid ${PANEL_BORDER}`,
-                      transition: 'background-color 0.15s',
+                        : isSelected
+                          ? `1px solid ${m3.primary}`
+                          : `1px solid ${PANEL_BORDER}`,
+                      transition: 'background-color 0.15s, border-color 0.15s',
                       '&:hover': {
                         bgcolor: isSelected ? m3.surfaceContainerLowest : CARD_HOVER_BG,
                       },
                     }}
                   >
+                    {/* Strategy identity stripe */}
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        width: 4,
+                        bgcolor: visual.accent,
+                      }}
+                      aria-hidden
+                    />
                     {/* Header */}
-                    <Box sx={{ p: space.related }}>
+                    <Box sx={{ p: space.related, pl: space.section }}>
                       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: space.tight, gap: space.related }}>
                         <Stack direction="row" spacing={space.related} sx={{ alignItems: 'flex-start', minWidth: 0, flex: 1 }}>
                           <Box
@@ -2104,9 +2123,24 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                             }}
                           />
                           <Box sx={{ minWidth: 0, flex: 1 }}>
-                            <Typography variant="subtitle1" sx={{ color: m3.onSurface, fontWeight: 700 }}>
-                              {s.name}
-                            </Typography>
+                            <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center', flexWrap: 'wrap', mb: space.xs }}>
+                              <Typography variant="subtitle1" sx={{ color: m3.onSurface, fontWeight: 700 }}>
+                                {s.name}
+                              </Typography>
+                              <Chip
+                                size="small"
+                                label={visual.tagline}
+                                sx={{
+                                  height: 22,
+                                  fontSize: 11,
+                                  fontWeight: 700,
+                                  color: visual.ink,
+                                  bgcolor: visual.accentSoft,
+                                  border: `1px solid ${visual.accent}`,
+                                  '& .MuiChip-label': { px: 2, py: 0, lineHeight: '20px' },
+                                }}
+                              />
+                            </Stack>
                             {isSelected && (
                               <Typography variant="caption" sx={{ color: m3.primaryInk, fontWeight: 700, display: 'block', mb: space.xs }}>
                                 Selected strategy
@@ -2121,12 +2155,18 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       </Stack>
                     </Box>
 
-                    {/* Tradeoff bars - same card surface */}
-                    <Box sx={{ px: space.related, pb: space.related }}>
-                      <TradeoffBars coverage={wk3} visits={verif} />
+                    {/* Tradeoff bars - strategy emphasis first */}
+                    <Box sx={{ px: space.related, pl: space.section, pb: space.related }}>
+                      <TradeoffBars
+                        coverage={wk3}
+                        visits={verif}
+                        highConf={hiconf}
+                        district={dist}
+                        emphasis={visual.emphasis}
+                      />
                     </Box>
 
-                    {/* Metrics - same surface, equal 16dp padding; fail = text role only */}
+                    {/* Metrics - same surface, equal 16dp padding; fail = red text/chip only */}
                     <Box
                       sx={{
                         display: 'grid',
@@ -2134,6 +2174,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                         gap: 0,
                         borderTop: `1px solid ${PANEL_BORDER}`,
                         borderBottom: `1px solid ${PANEL_BORDER}`,
+                        pl: '4px',
                       }}
                     >
                       {[
@@ -2170,7 +2211,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     </Box>
 
                     {/* Farm mix - same surface */}
-                    <Box sx={{ px: space.related, py: space.related }}>
+                    <Box sx={{ px: space.related, pl: space.section, py: space.related }}>
                       <Typography variant="caption" sx={{ display: 'block', mb: space.tight, color: m3.onSurfaceVariant, fontWeight: 650 }}>
                         Farm mix
                       </Typography>
@@ -2361,6 +2402,11 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   const [submitted, setSubmitted] = useState<Record<number, boolean>>({ 0: false, 1: false })
   const [photos, setPhotos] = useState<Record<number, boolean>>({ 0: false, 1: false })
   const [photoPreviewOpen, setPhotoPreviewOpen] = useState(false)
+  const [linkState, setLinkState] = useState<'online' | 'syncing' | 'offline'>('online')
+  const [evidenceSync, setEvidenceSync] = useState<Record<number, EvidenceSyncState>>({
+    0: 'synced',
+    1: 'synced',
+  })
 
   const farm = FIELD_FARMS[farmIdx]
   const farmChecks = checks[farmIdx] || []
@@ -2368,6 +2414,27 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   const photoRequired = farm.verifyItems.some(item => item.toLowerCase().includes('photos'))
   const canConfirm = allChecked && (!photoRequired || photos[farmIdx])
   const mobileTileOrigin = farmIdx === 0 ? { x: 2974, y: 1856 } : { x: 2976, y: 1853 }
+
+  // Second farm often goes offline in the field - queue evidence locally
+  useEffect(() => {
+    if (farmIdx === 1 && view === 'capture') {
+      setLinkState('offline')
+      return
+    }
+    if (linkState !== 'syncing') setLinkState('online')
+  }, [farmIdx, view]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // After photo capture while online, briefly show syncing then confirmed (teal)
+  useEffect(() => {
+    if (!photos[farmIdx] || linkState === 'offline') return
+    if (evidenceSync[farmIdx] !== 'pending') return
+    setLinkState('syncing')
+    const t = window.setTimeout(() => {
+      setEvidenceSync(prev => ({ ...prev, [farmIdx]: 'synced' }))
+      setLinkState('online')
+    }, 2200)
+    return () => window.clearTimeout(t)
+  }, [photos, farmIdx, evidenceSync, linkState])
 
   function toggleCheck(i: number) {
     setChecks(prev => {
@@ -2377,11 +2444,26 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     })
   }
 
+  function capturePhoto() {
+    setPhotos(prev => ({ ...prev, [farmIdx]: true }))
+    setEvidenceSync(prev => ({
+      ...prev,
+      [farmIdx]: linkState === 'offline' ? 'offline' : 'pending',
+    }))
+  }
+
   function handleSubmit() {
     setSubmitted(prev => ({ ...prev, [farmIdx]: true }))
+    if (linkState === 'offline') {
+      setEvidenceSync(prev => ({ ...prev, [farmIdx]: 'offline' }))
+    } else if (photos[farmIdx]) {
+      setEvidenceSync(prev => ({ ...prev, [farmIdx]: 'pending' }))
+      setLinkState('syncing')
+    }
     if (farmIdx === 0) {
       setFarmIdx(1)
       setView('brief')
+      setLinkState('online')
     } else {
       onNavigate('findings')
     }
@@ -2403,9 +2485,10 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontSize: '0.875rem', fontWeight: 500, color: m3.inverseOnSurface, opacity: 0.8 }}>{farmIdx + 1} of 2</Box>
             </Box>
             <Box sx={{ height: 4, bgcolor: alpha(m3.inverseOnSurface, 0.24), mt: 4, overflow: 'hidden' }}>
-              <Box sx={{ height: '100%', bgcolor: m3.inverseOnSurface, transition: 'all 0.2s' }} style={{ width: `${((farmIdx + 1) / FIELD_FARMS.length) * 100}%` }} />
+              <Box sx={{ height: '100%', bgcolor: m3.primary, transition: 'all 0.2s' }} style={{ width: `${((farmIdx + 1) / FIELD_FARMS.length) * 100}%` }} />
             </Box>
           </Box>
+          <FieldSyncStrip state={linkState} />
 
           {view === 'brief' ? (
             <Box>
@@ -2566,16 +2649,19 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     capturedBy="Ravi · Field officer"
                     timestamp={farm.captureTime}
                     gps={farm.gps}
-                    sync="synced"
+                    sync={evidenceSync[farmIdx] ?? 'pending'}
                     dense
                   />
                 </Box>
               ) : (
                 <Box sx={{ px: space.related, pb: space.related }}>
-                  <Button fullWidth variant="outlined" color="primary" onClick={() => setPhotos(prev => ({ ...prev, [farmIdx]: true }))} sx={{ mb: space.tight }}>
+                  <Button fullWidth variant="outlined" color="primary" onClick={capturePhoto} sx={{ mb: space.tight }}>
                     Add photo
                   </Button>
-                  <Typography sx={{ fontSize: 10, color: 'text.secondary', textAlign: 'center' }}>0 photos added · Required to confirm evidence</Typography>
+                  <Typography sx={{ fontSize: 10, color: 'text.secondary', textAlign: 'center' }}>
+                    0 photos added · Required to confirm evidence
+                    {linkState === 'offline' ? ' · Will queue offline' : ''}
+                  </Typography>
                 </Box>
               )}
 
@@ -2624,7 +2710,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 capturedBy="Ravi · Field officer"
                 timestamp={farm.captureTime}
                 gps={farm.gps}
-                sync="synced"
+                sync={evidenceSync[farmIdx] ?? 'synced'}
               />
             </Box>
           </Box>
@@ -2752,7 +2838,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <Box component="ul" sx={{ display: 'flex', flexDirection: 'column', gap: space.tight, m: 0, p: 0, listStyle: 'none', mb: space.related }}>
                   {f.evidence.map(item => (
                     <Stack component="li" direction="row" sx={{ alignItems: 'center', gap: space.tight, fontSize: '0.75rem', color: m3.onSurface }} key={item}>
-                      <Box component="span" sx={{ color: m3.success, fontWeight: 650 }}>✓</Box>
+                      <Box component="span" sx={{ color: m3.primaryInk, fontWeight: 650 }}>✓</Box>
                       {item}
                     </Stack>
                   ))}
@@ -2947,7 +3033,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       {f.conf === 'HIGH' ? 'Evidence current' : 'Evidence incomplete'}
                     </Typography>
                   </TableCell>
-                  <TableCell sx={{ fontWeight: 500, color: f.status === 'At risk' ? m3.secondary : f.status.includes('Verified') ? m3.success : 'text.secondary' }}>
+                  <TableCell sx={{ fontWeight: 500, color: f.status === 'At risk' ? m3.warning : f.status.includes('Verified') ? m3.primaryInk : m3.onSurfaceVariant }}>
                     {f.status}
                   </TableCell>
                 </TableRow>
