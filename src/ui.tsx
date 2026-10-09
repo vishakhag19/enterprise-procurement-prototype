@@ -515,6 +515,13 @@ export function DashKpiStrip({ items }: { items: DashKpi[] }) {
   )
 }
 
+/** Legend swatch for the open-gap hatch used in SupplyBar */
+export const OPEN_GAP_SWATCH = {
+  backgroundColor: meter.track,
+  backgroundImage: `repeating-linear-gradient(-45deg, transparent, transparent 2px, ${alpha(m3.onSurface, 0.18)} 2px, ${alpha(m3.onSurface, 0.18)} 4px)`,
+  border: `1px solid ${m3.outlineVariant}`,
+} as const
+
 export function SupplyBar({
   firm,
   atRisk,
@@ -524,6 +531,7 @@ export function SupplyBar({
   atRisk: number
   total: number
 }) {
+  const open = Math.max(0, total - firm - atRisk)
   return (
     <Box
       sx={{
@@ -533,9 +541,19 @@ export function SupplyBar({
         overflow: 'hidden',
         bgcolor: meter.track,
       }}
+      role="img"
+      aria-label={`Firm ${firm} t, at risk ${atRisk} t, open gap ${open} t of ${total} t`}
     >
       <Box sx={{ width: `${(firm / total) * 100}%`, bgcolor: METER_FILL.primary }} />
       <Box sx={{ width: `${(atRisk / total) * 100}%`, bgcolor: METER_FILL.caution }} />
+      {/* Open gap - hatched remainder so it is visible in the bar, not a muddy hue */}
+      <Box
+        sx={{
+          width: `${(open / total) * 100}%`,
+          ...OPEN_GAP_SWATCH,
+          border: 'none',
+        }}
+      />
     </Box>
   )
 }

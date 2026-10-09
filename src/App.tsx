@@ -66,6 +66,7 @@ import {
   EvidenceProvenance,
   EvidenceCueBar,
   FieldSyncStrip,
+  OPEN_GAP_SWATCH,
 } from './ui'
 import type { EvidenceSyncState } from './ui'
 import type { StatusKind, StrategyKey } from './designSystem'
@@ -948,21 +949,21 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </Stack>
           <SupplyBar firm={2568} atRisk={570} total={4000} />
           <Stack direction="row" spacing={4} sx={{ mt: space.related, flexWrap: 'wrap', alignItems: 'center' }}>
-            {[
-              { label: 'Firm', value: '2,568 t', color: semantic.firm },
-              { label: 'At risk', value: '570 t', color: semantic.atRisk },
-            ].map(m => (
-              <Stack key={m.label} direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m.color }} />
-                <Typography variant="caption">{m.label}</Typography>
-                <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>{m.value}</Typography>
-              </Stack>
-            ))}
-            {/* Open gap is the unfilled track - no extra meaning color */}
-            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              Open gap <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>862 t</Box>
-              <Box component="span" sx={{ color: INK_MUTED }}> · shown as remaining track</Box>
-            </Typography>
+            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+              <Box sx={{ width: 10, height: 10, borderRadius: '2px', bgcolor: semantic.firm, flexShrink: 0 }} />
+              <Typography variant="caption">Firm</Typography>
+              <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>2,568 t</Typography>
+            </Stack>
+            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+              <Box sx={{ width: 10, height: 10, borderRadius: '2px', bgcolor: semantic.atRisk, flexShrink: 0 }} />
+              <Typography variant="caption">At risk</Typography>
+              <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>570 t</Typography>
+            </Stack>
+            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+              <Box sx={{ width: 10, height: 10, borderRadius: '2px', flexShrink: 0, ...OPEN_GAP_SWATCH }} />
+              <Typography variant="caption">Open gap</Typography>
+              <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>862 t</Typography>
+            </Stack>
             <Typography variant="caption" sx={{ ml: { md: 'auto' }, color: INK_MUTED }}>78% committed</Typography>
           </Stack>
         </Box>
@@ -2541,15 +2542,13 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                     <Typography sx={{ fontSize: 9, color: 'text.secondary', fontWeight: 500 }}>Approximate destination · West Godavari</Typography>
                   </Box>
                 </Box>
-                <Button
+                <SecondaryBtn
                   fullWidth
-                  variant="outlined"
-                  color="primary"
                   onClick={() => window.open(farmIdx === 0 ? 'https://www.openstreetmap.org/?mlat=16.54&mlon=81.52#map=12/16.54/81.52' : 'https://www.openstreetmap.org/?mlat=16.75&mlon=81.68#map=12/16.75/81.68', '_blank', 'noopener,noreferrer')}
                   sx={{ mb: space.section }}
                 >
                   Open in navigation
-                </Button>
+                </SecondaryBtn>
               </Box>
 
               {/* Edge-to-edge separators: border on full-width sections, padding only on content */}
@@ -2669,9 +2668,9 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </Box>
               ) : (
                 <Box sx={{ px: space.related, pb: space.related }}>
-                  <Button fullWidth variant="outlined" color="primary" onClick={capturePhoto} sx={{ mb: space.tight }}>
+                  <SecondaryBtn fullWidth onClick={capturePhoto} sx={{ mb: space.tight }}>
                     Add photo
-                  </Button>
+                  </SecondaryBtn>
                   <Typography sx={{ fontSize: 10, color: 'text.secondary', textAlign: 'center' }}>
                     0 photos added · Required to confirm evidence
                     {linkState === 'offline' ? ' · Will queue offline' : ''}
@@ -2964,17 +2963,11 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <Typography sx={{ fontSize: 10, color: m3.onErrorContainer }}>vs. active plan</Typography>
           </Box>
         </Stack>
-        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
+        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
           <PrimaryBtn onClick={() => onNavigate('alert')}>Review exception →</PrimaryBtn>
-          <Button
-            variant="outlined"
+          <SecondaryBtn
             onClick={() => onNavigate('alert')}
             sx={{
-              minHeight: 40,
-              height: 40,
-              py: 0,
-              px: 6,
-              fontWeight: 650,
               color: m3.onErrorContainer,
               borderColor: m3.error,
               bgcolor: alpha(m3.surfaceContainerLowest, 0.35),
@@ -2982,7 +2975,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             }}
           >
             Open recovery path
-          </Button>
+          </SecondaryBtn>
         </Stack>
       </DashPaper>
 

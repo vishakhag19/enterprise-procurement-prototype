@@ -55,14 +55,13 @@ export const m3 = {
   onErrorContainer: '#410002',
 
   /**
-   * Caution role - brighter amber for verification / uncertainty / aging.
-   * Soft cream container keeps chips readable on white cards.
+   * Caution role - bright amber for verification / uncertainty / aging.
    * Use `warningInk` for small text on white (AA); `warning` for fills/borders.
    */
-  warning: '#D4920A',
-  warningInk: '#9A6700',
+  warning: '#F0A020',
+  warningInk: '#A86B00',
   onWarning: '#FFFFFF',
-  warningContainer: '#FFE9A8',
+  warningContainer: '#FFE4A3',
   onWarningContainer: '#3D2800',
 
   success: '#006B5F',
@@ -265,7 +264,7 @@ export const STRATEGY_VISUAL: Record<
   'confidence-first': {
     accent: m3.warning,
     accentSoft: m3.warningContainer,
-    ink: m3.warning,
+    ink: m3.warningInk,
     tagline: 'Minimize uncertainty',
     emphasis: 'confidence',
   },
