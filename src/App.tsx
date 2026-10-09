@@ -2451,6 +2451,15 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       ...prev,
       [farmIdx]: linkState === 'offline' ? 'offline' : 'pending',
     }))
+    // Adding a photo satisfies any "photos" checklist row so Confirm can enable
+    setChecks(prev => {
+      const items = FIELD_FARMS[farmIdx].verifyItems
+      const arr = items.map((_, i) => prev[farmIdx]?.[i] ?? false)
+      items.forEach((item, i) => {
+        if (item.toLowerCase().includes('photos')) arr[i] = true
+      })
+      return { ...prev, [farmIdx]: arr }
+    })
   }
 
   function handleSubmit() {
