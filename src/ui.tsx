@@ -21,7 +21,7 @@ const btnBaseSx = {
   height: 40,
   maxHeight: 40,
   py: 0,
-  px: 6,
+  px: space.section,
   fontSize: '0.875rem',
   fontWeight: 600,
   lineHeight: '24px',
@@ -189,7 +189,7 @@ export function EvidenceProvenance({
               color: m3.onSurfaceVariant,
               textTransform: 'uppercase',
               letterSpacing: '0.06em',
-              mb: 0.5,
+              mb: space.xs,
             }}
           >
             {label}
@@ -226,7 +226,7 @@ export function EvidenceCueBar({
 }) {
   return (
     <Box sx={{ minWidth: 0, flex: 1 }}>
-      <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5, alignItems: 'baseline', gap: 1 }}>
+      <Stack direction="row" sx={{ justifyContent: 'space-between', mb: space.xs, alignItems: 'baseline', gap: space.xs }}>
         <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.onSurfaceVariant }}>{label}</Typography>
         <Typography sx={{ fontSize: 10, fontWeight: 700, color: m3.onSurface, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
           {valueLabel}
@@ -351,7 +351,7 @@ export function GhostBtn(props: React.ComponentProps<typeof Button>) {
       sx={{
         ...btnBaseSx,
         minWidth: 0,
-        px: 3,
+        px: space.compact,
         borderColor: 'transparent',
         ...sx,
       }}
@@ -485,7 +485,7 @@ export function DashKpiStrip({ items }: { items: DashKpi[] }) {
             variant="caption"
             sx={{
               display: 'block',
-              mb: 1,
+              mb: space.xs,
               color: m3.onSurfaceVariant,
               fontWeight: 650,
             }}
@@ -505,7 +505,7 @@ export function DashKpiStrip({ items }: { items: DashKpi[] }) {
             {kpi.value}
           </Typography>
           {kpi.sub != null && (
-            <Typography variant="caption" sx={{ display: 'block', mt: 1.5, color: m3.onSurfaceVariant }}>
+            <Typography variant="caption" sx={{ display: 'block', mt: space.tight, color: m3.onSurfaceVariant }}>
               {kpi.sub}
             </Typography>
           )}
@@ -649,7 +649,7 @@ export function ThresholdControl({
         border: `1px solid ${modified ? m3.warning : PANEL_BORDER}`,
       }}
     >
-      <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1 }}>
+      <Stack direction="row" sx={{ justifyContent: 'space-between', mb: space.xs }}>
         <Typography variant="body2" sx={{ color: modified ? m3.onWarningContainer : m3.onSurface, fontWeight: 600 }}>
           {label}
         </Typography>
@@ -777,7 +777,7 @@ export function FieldSyncStrip({
         alignItems: 'center',
         gap: space.tight,
         px: space.related,
-        py: 1.5,
+        py: space.tight,
         bgcolor: meta.bg,
         borderBottom: `1px solid ${PANEL_BORDER}`,
       }}

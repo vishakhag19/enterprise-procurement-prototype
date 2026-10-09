@@ -166,7 +166,14 @@ export const paneHairlineBottom = {
 
 /**
  * Material Design 3 spacing - theme.spacing unit = 4dp.
- * xs 1=4 · sm 2=8 · md 3=12 · lg 4=16 · xl 6=24 · xxl 8=32
+ * Use these tokens in every screen (avoid raw 1/2/4/6 in sx):
+ * xs 1=4 · tight/sm 2=8 · compact/md 3=12 · related/lg 4=16 · section/xl 6=24 · gutter/xxl 8=32
+ *
+ * Layout convention across tabs:
+ * - MainPane body padding + section stack gap = `section` (24)
+ * - Card / KPI / map chrome padding = `related` (16)
+ * - Label → value, chip rows, list item gaps = `tight` (8)
+ * - Caption under titles = `xs` (4)
  */
 export const space = {
   xs: 1,
