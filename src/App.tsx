@@ -947,11 +947,10 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, fontSize: '1.125rem', color: INK }}>4,000 t target</Typography>
           </Stack>
           <SupplyBar firm={2568} atRisk={570} total={4000} />
-          <Stack direction="row" spacing={4} sx={{ mt: space.related, flexWrap: 'wrap' }}>
+          <Stack direction="row" spacing={4} sx={{ mt: space.related, flexWrap: 'wrap', alignItems: 'center' }}>
             {[
               { label: 'Firm', value: '2,568 t', color: semantic.firm },
               { label: 'At risk', value: '570 t', color: semantic.atRisk },
-              { label: 'Open gap', value: '862 t', color: semantic.gap },
             ].map(m => (
               <Stack key={m.label} direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                 <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m.color }} />
@@ -959,6 +958,11 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>{m.value}</Typography>
               </Stack>
             ))}
+            {/* Open gap is the unfilled track - no extra meaning color */}
+            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+              Open gap <Box component="span" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>862 t</Box>
+              <Box component="span" sx={{ color: INK_MUTED }}> · shown as remaining track</Box>
+            </Typography>
             <Typography variant="caption" sx={{ ml: { md: 'auto' }, color: INK_MUTED }}>78% committed</Typography>
           </Stack>
         </Box>
@@ -1690,7 +1694,7 @@ function CompareScreen({
                         </TableCell>
                       )
                       if (key === 'verifReq') return (
-                        <TableCell key={f.id} sx={{ verticalAlign: 'top', fontWeight: 650, color: val ? m3.secondary : 'text.primary' }}>
+                        <TableCell key={f.id} sx={{ verticalAlign: 'top', fontWeight: 650, color: val ? m3.primaryInk : m3.onSurface }}>
                           {val ? 'Yes' : 'No'}
                         </TableCell>
                       )

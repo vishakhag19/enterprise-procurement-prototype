@@ -10,18 +10,24 @@ import {
 import { alpha } from '@mui/material/styles'
 import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3, meter, shellChrome } from './designSystem'
 
-/** Shared control size - every Primary / Secondary / Ghost button matches */
+/**
+ * Shared control size - Primary / Secondary / Ghost must render identical 40dp.
+ * Border is included in the box so outlined secondaries do not grow taller.
+ */
 const btnBaseSx = {
   flexShrink: 0,
+  boxSizing: 'border-box',
   minHeight: 40,
   height: 40,
+  maxHeight: 40,
   py: 0,
   px: 6,
   fontSize: '0.875rem',
   fontWeight: 600,
-  lineHeight: 1.25,
-  boxSizing: 'border-box',
+  lineHeight: '24px',
   fontFamily: '"Manrope", system-ui, sans-serif',
+  borderStyle: 'solid',
+  borderWidth: 1.5,
 } as const
 
 /**
@@ -299,17 +305,38 @@ export function DataStrip({ children, sx }: { children: React.ReactNode; sx?: ob
 export function PrimaryBtn(props: React.ComponentProps<typeof Button> & { fullWidth?: boolean }) {
   const { children, fullWidth, sx, ...rest } = props
   return (
-    <Button variant="contained" color="primary" fullWidth={fullWidth} sx={{ ...btnBaseSx, ...sx }} {...rest}>
+    <Button
+      variant="contained"
+      color="primary"
+      fullWidth={fullWidth}
+      sx={{
+        ...btnBaseSx,
+        // Contained keeps a transparent border so height matches outlined secondaries
+        borderColor: 'transparent',
+        ...sx,
+      }}
+      {...rest}
+    >
       {children}
     </Button>
   )
 }
 
-/** Outlined brand secondary - same height as PrimaryBtn */
+/** Outlined brand secondary - identical 40dp box to PrimaryBtn */
 export function SecondaryBtn(props: React.ComponentProps<typeof Button> & { fullWidth?: boolean }) {
   const { children, fullWidth, sx, ...rest } = props
   return (
-    <Button variant="outlined" color="primary" fullWidth={fullWidth} sx={{ ...btnBaseSx, ...sx }} {...rest}>
+    <Button
+      variant="outlined"
+      color="primary"
+      fullWidth={fullWidth}
+      sx={{
+        ...btnBaseSx,
+        borderColor: m3.primaryInk,
+        ...sx,
+      }}
+      {...rest}
+    >
       {children}
     </Button>
   )
@@ -318,7 +345,18 @@ export function SecondaryBtn(props: React.ComponentProps<typeof Button> & { full
 export function GhostBtn(props: React.ComponentProps<typeof Button>) {
   const { children, sx, ...rest } = props
   return (
-    <Button variant="text" color="primary" sx={{ ...btnBaseSx, minWidth: 0, px: 3, ...sx }} {...rest}>
+    <Button
+      variant="text"
+      color="primary"
+      sx={{
+        ...btnBaseSx,
+        minWidth: 0,
+        px: 3,
+        borderColor: 'transparent',
+        ...sx,
+      }}
+      {...rest}
+    >
       {children}
     </Button>
   )
@@ -327,7 +365,8 @@ export function GhostBtn(props: React.ComponentProps<typeof Button>) {
 const METER_FILL = {
   primary: m3.primary,
   danger: m3.error,
-  muted: m3.secondary,
+  /** Supporting / inactive meter - neutral track cousin, not muddy secondary */
+  muted: m3.outlineVariant,
   caution: m3.warning,
 } as const
 

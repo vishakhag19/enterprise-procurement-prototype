@@ -34,15 +34,20 @@ export const m3 = {
   /** Pressed/hover layer for filled accent buttons */
   primaryPressed: '#089090',
 
-  secondary: '#4A6363',
+  /**
+   * Structural secondary only - not a domain meaning color.
+   * Prefer primary / warning / error / onSurfaceVariant for semantics.
+   */
+  secondary: '#5B6B6B',
   onSecondary: '#FFFFFF',
-  secondaryContainer: '#CCE8E7',
-  onSecondaryContainer: '#051F1F',
+  secondaryContainer: '#DCE4E3',
+  onSecondaryContainer: '#151D1D',
 
-  tertiary: '#4B607C',
+  /** Geographic / dispersion accent (not muddy teal-gray) */
+  tertiary: '#3D6B8A',
   onTertiary: '#FFFFFF',
-  tertiaryContainer: '#D2E4FF',
-  onTertiaryContainer: '#041C35',
+  tertiaryContainer: '#D3E5F5',
+  onTertiaryContainer: '#041E2E',
 
   error: '#BA1A1A',
   onError: '#FFFFFF',
@@ -50,13 +55,15 @@ export const m3 = {
   onErrorContainer: '#410002',
 
   /**
-   * Caution role - refined amber gold (replaces the old peach).
-   * Soft honey container for verification / medium / aging states.
+   * Caution role - brighter amber for verification / uncertainty / aging.
+   * Soft cream container keeps chips readable on white cards.
+   * Use `warningInk` for small text on white (AA); `warning` for fills/borders.
    */
-  warning: '#9C6B00',
+  warning: '#D4920A',
+  warningInk: '#9A6700',
   onWarning: '#FFFFFF',
-  warningContainer: '#FFF1CC',
-  onWarningContainer: '#2E1F00',
+  warningContainer: '#FFE9A8',
+  onWarningContainer: '#3D2800',
 
   success: '#006B5F',
   onSuccess: '#FFFFFF',
@@ -195,6 +202,7 @@ export const semantic = {
   uncertainty: m3.warning,
   verification: m3.warning,
   caution: m3.warning,
+  cautionInk: m3.warningInk,
   cautionSoft: m3.warningContainer,
 
   risk: m3.error,
@@ -208,7 +216,11 @@ export const semantic = {
   firm: m3.primary,
   /** At-risk supply uses caution amber */
   atRisk: m3.warning,
-  gap: m3.onSurfaceVariant,
+  /**
+   * Uncommitted remainder in SupplyBar - matches meter track (already visible).
+   * Do not invent a fourth “meaning” hue for gap.
+   */
+  gap: m3.surfaceContainerHighest,
   /** Canopy health uses the same teal/amber/red/neutral model */
   canopyHigh: m3.primary,
   canopyMed: m3.warning,
@@ -223,7 +235,7 @@ export const semantic = {
   warnSoft: m3.warningContainer,
   accentSoft: m3.primaryContainer,
   mapWater: m3.tertiary,
-  mapParcel: m3.secondary,
+  mapParcel: m3.outline,
   mapParcelSel: m3.primary,
   mapOther: m3.outline,
   mapOtherFill: m3.surfaceContainerHighest,
@@ -258,9 +270,9 @@ export const STRATEGY_VISUAL: Record<
     emphasis: 'confidence',
   },
   dispersed: {
-    accent: m3.secondary,
-    accentSoft: m3.secondaryContainer,
-    ink: m3.onSecondaryContainer,
+    accent: m3.tertiary,
+    accentSoft: m3.tertiaryContainer,
+    ink: m3.onTertiaryContainer,
     tagline: 'Reduce concentration',
     emphasis: 'dispersion',
   },
@@ -295,7 +307,7 @@ export type StatusKind =
  * negative = white + error outline; critical = solid error (only solid fill).
  */
 const CHIP_POSITIVE = { fg: m3.primaryInk, bg: m3.surfaceContainerLowest, border: m3.primaryInk }
-const CHIP_CAUTION = { fg: m3.warning, bg: m3.surfaceContainerLowest, border: m3.warning }
+const CHIP_CAUTION = { fg: m3.warningInk, bg: m3.surfaceContainerLowest, border: m3.warning }
 const CHIP_NEGATIVE = { fg: m3.error, bg: m3.surfaceContainerLowest, border: m3.error }
 const CHIP_CRITICAL = { fg: m3.onError, bg: m3.error, border: 'transparent' }
 
