@@ -40,18 +40,8 @@ import {
   WeekRail,
 } from './ui'
 
-/** MUI-style samples: role name + content suited to that scale (not one shared placeholder). */
-const TYPE_SAMPLES: Record<keyof typeof typographyScale, string> = {
-  display: 'display. Week 3 coverage',
-  title: 'title. Supply position',
-  subtitle: 'subtitle. Narsapur · 240 t firm',
-  body: 'body. Candidates highlighted for investigation before Week 3 commit.',
-  meta: 'meta. Updated 6 days ago',
-  overline: 'OVERLINE. WEEK 3 SUPPLY',
-  dataLg: '1,200',
-  dataMd: '620 t',
-  dataSm: '96%',
-}
+/** One shared sample across the scale so size / weight / tracking compare cleanly. */
+const TYPE_SAMPLE = 'Eucalyptus procurement'
 
 function DocSection({
   id,
@@ -312,7 +302,7 @@ export function DesignSystemDoc() {
                         fontVariantNumeric: name.startsWith('data') ? 'tabular-nums' : 'normal',
                       }}
                     >
-                      {TYPE_SAMPLES[name]}
+                      {TYPE_SAMPLE}
                     </Typography>
                   </Box>
                 ),
