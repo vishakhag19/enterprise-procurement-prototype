@@ -624,11 +624,6 @@ export function DesignSystemDoc() {
               <TradeoffBars coverage={96} visits={2} highConf={65} district={36} emphasis="coverage" />
             </Box>
           </DocSection>
-
-          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, pb: space.section }}>
-            Source tokens: <Box component="code">src/designSystem.ts</Box> · Components:{' '}
-            <Box component="code">src/ui.tsx</Box> · Font: Manrope only
-          </Typography>
         </Stack>
       </Box>
     </Box>
