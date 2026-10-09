@@ -198,12 +198,11 @@ export function DesignSystemDoc() {
         fontFamily: FONT_FAMILY,
       }}
     >
+      {/* Full-bleed chrome; shared maxWidth + px so header and body align */}
       <Box
         sx={{
           borderBottom: `1px solid ${PANEL_BORDER}`,
           bgcolor: m3.surfaceContainerLowest,
-          px: space.section,
-          py: space.related,
           position: 'sticky',
           top: 0,
           zIndex: 10,
@@ -212,7 +211,14 @@ export function DesignSystemDoc() {
         <Stack
           direction={{ xs: 'column', md: 'row' }}
           spacing={space.related}
-          sx={{ justifyContent: 'space-between', alignItems: { md: 'center' }, maxWidth: 1100, mx: 'auto' }}
+          sx={{
+            justifyContent: 'space-between',
+            alignItems: { md: 'center' },
+            maxWidth: 1100,
+            mx: 'auto',
+            px: space.section,
+            py: space.related,
+          }}
         >
           <Typography variant="h2" sx={{ fontSize: { xs: '1.35rem', md: '1.75rem' }, fontWeight: 700 }}>
             ITC Procurement Design System
