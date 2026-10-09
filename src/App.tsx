@@ -2419,22 +2419,23 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   useEffect(() => {
     if (farmIdx === 1 && view === 'capture') {
       setLinkState('offline')
-      return
+    } else {
+      setLinkState(prev => (prev === 'syncing' ? prev : 'online'))
     }
-    if (linkState !== 'syncing') setLinkState('online')
-  }, [farmIdx, view]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [farmIdx, view])
 
   // After photo capture while online, briefly show syncing then confirmed (teal)
   useEffect(() => {
-    if (!photos[farmIdx] || linkState === 'offline') return
+    if (!photos[farmIdx]) return
     if (evidenceSync[farmIdx] !== 'pending') return
+    if (farmIdx === 1 && view === 'capture') return // stay offline / queued
     setLinkState('syncing')
     const t = window.setTimeout(() => {
       setEvidenceSync(prev => ({ ...prev, [farmIdx]: 'synced' }))
       setLinkState('online')
     }, 2200)
     return () => window.clearTimeout(t)
-  }, [photos, farmIdx, evidenceSync, linkState])
+  }, [photos, farmIdx, evidenceSync, view])
 
   function toggleCheck(i: number) {
     setChecks(prev => {
