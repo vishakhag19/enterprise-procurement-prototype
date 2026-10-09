@@ -951,18 +951,18 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, fontSize: '1.125rem', color: INK }}>4,000 t target</Typography>
           </Stack>
           <SupplyBar firm={2568} atRisk={570} total={4000} />
-          <Stack direction="row" spacing={4} sx={{ mt: space.related, flexWrap: 'wrap', alignItems: 'center' }}>
-            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+          <Stack direction="row" spacing={space.related} sx={{ mt: space.related, flexWrap: 'wrap', alignItems: 'center' }}>
+            <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
               <Box sx={{ width: 10, height: 10, borderRadius: '2px', bgcolor: semantic.firm, flexShrink: 0 }} />
               <Typography variant="caption">Firm</Typography>
               <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>2,568 t</Typography>
             </Stack>
-            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+            <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
               <Box sx={{ width: 10, height: 10, borderRadius: '2px', bgcolor: semantic.atRisk, flexShrink: 0 }} />
               <Typography variant="caption">At risk</Typography>
               <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>570 t</Typography>
             </Stack>
-            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+            <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
               <Box sx={{ width: 10, height: 10, borderRadius: '2px', flexShrink: 0, ...OPEN_GAP_SWATCH }} />
               <Typography variant="caption">Open gap</Typography>
               <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>862 t</Typography>
@@ -991,7 +991,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <SectionLabel>Needs a decision</SectionLabel>
             <Stack spacing={0} sx={{ ...panelSurface, overflow: 'hidden' }}>
               <Box sx={{ p: space.related, bgcolor: CARD_SELECTION_BG, color: m3.onSurface }}>
-                <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: space.xs }}>
+                <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center', mb: space.xs }}>
                   <StatusChip kind="primary-issue" />
                   <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>GIS investigation</Typography>
                 </Stack>
@@ -1011,7 +1011,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       <Typography variant="subtitle2" sx={{ color: INK }}>{item.title}</Typography>
                       <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>{item.sub}</Typography>
                     </Box>
-                    <GhostBtn onClick={() => onNavigate('farms')} sx={{ height: 32, minHeight: 32, px: space.tight }}>
+                    <GhostBtn size="small" onClick={() => onNavigate('farms')} sx={{ px: space.tight }}>
                       {item.cta}
                     </GhostBtn>
                   </Stack>
@@ -1172,15 +1172,15 @@ function FarmCard({
       )}
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mt: space.related }}>
         <GhostBtn onClick={() => onViewEvidence(farm.id)}>View evidence</GhostBtn>
-        <Button
-          variant={inComparison ? 'contained' : 'outlined'}
-          color="primary"
-          onClick={() => onToggle(farm.id)}
-          startIcon={inComparison ? <CheckIcon sx={{ fontSize: 18 }} /> : undefined}
-          sx={{ minHeight: 40, height: 40, py: 0, px: space.section, fontSize: '0.875rem', fontWeight: 650 }}
-        >
-          {inComparison ? 'Added to comparison' : 'Add to comparison'}
-        </Button>
+        {inComparison ? (
+          <PrimaryBtn onClick={() => onToggle(farm.id)} startIcon={<CheckIcon sx={{ fontSize: 18 }} />}>
+            Added to comparison
+          </PrimaryBtn>
+        ) : (
+          <SecondaryBtn onClick={() => onToggle(farm.id)}>
+            Add to comparison
+          </SecondaryBtn>
+        )}
       </Stack>
     </DashPaper>
   )
@@ -1214,7 +1214,7 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', flex: 1 }}>
               {comparison.length} farms selected for comparison
             </Typography>
-            <Stack direction="row" spacing={2} sx={{ flexShrink: 0 }}>
+            <Stack direction="row" spacing={space.tight} sx={{ flexShrink: 0 }}>
               <SecondaryBtn onClick={() => setComparison(['mach', 'reddy', 'bhim', 'tanuku'])}>Use recommended set</SecondaryBtn>
               <PrimaryBtn onClick={() => onNavigate('compare')} disabled={comparison.length < 2}>Compare selected →</PrimaryBtn>
             </Stack>
@@ -1485,7 +1485,7 @@ function CompareScreen({
             <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', flex: 1 }}>
               Rajahmundry Block is the only single farm that restores 95% coverage. Return to the alert to accept recovery.
             </Typography>
-            <Stack direction="row" spacing={2} sx={{ flexShrink: 0 }}>
+            <Stack direction="row" spacing={space.tight} sx={{ flexShrink: 0 }}>
               <SecondaryBtn onClick={() => onNavigate('alert')}>Back to alert</SecondaryBtn>
               <PrimaryBtn onClick={() => onNavigate('alert')}>Use Rajahmundry →</PrimaryBtn>
             </Stack>
@@ -1646,7 +1646,7 @@ function CompareScreen({
                         />
                       </Stack>
                     )}
-                    <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+                    <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                       <ConfBadge level={f.confidence} />
                       <StatusChip kind={f.evidenceKind} />
                       {f.verifReq && <StatusChip kind="visit-required" />}
@@ -1943,7 +1943,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: space.tight }}>
               <SectionLabel>Business constraints</SectionLabel>
               {isModified && (
-                <GhostBtn onClick={() => setMaxVisits(10)} sx={{ height: 32, minHeight: 32 }}>Reset to defaults</GhostBtn>
+                <GhostBtn size="small" onClick={() => setMaxVisits(10)}>Reset to defaults</GhostBtn>
               )}
             </Stack>
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: space.related }}>
@@ -1989,7 +1989,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
           {/* Impact panel (shown when maxVisits changed) */}
           {showImpact && (
-            <DashPaper sx={{ p: space.section, bgcolor: m3.surfaceContainerLow, color: m3.onSurface }}>
+            <DashPaper sx={{ p: space.related, bgcolor: m3.surfaceContainerLow, color: m3.onSurface }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: space.related }}>
                 <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: m3.onSurfaceVariant }}>Impact of This Change</Typography>
                 <Typography sx={{ fontSize: 10, color: m3.onSurfaceVariant, fontWeight: 500 }}>Max. field verification visits: 10 visits → <Box component="strong" sx={{ fontWeight: 700, display: 'inline', color: m3.primaryInk }}>{maxVisits} visit{maxVisits !== 1 ? 's' : ''}</Box></Typography>
@@ -2017,7 +2017,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               <Box sx={{ mb: space.related }}>
                 <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: m3.onSurfaceVariant, mb: space.tight }}>Farm Mix Changed</Typography>
                 <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
-                  <Box sx={{ pr: 4, borderRight: `1px solid ${PANEL_BORDER}` }}>
+                  <Box sx={{ pr: space.related, borderRight: `1px solid ${PANEL_BORDER}` }}>
                     <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.error, mb: space.tight }}>Removed</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: space.tight }}>
                       <Box component="span" sx={{ color: m3.error, fontWeight: 700, mt: space.xs }}>✕</Box>
@@ -2027,7 +2027,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       </Box>
                     </Box>
                   </Box>
-                  <Box sx={{ pl: 4 }}>
+                  <Box sx={{ pl: space.related }}>
                     <Typography sx={{ fontSize: 10, fontWeight: 650, color: m3.primaryInk, mb: space.tight }}>Added</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: space.tight }}>
                       <Box component="span" sx={{ color: m3.primaryInk, fontWeight: 700, mt: space.xs }}>+</Box>
@@ -2139,13 +2139,13 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                                 size="small"
                                 label={visual.tagline}
                                 sx={{
-                                  height: 22,
+                                  height: 24,
                                   fontSize: 11,
                                   fontWeight: 700,
                                   color: visual.ink,
                                   bgcolor: visual.accentSoft,
                                   border: `1px solid ${visual.accent}`,
-                                  '& .MuiChip-label': { px: space.tight, py: 0, lineHeight: '20px' },
+                                  '& .MuiChip-label': { px: space.tight, py: 0, lineHeight: '22px' },
                                 }}
                               />
                             </Stack>
@@ -2241,7 +2241,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                               fontFamily: FONT_FAMILY,
                               fontWeight: 600,
                               borderRadius: `${shape.sm}px`,
-                              height: 28,
+                              height: 24,
                               '& .MuiChip-label': { px: 2.5 },
                             }}
                           />
@@ -2489,7 +2489,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', height: '100%', bgcolor: m3.surfaceContainerHigh, overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', py: space.section, px: space.related }}>
-      <DashPaper sx={{ width: '100%', maxWidth: 410, overflow: 'hidden', boxShadow: 1, p: 0 }}>
+      <DashPaper sx={{ width: '100%', maxWidth: 410, overflow: 'hidden', boxShadow: 'none', p: 0 }}>
         <Box sx={{ bgcolor: 'background.paper', overflow: 'hidden' }}>
           {/* Dark top bar - inverse roles only (never light-theme text.* on inverse) */}
           <Box sx={{ color: m3.inverseOnSurface, px: space.related, pt: space.related, pb: space.related, bgcolor: m3.inverseSurface, borderTop: `3px solid ${alpha(m3.primary, 0.35)}` }}>
@@ -2939,7 +2939,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     >
       <DashPaper
         sx={{
-          p: space.section,
+          p: space.related,
           mb: space.section,
           bgcolor: m3.errorContainer,
           color: m3.onErrorContainer,
@@ -2948,7 +2948,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       >
         <Stack direction="row" spacing={space.related} sx={{ alignItems: 'flex-start', justifyContent: 'space-between', mb: space.related, flexWrap: 'wrap', rowGap: space.tight }}>
           <Box sx={{ minWidth: 0, flex: 1 }}>
-            <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: space.xs }}>
+            <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center', mb: space.xs }}>
               <StatusChip kind="primary-issue" />
               <Typography sx={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: m3.onErrorContainer }}>
                 Monitoring exception
@@ -2966,7 +2966,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <Typography sx={{ fontSize: 10, color: m3.onErrorContainer }}>vs. active plan</Typography>
           </Box>
         </Stack>
-        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
+        <Stack direction="row" spacing={space.tight} sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
           <PrimaryBtn onClick={() => onNavigate('alert')}>Review exception →</PrimaryBtn>
           <SecondaryBtn
             onClick={() => onNavigate('alert')}
@@ -2983,7 +2983,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       </DashPaper>
 
       {/* Week 3 status card */}
-      <DashPaper sx={{ p: space.section, mb: space.section }}>
+      <DashPaper sx={{ p: space.related, mb: space.section }}>
         <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: space.related }}>
           <Box>
             <Typography sx={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'text.secondary', mb: space.xs }}>Week 3 Position</Typography>
@@ -3141,7 +3141,7 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
       }}
       header={
         <Box>
-          <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: space.tight }}>
+          <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center', mb: space.tight }}>
             <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m3.error }} />
             <Typography variant="overline" sx={{ color: m3.onErrorContainer }}>Severity · Week 3 below 95% threshold</Typography>
           </Stack>
@@ -3153,7 +3153,7 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
       }
       footer={
         <>
-          <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexWrap: 'wrap', flex: 1, minWidth: 0 }}>
+          <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center', flexWrap: 'wrap', flex: 1, minWidth: 0 }}>
             <SecondaryBtn onClick={() => onNavigate('compare', { compareRecovery: true })}>Compare alternatives</SecondaryBtn>
             <SecondaryBtn onClick={() => onNavigate('scenarios')}>Reopen scenario planning</SecondaryBtn>
             <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', display: { xs: 'none', md: 'block' } }}>
