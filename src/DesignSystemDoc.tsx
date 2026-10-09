@@ -15,7 +15,6 @@ import {
   CARD_SELECTION_BG,
   listRowDivider,
   m3,
-  meter,
   panelSurface,
   semantic,
   shape,
@@ -41,6 +40,19 @@ import {
   WeekRail,
 } from './ui'
 
+/** MUI-style samples: role name + content suited to that scale (not one shared placeholder). */
+const TYPE_SAMPLES: Record<keyof typeof typographyScale, string> = {
+  display: 'display. Week 3 coverage',
+  title: 'title. Supply position',
+  subtitle: 'subtitle. Narsapur · 240 t firm',
+  body: 'body. Candidates highlighted for investigation before Week 3 commit.',
+  meta: 'meta. Updated 6 days ago',
+  overline: 'OVERLINE. WEEK 3 SUPPLY',
+  dataLg: '1,200',
+  dataMd: '620 t',
+  dataSm: '96%',
+}
+
 function DocSection({
   id,
   title,
@@ -49,7 +61,7 @@ function DocSection({
 }: {
   id: string
   title: string
-  blurb: string
+  blurb?: string
   children: React.ReactNode
 }) {
   return (
@@ -66,9 +78,11 @@ function DocSection({
     >
       <Box>
         <SectionLabel>{title}</SectionLabel>
-        <Typography variant="body2" sx={{ color: m3.onSurfaceVariant, maxWidth: 640 }}>
-          {blurb}
-        </Typography>
+        {blurb ? (
+          <Typography variant="body2" sx={{ color: m3.onSurfaceVariant, maxWidth: 640 }}>
+            {blurb}
+          </Typography>
+        ) : null}
       </Box>
       {children}
     </Box>
@@ -107,6 +121,17 @@ function Swatch({
           {value}
         </Typography>
       </Box>
+    </Stack>
+  )
+}
+
+function ChipWithCaption({ kind }: { kind: StatusKind }) {
+  return (
+    <Stack spacing={space.xs} sx={{ alignItems: 'flex-start', minWidth: 0 }}>
+      <StatusChip kind={kind} />
+      <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
+        {kind}
+      </Typography>
     </Stack>
   )
 }
@@ -199,20 +224,12 @@ export function DesignSystemDoc() {
           spacing={space.related}
           sx={{ justifyContent: 'space-between', alignItems: { md: 'center' }, maxWidth: 1100, mx: 'auto' }}
         >
-          <Box>
-            <Typography variant="h2" sx={{ fontSize: { xs: '1.35rem', md: '1.75rem' }, fontWeight: 700 }}>
-              ITC Procurement Design System
-            </Typography>
+          <Typography variant="h2" sx={{ fontSize: { xs: '1.35rem', md: '1.75rem' }, fontWeight: 700 }}>
+            ITC Procurement Design System
+          </Typography>
+          <Box component="a" href="./" sx={{ textDecoration: 'none' }}>
+            <SecondaryBtn>Open prototype</SecondaryBtn>
           </Box>
-          <Stack direction="row" spacing={space.tight} sx={{ flexWrap: 'wrap' }}>
-            <Box
-              component="a"
-              href="./"
-              sx={{ textDecoration: 'none' }}
-            >
-              <SecondaryBtn>Open prototype</SecondaryBtn>
-            </Box>
-          </Stack>
         </Stack>
       </Box>
 
@@ -261,28 +278,26 @@ export function DesignSystemDoc() {
         </Box>
 
         <Stack spacing={space.section}>
-          <DocSection
-            id="type"
-            title="Typography"
-            blurb="Manrope is the only typeface. Scale roles below are the ones used across tabs for titles, body, meta, and tabular data."
-          >
-            <Stack spacing={space.related}>
+          <DocSection id="type" title="Typography">
+            <Stack spacing={0}>
               {(Object.entries(typographyScale) as [keyof typeof typographyScale, (typeof typographyScale)[keyof typeof typographyScale]][]).map(
                 ([name, t], i, arr) => (
                   <Box
                     key={name}
                     sx={{
                       display: 'grid',
-                      gridTemplateColumns: { xs: '1fr', sm: '120px 1fr' },
+                      gridTemplateColumns: { xs: '1fr', sm: '112px 1fr' },
                       gap: space.related,
                       alignItems: 'baseline',
                       borderBottom: listRowDivider(i === arr.length - 1),
-                      pb: i === arr.length - 1 ? 0 : space.related,
+                      py: space.related,
+                      ...(i === 0 ? { pt: 0 } : null),
+                      ...(i === arr.length - 1 ? { pb: 0 } : null),
                     }}
                   >
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: m3.onSurfaceVariant }}>
+                    <Typography variant="caption" sx={{ fontWeight: 700, color: m3.onSurfaceVariant, fontVariantNumeric: 'tabular-nums' }}>
                       {name}
-                      <Box component="span" sx={{ display: 'block', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <Box component="span" sx={{ display: 'block', fontWeight: 500 }}>
                         {t.size} / {t.weight}
                       </Box>
                     </Typography>
@@ -293,9 +308,11 @@ export function DesignSystemDoc() {
                         letterSpacing: t.tracking,
                         lineHeight: t.line,
                         fontFamily: FONT_FAMILY,
+                        textTransform: name === 'overline' ? 'uppercase' : 'none',
+                        fontVariantNumeric: name.startsWith('data') ? 'tabular-nums' : 'normal',
                       }}
                     >
-                      {name === 'overline' ? 'WEEK 3 SUPPLY' : 'Eucalyptus procurement'}
+                      {TYPE_SAMPLES[name]}
                     </Typography>
                   </Box>
                 ),
@@ -303,11 +320,7 @@ export function DesignSystemDoc() {
             </Stack>
           </DocSection>
 
-          <DocSection
-            id="space"
-            title="Spacing"
-            blurb="4dp baseline. Product screens use these tokens for pane padding, section stacks, card chrome, and tight rows."
-          >
+          <DocSection id="space" title="Spacing">
             <Box
               sx={{
                 display: 'grid',
@@ -316,19 +329,19 @@ export function DesignSystemDoc() {
               }}
             >
               {[
-                { token: 'xs', units: space.xs, use: 'Caption under titles' },
-                { token: 'tight', units: space.tight, use: 'Chip rows, list gaps' },
-                { token: 'compact', units: space.compact, use: 'Dense control stacks' },
-                { token: 'related', units: space.related, use: 'Card / KPI padding' },
-                { token: 'section', units: space.section, use: 'MainPane body + section gap' },
-                { token: 'gutter', units: space.gutter, use: 'Major layout gutters' },
+                { token: 'xs', units: space.xs },
+                { token: 'tight', units: space.tight },
+                { token: 'compact', units: space.compact },
+                { token: 'related', units: space.related },
+                { token: 'section', units: space.section },
+                { token: 'gutter', units: space.gutter },
               ].map(s => (
                 <DashPaper key={s.token} sx={{ p: space.related }}>
                   <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
                     space.{s.token}
                   </Typography>
                   <Typography variant="caption" sx={{ display: 'block', color: m3.onSurfaceVariant, mb: space.tight }}>
-                    {s.units * 4}dp · {s.use}
+                    {s.units * 4}dp
                   </Typography>
                   <Box sx={{ height: s.units * 4, bgcolor: m3.primaryContainer, borderRadius: `${shape.xs}px` }} />
                 </DashPaper>
@@ -339,7 +352,7 @@ export function DesignSystemDoc() {
           <DocSection
             id="color"
             title="Semantic color"
-            blurb="Teal = confirmed / selected / actionable. Amber = uncertainty / verification / caution. Red = constraint failure / material risk. Neutral = supporting / inactive."
+            blurb="Teal = actionable. Amber = caution. Red = risk. Neutral = supporting."
           >
             <Box
               sx={{
@@ -348,13 +361,13 @@ export function DesignSystemDoc() {
                 gap: space.related,
               }}
             >
-              <Swatch color={m3.primary} label="Teal · actionable" value={m3.primary} />
-              <Swatch color={m3.primaryInk} label="Teal ink · text / outline" value={m3.primaryInk} />
-              <Swatch color={m3.warning} label="Amber · caution" value={m3.warning} />
-              <Swatch color={m3.warningInk} label="Amber ink · text" value={m3.warningInk} />
-              <Swatch color={m3.error} label="Red · risk / fail" value={m3.error} />
-              <Swatch color={m3.onSurfaceVariant} label="Neutral · supporting" value={m3.onSurfaceVariant} />
-              <Swatch color={CARD_SELECTION_BG} label="Selection wash" value="rgba(11,175,175,0.1)" />
+              <Swatch color={m3.primary} label="Teal" value={m3.primary} />
+              <Swatch color={m3.primaryInk} label="Teal ink" value={m3.primaryInk} />
+              <Swatch color={m3.warning} label="Amber" value={m3.warning} />
+              <Swatch color={m3.warningInk} label="Amber ink" value={m3.warningInk} />
+              <Swatch color={m3.error} label="Red" value={m3.error} />
+              <Swatch color={m3.onSurfaceVariant} label="Neutral" value={m3.onSurfaceVariant} />
+              <Swatch color={CARD_SELECTION_BG} label="Selection wash" value="10% teal" />
               <Swatch label="Open gap hatch" value="track + hatch" hatch />
             </Box>
             <Box
@@ -388,31 +401,26 @@ export function DesignSystemDoc() {
             </Box>
           </DocSection>
 
-          <DocSection
-            id="confidence"
-            title="Confidence states"
-            blurb="Shared StatusChip kinds for HIGH / MEDIUM / LOW. Positive = teal outline, caution = amber, negative = red."
-          >
-            <Stack direction="row" spacing={space.tight} sx={{ flexWrap: 'wrap' }}>
+          <DocSection id="confidence" title="Confidence">
+            <Stack
+              direction="row"
+              useFlexGap
+              sx={{ flexWrap: 'wrap', columnGap: space.section, rowGap: space.related }}
+            >
               {confidenceKinds.map(kind => (
-                <Stack key={kind} spacing={space.xs} sx={{ alignItems: 'flex-start' }}>
-                  <StatusChip kind={kind} />
-                  <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-                    {kind}
-                  </Typography>
-                </Stack>
+                <ChipWithCaption key={kind} kind={kind} />
               ))}
             </Stack>
           </DocSection>
 
-          <DocSection
-            id="evidence"
-            title="Evidence states"
-            blurb="Evidence age chips, verified / visit-required, provenance strip, and field sync states from the mobile flow."
-          >
-            <Stack direction="row" spacing={space.tight} sx={{ flexWrap: 'wrap', mb: space.related }}>
+          <DocSection id="evidence" title="Evidence">
+            <Stack
+              direction="row"
+              useFlexGap
+              sx={{ flexWrap: 'wrap', columnGap: space.section, rowGap: space.related }}
+            >
               {evidenceKinds.map(kind => (
-                <StatusChip key={kind} kind={kind} />
+                <ChipWithCaption key={kind} kind={kind} />
               ))}
             </Stack>
             <EvidenceProvenance
@@ -432,12 +440,8 @@ export function DesignSystemDoc() {
             </Stack>
           </DocSection>
 
-          <DocSection
-            id="cta"
-            title="Buttons / CTA hierarchy"
-            blurb="Primary (filled teal), Secondary (outlined), Ghost (text). Same 40dp height including border."
-          >
-            <Stack direction="row" spacing={space.tight} sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
+          <DocSection id="cta" title="Buttons">
+            <Stack direction="row" spacing={space.tight} useFlexGap sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
               <PrimaryBtn>Investigate farms →</PrimaryBtn>
               <SecondaryBtn>Compare alternatives</SecondaryBtn>
               <GhostBtn>Reset to defaults</GhostBtn>
@@ -445,11 +449,7 @@ export function DesignSystemDoc() {
             </Stack>
           </DocSection>
 
-          <DocSection
-            id="forms"
-            title="Form controls"
-            blurb="Checkbox, text field, and threshold rails used in Field capture and Scenario constraints."
-          >
+          <DocSection id="forms" title="Forms">
             <FormControlLabel
               control={<Checkbox checked={checked} onChange={(_, v) => setChecked(v)} color="primary" />}
               label={<Typography variant="body2">Standing stock confirmed</Typography>}
@@ -491,14 +491,14 @@ export function DesignSystemDoc() {
             </Box>
           </DocSection>
 
-          <DocSection
-            id="constraints"
-            title="Constraint states"
-            blurb="Pass / fail chips and critical primary-issue treatment used in Scenario Planning and alerts."
-          >
-            <Stack direction="row" spacing={space.tight} sx={{ flexWrap: 'wrap' }}>
+          <DocSection id="constraints" title="Constraints">
+            <Stack
+              direction="row"
+              useFlexGap
+              sx={{ flexWrap: 'wrap', columnGap: space.section, rowGap: space.related }}
+            >
               {constraintKinds.map(kind => (
-                <StatusChip key={kind} kind={kind} />
+                <ChipWithCaption key={kind} kind={kind} />
               ))}
             </Stack>
             <DashPaper
@@ -518,11 +518,7 @@ export function DesignSystemDoc() {
             </DashPaper>
           </DocSection>
 
-          <DocSection
-            id="map"
-            title="Map markers / parcel states"
-            blurb="Parcels use canopy fill plus role stroke. Evidence age is a badge, not a pin. Colors follow the teal / amber / red / neutral model."
-          >
+          <DocSection id="map" title="Map / parcels">
             <Box
               sx={{
                 display: 'grid',
@@ -576,17 +572,13 @@ export function DesignSystemDoc() {
             </Box>
           </DocSection>
 
-          <DocSection
-            id="viz"
-            title="Data visualization"
-            blurb="Shared meters: SupplyBar (firm / at risk / open gap), PercentBar, WeekRail, and scenario TradeoffBars."
-          >
+          <DocSection id="viz" title="Data viz">
             <Box>
               <Typography variant="caption" sx={{ display: 'block', mb: space.tight, fontWeight: 650 }}>
                 SupplyBar
               </Typography>
               <SupplyBar firm={2568} atRisk={570} total={4000} />
-              <Stack direction="row" spacing={space.related} sx={{ mt: space.tight, flexWrap: 'wrap' }}>
+              <Stack direction="row" spacing={space.related} useFlexGap sx={{ mt: space.tight, flexWrap: 'wrap' }}>
                 <Swatch color={semantic.firm} label="Firm" value="2,568 t" />
                 <Swatch color={semantic.atRisk} label="At risk" value="570 t" />
                 <Swatch label="Open gap" value="862 t" hatch />
@@ -594,7 +586,7 @@ export function DesignSystemDoc() {
             </Box>
             <Box>
               <Typography variant="caption" sx={{ display: 'block', mb: space.tight, fontWeight: 650 }}>
-                PercentBar · meter height {meter.height}dp
+                PercentBar
               </Typography>
               <Stack spacing={space.related}>
                 <PercentBar label="Week 3 coverage" display="96%" value={96} tone="primary" markerPct={95} />
@@ -619,7 +611,7 @@ export function DesignSystemDoc() {
             </Box>
             <Box>
               <Typography variant="caption" sx={{ display: 'block', mb: space.tight, fontWeight: 650 }}>
-                TradeoffBars · Coverage-First emphasis
+                TradeoffBars
               </Typography>
               <TradeoffBars coverage={96} visits={2} highConf={65} district={36} emphasis="coverage" />
             </Box>
