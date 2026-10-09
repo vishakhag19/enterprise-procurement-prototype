@@ -11,9 +11,9 @@ import { alpha } from '@mui/material/styles'
 import {
   FONT_FAMILY,
   PANEL_BORDER,
-  STATUS_META,
   STRATEGY_VISUAL,
   CARD_SELECTION_BG,
+  listRowDivider,
   m3,
   meter,
   panelSurface,
@@ -274,7 +274,7 @@ export function DesignSystemDoc() {
           >
             <Stack spacing={space.related}>
               {(Object.entries(typographyScale) as [keyof typeof typographyScale, (typeof typographyScale)[keyof typeof typographyScale]][]).map(
-                ([name, t]) => (
+                ([name, t], i, arr) => (
                   <Box
                     key={name}
                     sx={{
@@ -282,8 +282,8 @@ export function DesignSystemDoc() {
                       gridTemplateColumns: { xs: '1fr', sm: '120px 1fr' },
                       gap: space.related,
                       alignItems: 'baseline',
-                      borderBottom: `1px solid ${PANEL_BORDER}`,
-                      pb: space.related,
+                      borderBottom: listRowDivider(i === arr.length - 1),
+                      pb: i === arr.length - 1 ? 0 : space.related,
                     }}
                   >
                     <Typography variant="caption" sx={{ fontWeight: 700, color: m3.onSurfaceVariant }}>
@@ -430,7 +430,7 @@ export function DesignSystemDoc() {
             <Box sx={{ ...panelSurface, overflow: 'hidden' }}>
               <FieldSyncStrip state="online" />
               <FieldSyncStrip state="syncing" />
-              <FieldSyncStrip state="offline" />
+              <FieldSyncStrip state="offline" last />
             </Box>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={space.related}>
               <EvidenceCueBar label="Evidence recency" valueLabel="6 days" pct={82} tone="primary" />

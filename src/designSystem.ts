@@ -120,6 +120,14 @@ export const shape = {
 /** Single hairline for panel chrome + internal panel dividers */
 export const PANEL_BORDER = 'rgba(22, 29, 29, 0.08)'
 export const PANEL_BORDER_WIDTH = 1
+
+/**
+ * List-row separator rule: never draw a bottom stroke after the last item.
+ * Use for mapped rows (DataStrip, checklists, week rails, etc.).
+ */
+export function listRowDivider(isLast: boolean): string {
+  return isLast ? 'none' : `${PANEL_BORDER_WIDTH}px solid ${PANEL_BORDER}`
+}
 /** @deprecated alias - use PANEL_BORDER for all panel hairlines */
 export const RULE = PANEL_BORDER
 export const ACCENT_SOFT = m3.primaryContainer

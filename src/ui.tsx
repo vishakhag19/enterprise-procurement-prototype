@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material'
 import { alpha } from '@mui/material/styles'
-import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3, meter, shellChrome, FONT_FAMILY } from './designSystem'
+import { STATUS_META, StatusKind, space, INK, PANEL_BORDER, panelSurface, shape, m3, meter, shellChrome, FONT_FAMILY, listRowDivider } from './designSystem'
 
 /**
  * Shared control size - Primary / Secondary / Ghost must render identical 40dp.
@@ -286,14 +286,23 @@ export function DashPaper({
 }
 
 /** Open data strip - surface-container tonal band */
-export function DataStrip({ children, sx }: { children: React.ReactNode; sx?: object }) {
+export function DataStrip({
+  children,
+  sx,
+  last = false,
+}: {
+  children: React.ReactNode
+  sx?: object
+  /** When true, omit the bottom separator (last list item) */
+  last?: boolean
+}) {
   return (
     <Box
       sx={{
         // MD3 list row: 16dp vertical + horizontal
         py: space.related,
         px: space.related,
-        borderBottom: `1px solid ${PANEL_BORDER}`,
+        borderBottom: listRowDivider(last),
         ...sx,
       }}
     >
@@ -577,7 +586,7 @@ export function WeekRail({
               // MD3: 16dp row padding; full-bleed bg to card edges
               py: space.related,
               px: space.related,
-              borderBottom: isLast ? 'none' : `1px solid ${PANEL_BORDER}`,
+              borderBottom: listRowDivider(isLast),
               bgcolor: w.issue ? m3.errorContainer : 'transparent',
               width: '100%',
               boxSizing: 'border-box',
@@ -760,8 +769,11 @@ export function TradeoffBars({
 /** Subtle connectivity strip for Ravi's mobile field flow */
 export function FieldSyncStrip({
   state,
+  last = false,
 }: {
   state: 'online' | 'syncing' | 'offline'
+  /** When stacked in a list, pass true on the final row to drop the bottom stroke */
+  last?: boolean
 }) {
   const meta =
     state === 'online'
@@ -779,7 +791,7 @@ export function FieldSyncStrip({
         px: space.related,
         py: space.tight,
         bgcolor: meta.bg,
-        borderBottom: `1px solid ${PANEL_BORDER}`,
+        borderBottom: listRowDivider(last),
       }}
       aria-live="polite"
       aria-label={`Connection ${meta.label}`}

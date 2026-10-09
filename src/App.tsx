@@ -70,7 +70,7 @@ import {
 } from './ui'
 import type { EvidenceSyncState } from './ui'
 import type { StatusKind, StrategyKey } from './designSystem'
-import { CARD_HOVER_BG, CARD_SELECTION_BG, FONT_FAMILY, INK, INK_MUTED, PAPER, PANEL_BORDER, panelSurface, shellChrome, shape, STRATEGY_VISUAL } from './designSystem'
+import { CARD_HOVER_BG, CARD_SELECTION_BG, FONT_FAMILY, INK, INK_MUTED, PAPER, PANEL_BORDER, listRowDivider, panelSurface, shellChrome, shape, STRATEGY_VISUAL } from './designSystem'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Screen = 'coverage' | 'farms' | 'compare' | 'scenarios' | 'verification' | 'field' | 'findings' | 'plan' | 'alert'
@@ -1005,7 +1005,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 { title: '7 farms changed', sub: 'Condition, harvest, or supply', cta: 'Review' },
                 { title: '5 evidence blocked', sub: 'Awaiting field or satellite', cta: 'Resolve' },
               ].map((item, i) => (
-                <DataStrip key={item.title} sx={{ bgcolor: PAPER, borderBottom: i === 2 ? 'none' : undefined, py: space.tight }}>
+                <DataStrip key={item.title} last={i === 2} sx={{ bgcolor: PAPER, py: space.tight }}>
                   <Stack direction="row" sx={{ justifyContent: 'space-between', gap: space.tight, alignItems: 'center' }}>
                     <Box sx={{ minWidth: 0 }}>
                       <Typography variant="subtitle2" sx={{ color: INK }}>{item.title}</Typography>
@@ -2607,7 +2607,7 @@ function FieldScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       m: 0,
                       px: space.related,
                       py: space.related,
-                      borderBottom: `1px solid ${PANEL_BORDER}`,
+                      borderBottom: listRowDivider(i === farm.verifyItems.length - 1),
                       width: '100%',
                       alignItems: 'flex-start',
                       gap: space.tight,
