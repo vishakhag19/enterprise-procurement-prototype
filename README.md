@@ -21,7 +21,11 @@ pnpm preview --host 0.0.0.0 --port 8443
 
 **Live site:** https://vishakhag19.github.io/enterprise-procurement-prototype/
 
+**Design system (case study):** https://vishakhag19.github.io/enterprise-procurement-prototype/design-system.html
+
 Repo: https://github.com/vishakhag19/enterprise-procurement-prototype
+
+Local design system page: [http://localhost:8443/design-system.html](http://localhost:8443/design-system.html)
 
 
 This repo includes `.github/workflows/deploy-pages.yml`. After the project is on GitHub:
