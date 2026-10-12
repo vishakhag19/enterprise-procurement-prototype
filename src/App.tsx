@@ -595,11 +595,8 @@ function ExpandedMap({
 }) {
   return (
     <Dialog open onClose={onClose} maxWidth="lg" fullWidth slotProps={{ paper: { sx: { height: '78vh', display: 'flex', flexDirection: 'column' } } }}>
-      <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: space.related, py: space.related }}>
-        <Box>
-          <Typography variant="subtitle1">{title}</Typography>
-          <Typography variant="caption">Parcels, canopy, harvest windows, and evidence age</Typography>
-        </Box>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: space.related, py: space.related }}>
+        <Typography variant="subtitle1">{title}</Typography>
         <IconButton onClick={onClose} aria-label="Close expanded map" size="small"><CloseIcon fontSize="small" /></IconButton>
       </DialogTitle>
       <Divider />
@@ -625,7 +622,8 @@ function ExpandedMap({
 
 /**
  * Shared map chrome for every desktop tab:
- * header (title + subtitle + expand) → map fill → legend → optional footer.
+ * expand control → map fill → legend → optional footer.
+ * Title is left-pane only; map rail has no repeated headline.
  * Always docked right at MAP_PANE_WIDTH.
  */
 function MapPane({
@@ -640,7 +638,7 @@ function MapPane({
   onFarmSelect,
   onViewEvidence,
   footer,
-  expandedTitle = 'Week 3 · Supply Geography',
+  title,
   expanded,
   onExpandedChange,
 }: {
@@ -655,7 +653,8 @@ function MapPane({
   onFarmSelect?: (id: string) => void
   onViewEvidence?: (id: string) => void
   footer?: React.ReactNode
-  expandedTitle?: string
+  /** Unique expanded-dialog title for this screen (required; no shared default). */
+  title: string
   expanded?: boolean
   onExpandedChange?: (open: boolean) => void
 }) {
@@ -680,18 +679,14 @@ function MapPane({
       >
         <Box
           sx={{
-            p: space.related,
+            px: space.related,
+            py: space.tight,
             borderBottom: `1px solid ${PANEL_BORDER}`,
             display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: space.related,
+            alignItems: 'center',
+            justifyContent: 'flex-end',
           }}
         >
-          <Box sx={{ minWidth: 0 }}>
-            <SectionLabel>Week 3 · Supply Geography</SectionLabel>
-            <Typography variant="body2">AP region · Parcels, canopy, harvest, evidence age</Typography>
-          </Box>
           <ExpandMapButton onClick={() => setMapExpanded(true)} />
         </Box>
 
@@ -723,7 +718,7 @@ function MapPane({
 
       {mapExpanded && (
         <ExpandedMap
-          title={expandedTitle}
+          title={title}
           variant={variant}
           farmRoles={farmRoles}
           addedIds={addedIds}
@@ -914,7 +909,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       footer={
         <>
           <Typography variant="caption" sx={{ color: 'text.secondary', flex: 1 }}>
-            Week 3 still has a 620 t uncovered gap. Investigate candidates next.
+            Investigate candidates next.
           </Typography>
           <PrimaryBtn onClick={() => onNavigate('farms')}>Investigate farms →</PrimaryBtn>
         </>
@@ -922,9 +917,10 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       map={
         <MapPane
           variant="coverage"
+          title="Coverage geography"
           footer={
             <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              620 t gap · candidates highlighted for investigation
+              Candidates highlighted for investigation
             </Typography>
           }
         />
@@ -935,7 +931,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           items={[
             { label: 'Week 3 gap', value: '620 t', sub: '1,200 needed · 580 committed', danger: true },
             { label: 'Firm supply', value: '2,568 t', sub: '64% of 4,000 t target' },
-            { label: 'At risk', value: '570 t', sub: 'Narsapur + Avanigadda' },
+            { label: 'Supply at risk', value: '570 t', sub: 'Narsapur + Avanigadda' },
             { label: 'Open gap', value: '862 t', sub: '78% committed overall' },
           ]}
         />
@@ -955,7 +951,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             </Stack>
             <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
               <Box sx={{ width: 10, height: 10, borderRadius: `${shape.xs}px`, bgcolor: semantic.atRisk, flexShrink: 0 }} />
-              <Typography variant="caption">At risk</Typography>
+              <Typography variant="caption">Supply at risk</Typography>
               <Typography variant="caption" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>570 t</Typography>
             </Stack>
             <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
@@ -991,9 +987,9 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   <StatusChip kind="primary-issue" />
                   <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>GIS investigation</Typography>
                 </Stack>
-                <Typography variant="subtitle2" sx={{ color: m3.onSurface }}>Week 3 supply gap: 620 t</Typography>
+                <Typography variant="subtitle2" sx={{ color: m3.onSurface }}>Resolve before committing strategy</Typography>
                 <Typography variant="caption" sx={{ display: 'block', mt: space.xs, color: m3.onSurfaceVariant }}>
-                  Candidates highlighted on the map. Resolve before committing strategy.
+                  Candidates are highlighted on the map.
                 </Typography>
               </Box>
               {[
@@ -1245,7 +1241,6 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <MainPane
         header={
           <Box>
-            <SectionLabel gutter={false} sx={{ mb: space.xs }}>Week 3 Supply Gap</SectionLabel>
             <PaneTitle>620 t still needed</PaneTitle>
             <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>1,200 t required · 580 t committed</Typography>
           </Box>
@@ -1264,6 +1259,7 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         map={
           <MapPane
             variant="investigation"
+            title="Candidate farms"
             highlightIds={highlightIds}
             activeId={activeFarmId}
             onFarmHover={setHoverId}
@@ -1271,7 +1267,7 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             onViewEvidence={setEvidenceFarm}
             footer={
               <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-                {comparison.length} farms selected for comparison
+                Map mirrors selection and hover
               </Typography>
             }
           />
@@ -1280,10 +1276,9 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
           <DashKpiStrip
             items={[
-              { label: 'Week 3 gap', value: '620 t', sub: 'Still uncovered', danger: true },
               { label: 'Selected', value: String(comparison.length), sub: 'Farms in comparison' },
               { label: 'Recommended supply', value: '570 t', sub: '4 candidate farms' },
-              { label: 'Need verification', value: '2', sub: 'Bhimavaram + Tanuku' },
+              { label: 'Field visits needed', value: '2', sub: 'Bhimavaram + Tanuku' },
             ]}
           />
 
@@ -1511,11 +1506,11 @@ function CompareScreen({
         <Box>
           <SectionLabel>{recovery ? 'Recovery Comparison' : 'Candidate Comparison'}</SectionLabel>
           <PaneTitle>
-            {recovery ? `${farms.length} recovery candidates · 110 t gap` : '4 farms · Week 3'}
+            {recovery ? `${farms.length} recovery candidates` : '4 farms compared'}
           </PaneTitle>
           <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>
             {recovery
-              ? 'Compare substitutes against the Week 3 threshold gap after Godavari was revised to 80 t (base 1,030 t · 86%).'
+              ? 'Compare substitutes after Godavari was revised to 80 t (base 1,030 t · 86%).'
               : 'Scenario planning can add or substitute farms from the full eligible pool.'}
           </Typography>
         </Box>
@@ -1534,7 +1529,7 @@ function CompareScreen({
         ) : (
           <>
             <Typography variant="caption" sx={{ color: 'text.secondary', flex: 1 }}>
-              Scenario planning can consider these candidates and other eligible farms. The manually compared farms do not limit scenario generation.
+              Compared farms do not limit scenario generation.
             </Typography>
             <PrimaryBtn onClick={() => onNavigate('scenarios')} sx={{ flexShrink: 0 }}>Plan a scenario →</PrimaryBtn>
           </>
@@ -1543,6 +1538,7 @@ function CompareScreen({
       map={
         <MapPane
           variant={recovery ? 'recovery' : 'investigation'}
+          title={recovery ? 'Recovery candidates' : 'Comparison set'}
           farmRoles={
             recovery
               ? {
@@ -1564,7 +1560,7 @@ function CompareScreen({
                   { role: 'selected', label: 'In active plan' },
                   { role: 'alert', label: 'Revised (Godavari)' },
                   { role: 'recommended', label: 'Recovery candidate' },
-                  { role: 'committed', label: 'At risk' },
+                  { role: 'committed', label: 'Risk-flagged parcel' },
                   { role: 'other', label: 'Not in view' },
                 ]
               : undefined
@@ -1572,8 +1568,8 @@ function CompareScreen({
           footer={
             <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
               {recovery
-                ? 'Recovery geography · candidates vs 110 t gap'
-                : '4 farms in comparison · map mirrors candidate set'}
+                ? 'Candidates vs 110 t threshold gap'
+                : 'Map mirrors the compared set'}
             </Typography>
           }
         />
@@ -1587,13 +1583,13 @@ function CompareScreen({
                   { label: 'Recovery gap', value: `${RECOVERY_GAP_T} t`, sub: 'To restore 95%', danger: true },
                   { label: 'Full-close options', value: String(closesGapCount), sub: 'Single-farm close' },
                   { label: 'Best coverage', value: '95%', sub: 'With Rajahmundry' },
-                  { label: 'Verif. required', value: String(verifCount), sub: 'Of candidates shown' },
+                  { label: 'Visits required', value: String(verifCount), sub: 'Of candidates shown' },
                 ]
               : [
                   { label: 'Combined supply', value: '570 t', sub: '4 farms in set' },
-                  { label: 'Gap coverage', value: '92%', sub: 'Of 620 t Week 3 gap' },
-                  { label: 'High confidence', value: '2', sub: 'Evidence current' },
-                  { label: 'Verif. required', value: '2', sub: 'Before commit' },
+                  { label: 'Gap coverage', value: '92%', sub: 'Of remaining gap' },
+                  { label: 'High confidence', value: '2', sub: 'Current evidence' },
+                  { label: 'Visits required', value: '2', sub: 'Before commit' },
                 ]
           }
         />
@@ -1880,9 +1876,9 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       header={
         <Box>
           <SectionLabel>Scenario Planning</SectionLabel>
-          <PaneTitle>Week 3 · 620 t gap</PaneTitle>
+          <PaneTitle>Choose a strategy</PaneTitle>
           <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>
-            Set constraints, then select a feasible strategy for Week 3 coverage.
+            Set constraints, then select a feasible strategy.
           </Typography>
         </Box>
       }
@@ -1903,7 +1899,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 </Typography>
                 {selectedWk3 !== null && selectedWk3 < minCoverage && (
                   <Typography variant="caption" sx={{ color: m3.error, mt: space.xs }}>
-                    Coverage {selectedWk3}% is below the {minCoverage}% Week 3 coverage requirement.
+                    {selectedWk3}% is below the {minCoverage}% coverage requirement.
                   </Typography>
                 )}
               </Box>
@@ -1919,6 +1915,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       map={
         <MapPane
           variant="scenario"
+          title="Strategy mix"
           farmRoles={isModified ? {
             mach: 'selected',
             reddy: 'selected',
@@ -1934,13 +1931,13 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           footer={selected && selectedStrategy ? (
             <Box>
               <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.tight, fontWeight: 650 }}>
-                Week 3 summary · {selectedStrategy.name}
+                {selectedStrategy.name}
               </Typography>
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: space.tight }}>
                 {[
                   { label: 'Coverage', value: `${isModified ? selectedStrategy.wk3Modified : selectedStrategy.wk3Default}%` },
                   {
-                    label: 'Total Week 3 supply',
+                    label: 'Total supply',
                     value: selectedStrategy.key === 'coverage-first' && !isModified
                       ? '1,150 t'
                       : `${(isModified ? selectedStrategy.wk3Modified : selectedStrategy.wk3Default) * 12} t`,
@@ -1952,7 +1949,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       : `${(isModified ? selectedStrategy.farmsModified : selectedStrategy.farmsDefault)
                         .reduce((sum, farm) => sum + Number(farm.match(/(\d+) t/)?.[1] ?? 0), 0)} t`,
                   },
-                  { label: 'Verification visits', value: String(isModified ? selectedStrategy.verifModified : selectedStrategy.verifDefault) },
+                  { label: 'Visits', value: String(isModified ? selectedStrategy.verifModified : selectedStrategy.verifDefault) },
                 ].map(({ label, value }) => (
                   <Box key={label}>
                     <Typography variant="caption" sx={{ display: 'block', mb: space.xs }}>{label}</Typography>
@@ -1963,7 +1960,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             </Box>
           ) : (
             <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              Select a strategy to see Week 3 map summary
+              Select a strategy to preview the mix
             </Typography>
           )}
         />
@@ -1989,7 +1986,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             </Stack>
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: space.related }}>
               <ThresholdControl
-                label="Min. Week 3 coverage"
+                label="Min. coverage"
                 value={minCoverage}
                 display={`${minCoverage}%`}
                 min={80}
@@ -2038,7 +2035,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               {/* Metrics grid */}
               <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderTop: `1px solid ${PANEL_BORDER}`, borderBottom: `1px solid ${PANEL_BORDER}`, py: space.related, mb: space.related }}>
                 {[
-                  { label: 'Week 3 coverage', before: '96%', after: '89%', bad: true },
+                  { label: 'Projected coverage', before: '96%', after: '89%', bad: true },
                   { label: 'Verification visits', before: '2', after: '1', bad: false },
                   { label: 'High-conf supply', before: '65%', after: '69%', bad: false },
                   { label: 'Max district conc.', before: '36%', after: '23%', bad: false },
@@ -2115,9 +2112,9 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 const wk3Fails = wk3 < minCoverage
 
                 const rationale = isModified && s.key === 'coverage-first'
-                  ? 'Reducing the verification limit removes a high-supply farm, lowering Week 3 coverage to 89%. One field verification is still required.'
+                  ? 'Reducing the verification limit removes a high-supply farm, lowering coverage to 89%. One field visit is still required.'
                   : isModified && s.key === 'dispersed'
-                  ? 'Meets the Week 3 target, but is infeasible under the current 1-visit verification constraint.'
+                  ? 'Meets the coverage target, but is infeasible under the current 1-visit verification constraint.'
                   : s.rationale
 
                 const visual = STRATEGY_VISUAL[s.key]
@@ -2338,16 +2335,16 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
       header={
         <Box>
           <SectionLabel>Selective Field Verification</SectionLabel>
-          <PaneTitle>Coverage-First · Farms requiring verification</PaneTitle>
+          <PaneTitle>Farms requiring verification</PaneTitle>
           <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>
-            2 selected · 0 remaining · Only farms with missing, insufficient, or conflicting evidence appear here.
+            Only farms with missing, insufficient, or conflicting evidence appear here.
           </Typography>
         </Box>
       }
       footer={
         <>
           <Typography variant="caption" sx={{ color: 'text.secondary', flex: 1 }}>
-            2 farms will be assigned to Ravi for field verification. Only the listed evidence items are needed.
+            Only the listed evidence items are needed on site.
           </Typography>
           <PrimaryBtn onClick={() => onNavigate('field')} sx={{ flexShrink: 0 }}>Assign 2 farms to Ravi →</PrimaryBtn>
         </>
@@ -2355,10 +2352,11 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
       map={
         <MapPane
           variant="investigation"
+          title="Verification sites"
           farmRoles={{ bhim: 'needs-verification', tanuku: 'needs-verification', mach: 'selected', reddy: 'selected' }}
           footer={
             <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              2 farms require field verification · assigned next
+              Sites assigned next
             </Typography>
           }
         />
@@ -2369,8 +2367,8 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
           items={[
             { label: 'Farms to verify', value: '2', sub: 'Assigned to Ravi' },
             { label: 'Supply at stake', value: '410 t', sub: '250 t + 160 t' },
-            { label: 'Evidence missing', value: '1', sub: 'Bhimavaram Lot' },
-            { label: 'Evidence aging', value: '1', sub: 'Tanuku Plot' },
+            { label: 'No field visit', value: '1', sub: 'Bhimavaram Lot' },
+            { label: 'Stale visit', value: '1', sub: 'Tanuku Plot' },
           ]}
         />
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: space.related }}>
@@ -2785,7 +2783,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       id: 'bhim', name: 'Bhimavaram Lot', district: 'West Godavari district',
       supply: 250, before: 'LOW' as Conf, after: 'HIGH' as Conf,
       evidence: ['Standing stock confirmed', 'Harvest readiness confirmed', 'Current field photos captured'],
-      impact: 'Bhimavaram Lot can now contribute 250 t to the Coverage-First procurement plan.',
+      impact: 'Bhimavaram Lot can now contribute 250 t to the procurement plan.',
       capturedBy: 'Ravi · Field officer',
       timestamp: 'Today · 09:42 IST',
       gps: '16.5442° N, 81.5218° E',
@@ -2794,7 +2792,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       id: 'tanuku', name: 'Tanuku Plot', district: 'West Godavari district',
       supply: 160, before: 'MEDIUM' as Conf, after: 'HIGH' as Conf,
       evidence: ['Current crop / harvest status confirmed', 'Current field photos captured'],
-      impact: 'Tanuku Plot can now contribute 160 t to the Coverage-First procurement plan.',
+      impact: 'Tanuku Plot can now contribute 160 t to the procurement plan.',
       capturedBy: 'Ravi · Field officer',
       timestamp: 'Today · 11:18 IST',
       gps: '16.7568° N, 81.6754° E',
@@ -2807,17 +2805,17 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         <Box>
           <SectionLabel>Field Officer Findings</SectionLabel>
           <PaneTitle>Review evidence</PaneTitle>
-          <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>Ravi has submitted findings for 2 farms. Evidence has been confirmed.</Typography>
+          <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>Ravi has submitted findings for 2 farms.</Typography>
         </Box>
       }
       footer={
         <>
           <Box sx={{ flex: 1, textAlign: 'left' }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 650, color: 'text.primary' }}>
-              Verification complete. Coverage-First is ready to proceed
+              Both farms are now HIGH · VERIFIED
             </Typography>
             <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>
-              Both farms are now HIGH · VERIFIED. Week 3 coverage confirmed at 1,150 t / 96%.
+              Ready to activate the procurement plan.
             </Typography>
           </Box>
           <PrimaryBtn onClick={() => onNavigate('plan')} sx={{ flexShrink: 0 }}>Activate procurement plan →</PrimaryBtn>
@@ -2826,10 +2824,11 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       map={
         <MapPane
           variant="investigation"
+          title="Verified farms"
           farmRoles={{ bhim: 'selected', tanuku: 'selected', mach: 'selected', reddy: 'selected' }}
           footer={
             <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              Field evidence confirmed · farms ready for plan activation
+              Ready for plan activation
             </Typography>
           }
         />
@@ -2840,7 +2839,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           items={[
             { label: 'Findings in', value: '2', sub: 'Farms verified today' },
             { label: 'Supply unlocked', value: '410 t', sub: 'Now HIGH confidence' },
-            { label: 'Week 3 coverage', value: '96%', sub: '1,150 t confirmed' },
+            { label: 'Confirmed coverage', value: '96%', sub: '1,150 t confirmed' },
             { label: 'Plan status', value: 'Ready', sub: 'Activate next' },
           ]}
         />
@@ -2926,7 +2925,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     { name: 'Bhimavaram Lot',     district: 'West Godavari', supply: 250, conf: 'HIGH' as Conf, verified: true,  status: 'Verified today' },
     { name: 'Tanuku Plot',        district: 'West Godavari', supply: 160, conf: 'HIGH' as Conf, verified: true,  status: 'Verified today' },
     { name: 'Godavari Combined Block', district: 'East Godavari', supply: 200, conf: 'HIGH' as Conf, verified: true, status: 'Scheduled Wk 3' },
-    { name: 'Narsapur Farms',     district: 'West Godavari', supply: 180, conf: 'MEDIUM' as Conf, verified: false, status: 'At risk' },
+    { name: 'Narsapur Farms',     district: 'West Godavari', supply: 180, conf: 'MEDIUM' as Conf, verified: false, status: 'Risk flagged' },
     { name: 'Palakol Holdings',   district: 'West Godavari', supply: 120, conf: 'HIGH' as Conf, verified: true,  status: 'Scheduled Wk 3' },
     { name: 'Avanigadda Block',   district: 'Krishna',       supply: 80,  conf: 'HIGH' as Conf, verified: true,  status: 'Scheduled Wk 3' },
   ]
@@ -2940,14 +2939,14 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       header={
         <Box>
           <SectionLabel>Active Procurement Plan</SectionLabel>
-          <PaneTitle>Coverage-First · Week 3 Active</PaneTitle>
-          <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>Monitoring active · Godavari exception open in plan</Typography>
+          <PaneTitle>Coverage-First</PaneTitle>
+          <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>Godavari exception open in plan</Typography>
         </Box>
       }
       footer={
         <>
           <Typography variant="caption" sx={{ color: 'text.secondary', flex: 1 }}>
-            Monitoring exception is open in the plan body. Review recovery before Week 3 slips further.
+            Review recovery before the window slips further.
           </Typography>
           <SecondaryBtn
             onClick={() => document.getElementById('active-farm-mix')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
@@ -2960,6 +2959,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       map={
         <MapPane
           variant="plan"
+          title="Active plan"
           farmRoles={{
             mach: 'selected', reddy: 'selected', bhim: 'selected', tanuku: 'selected',
             godavari: 'selected', narsapur: 'committed', palakol: 'selected', avanigadda: 'selected',
@@ -2967,12 +2967,12 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           }}
           legend={[
             { role: 'selected', label: 'In plan' },
-            { role: 'committed', label: 'At risk' },
-            { role: 'other', label: 'Not in plan' },
+            { role: 'committed', label: 'Risk-flagged' },
+            { role: 'other', label: 'Outside plan' },
           ]}
           footer={
             <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              Active plan geographic distribution
+              Geographic distribution
             </Typography>
           }
         />
@@ -3027,7 +3027,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       <DashPaper sx={{ p: space.related, mb: space.section }}>
         <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: space.related }}>
           <Box>
-            <SectionLabel gutter={false} sx={{ mb: space.xs }}>Week 3 Position</SectionLabel>
+            <SectionLabel gutter={false} sx={{ mb: space.xs }}>Window position</SectionLabel>
             <Typography variant="h4" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: 'text.primary' }}>{wk3Supply.toLocaleString()} <Box component="span" sx={{ color: 'text.secondary', fontWeight: 500 }}>/ {wk3Target.toLocaleString()} t</Box></Typography>
           </Box>
           <Box sx={{ textAlign: 'right' }}>
@@ -3060,7 +3060,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
       {/* Farm table */}
       <Box sx={{ mb: space.section }} id="active-farm-mix">
-        <SectionLabel>Active farm mix · Week 3</SectionLabel>
+        <SectionLabel>Active farm mix</SectionLabel>
         <TableContainer component={Paper} elevation={0}>
           <Table>
             <TableHead>
@@ -3084,7 +3084,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                       {f.conf === 'HIGH' ? 'Evidence current' : 'Evidence incomplete'}
                     </Typography>
                   </TableCell>
-                  <TableCell sx={{ fontWeight: 500, color: f.status === 'At risk' ? m3.warning : f.status.includes('Verified') ? m3.primaryInk : m3.onSurfaceVariant }}>
+                  <TableCell sx={{ fontWeight: 500, color: f.status === 'Risk flagged' ? m3.warning : f.status.includes('Verified') ? m3.primaryInk : m3.onSurfaceVariant }}>
                     {f.status}
                   </TableCell>
                 </TableRow>
@@ -3116,8 +3116,8 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
     { role: 'selected', label: recovering ? 'In recovered plan' : 'In plan' },
     { role: 'alert', label: recovering ? 'Revised supply monitored' : 'Supply revised (Godavari)' },
     ...(!recovering ? [{ role: 'recommended' as FarmRole, label: 'Recommended recovery' }] : []),
-    { role: 'committed', label: 'At risk' },
-    { role: 'other', label: 'Not in plan' },
+    { role: 'committed', label: 'Risk-flagged' },
+    { role: 'other', label: 'Outside plan' },
   ]
 
   if (recovering) {
@@ -3127,13 +3127,13 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
           <Box>
             <Typography variant="caption" sx={{ fontWeight: 650, color: m3.success, mb: space.xs }}>Recovery accepted · Monitoring resumed</Typography>
             <PaneTitle>Rajahmundry Block added to recovery plan</PaneTitle>
-            <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>Week 3 coverage restored to 95%. The monitoring exception is resolved.</Typography>
+            <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>Monitoring exception resolved at 95%.</Typography>
           </Box>
         }
         footer={
           <>
             <Typography variant="caption" sx={{ color: 'text.secondary', flex: 1 }}>
-              Recovery complete · monitoring resumed at 95% coverage.
+              Monitoring resumed.
             </Typography>
             <PrimaryBtn onClick={() => onNavigate('plan')} sx={{ flexShrink: 0 }}>Return to active plan →</PrimaryBtn>
           </>
@@ -3141,6 +3141,7 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
         map={
           <MapPane
             variant="recovery"
+            title="Recovered geography"
             farmRoles={recoveryRoles}
             legend={recoveryLegend}
             activeId={mapFocusId}
@@ -3148,7 +3149,7 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
             onExpandedChange={setMapExpanded}
             footer={
               <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-                Recovery geography · coverage restored
+                Threshold restored
               </Typography>
             }
           />
@@ -3157,9 +3158,7 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
         <Box sx={{ maxWidth: 768 }}>
           <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
             <Box>
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: space.tight }}>Recovery complete</Typography>
-              <Typography variant="caption" sx={{ color: 'text.primary', mb: space.xs }}>Rajahmundry Block added to recovery plan.</Typography>
-              <Typography variant="caption" sx={{ color: 'text.primary', mb: space.xs }}>Week 3 coverage restored to 95%.</Typography>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: space.tight }}>Next steps</Typography>
               <Typography variant="caption" sx={{ color: 'text.primary' }}>Field verification for Rajahmundry Block has been assigned to Ravi.</Typography>
             </Box>
             <Box sx={{ textAlign: 'right' }}>
@@ -3198,7 +3197,7 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
             <SecondaryBtn onClick={() => onNavigate('compare', { compareRecovery: true })}>Compare alternatives</SecondaryBtn>
             <SecondaryBtn onClick={() => onNavigate('scenarios')}>Reopen scenario planning</SecondaryBtn>
             <Typography variant="caption" sx={{ color: 'text.secondary', display: { xs: 'none', md: 'block' } }}>
-              Recovery required to restore Week 3 above the 95% threshold.
+              Restore above the 95% threshold.
             </Typography>
           </Stack>
           <PrimaryBtn onClick={() => setRecovering(true)} sx={{ flexShrink: 0, ml: 'auto' }}>
@@ -3209,6 +3208,7 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
       map={
         <MapPane
           variant="recovery"
+          title="Exception geography"
           farmRoles={recoveryRoles}
           legend={recoveryLegend}
           activeId={mapFocusId}
@@ -3216,7 +3216,7 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
           onExpandedChange={setMapExpanded}
           footer={
             <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              Exception geography · recovery candidates
+              Recovery candidates
             </Typography>
           }
         />
@@ -3226,7 +3226,7 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
           <DashKpiStrip
             items={[
               { label: 'Supply revised', value: '−120 t', sub: '200 t → 80 t', danger: true },
-              { label: 'Week 3 coverage', value: '86%', sub: 'Was 96%', danger: true },
+              { label: 'Coverage now', value: '86%', sub: 'Was 96%', danger: true },
               { label: 'Threshold gap', value: '110 t', sub: 'Below 95% target', danger: true },
               { label: 'Recovery path', value: '+110 t', sub: 'Rajahmundry Block' },
             ]}
@@ -3286,7 +3286,7 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
               >
                 {[
                   { label: 'Week 3 supply', before: '1,150 t', after: '1,030 t', delta: '−120 t' },
-                  { label: 'Week 3 coverage', before: '96%', after: '86%', delta: '−10%' },
+                  { label: 'Coverage change', before: '96%', after: '86%', delta: '−10%' },
                   { label: 'vs. 95% threshold', before: '+10 t buffer', after: '−110 t gap', delta: 'Below target' },
                 ].map(({ label, before, after, delta }) => (
                   <Box

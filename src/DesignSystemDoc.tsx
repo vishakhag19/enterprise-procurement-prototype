@@ -540,7 +540,7 @@ export function DesignSystemDoc() {
               }}
             >
               <ThresholdControl
-                label="Min. Week 3 coverage"
+                label="Min. coverage"
                 value={threshold}
                 display={`${threshold}%`}
                 min={80}
@@ -650,7 +650,7 @@ export function DesignSystemDoc() {
               <SupplyBar firm={2568} atRisk={570} total={4000} />
               <Stack direction="row" spacing={space.related} useFlexGap sx={{ mt: space.tight, flexWrap: 'wrap' }}>
                 <Swatch color={semantic.firm} label="Firm" value="2,568 t" />
-                <Swatch color={semantic.atRisk} label="At risk" value="570 t" />
+                <Swatch color={semantic.atRisk} label="Supply at risk" value="570 t" />
                 <Swatch label="Open gap" value="862 t" hatch />
               </Stack>
             </Box>
@@ -659,7 +659,7 @@ export function DesignSystemDoc() {
                 PercentBar
               </Typography>
               <Stack spacing={space.related}>
-                <PercentBar label="Week 3 coverage" display="96%" value={96} tone="primary" markerPct={95} />
+                <PercentBar label="Coverage" display="96%" value={96} tone="primary" markerPct={95} />
                 <PercentBar label="Verification load" display="2 visits" value={20} tone="caution" />
                 <PercentBar label="Below target" display="78%" value={78} tone="danger" markerPct={95} />
               </Stack>

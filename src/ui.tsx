@@ -784,7 +784,7 @@ export function TradeoffBars({
   }> = [
     {
       key: 'coverage',
-      label: 'Week 3 coverage',
+      label: 'Coverage',
       display: `${coverage}%`,
       value: coverage,
       tone: emphasis === 'coverage' ? 'primary' : coverage < 95 ? 'danger' : 'muted',
@@ -792,7 +792,7 @@ export function TradeoffBars({
     },
     {
       key: 'visits',
-      label: 'Verification load',
+      label: 'Visit load',
       display: `${visits} visit${visits === 1 ? '' : 's'}`,
       value: (visits / maxVisits) * 100,
       tone: visits > 0 ? 'caution' : 'muted',
