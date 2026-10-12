@@ -3417,7 +3417,7 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
             : isActive
               ? m3.primary
               : isComplete
-                ? alpha(m3.primary, 0.32)
+                ? alpha(m3.primary, 0.12)
                 : m3.surfaceContainerLowest
           const stepFg = isDisabled
             ? m3.outline
@@ -3431,7 +3431,7 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
             : isActive
               ? 'transparent'
               : isComplete
-                ? alpha(m3.primary, 0.42)
+                ? alpha(m3.primary, 0.22)
                 : m3.outlineVariant
 
           const stepEl = (
