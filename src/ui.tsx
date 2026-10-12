@@ -107,7 +107,9 @@ export function MainPane({
             overflowX: 'hidden',
             scrollbarWidth: 'none',
             msOverflowStyle: 'none',
-            p: space.section,
+            px: space.section,
+            pt: space.related,
+            pb: space.section,
             '&::-webkit-scrollbar': { display: 'none' },
           }}
         >
