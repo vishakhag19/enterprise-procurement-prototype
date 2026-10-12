@@ -32,7 +32,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import OpenInFullIcon from '@mui/icons-material/OpenInFull'
 import { alpha } from '@mui/material/styles'
@@ -1089,6 +1088,7 @@ function FarmCard({
       : 'background.paper'
   return (
     <DashPaper
+      onClick={() => onToggle(farm.id)}
       onMouseEnter={() => onHover(farm.id)}
       onMouseLeave={() => onHover(null)}
       sx={{
@@ -1158,26 +1158,32 @@ function FarmCard({
         >
           View evidence
         </GhostBtn>
-        {inComparison ? (
-          <PrimaryBtn
-            onClick={e => {
-              e.stopPropagation()
-              onToggle(farm.id)
-            }}
-            startIcon={<CheckIcon sx={{ fontSize: 18 }} />}
-          >
-            Added to comparison
-          </PrimaryBtn>
-        ) : (
-          <SecondaryBtn
-            onClick={e => {
-              e.stopPropagation()
-              onToggle(farm.id)
-            }}
-          >
-            Add to comparison
-          </SecondaryBtn>
-        )}
+        {/* Multi-select toggle: MUI Checkbox, not Primary/Secondary buttons */}
+        <FormControlLabel
+          onClick={e => e.stopPropagation()}
+          sx={{
+            m: 0,
+            ml: 'auto',
+            gap: space.tight,
+            alignItems: 'center',
+            '& .MuiCheckbox-root': { p: 0.5 },
+            '& .MuiFormControlLabel-label': { userSelect: 'none' },
+          }}
+          control={
+            <Checkbox
+              checked={inComparison}
+              onChange={() => onToggle(farm.id)}
+              color="primary"
+              size="small"
+              inputProps={{ 'aria-label': inComparison ? 'Remove from comparison' : 'Add to comparison' }}
+            />
+          }
+          label={
+            <Typography variant="body2" sx={{ fontWeight: inComparison ? 600 : 400 }}>
+              {inComparison ? 'In comparison' : 'Add to comparison'}
+            </Typography>
+          }
+        />
       </Stack>
     </DashPaper>
   )
