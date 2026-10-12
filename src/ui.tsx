@@ -188,7 +188,7 @@ export function EvidenceProvenance({
         gridTemplateColumns: { xs: '1fr 1fr', sm: 'repeat(4, 1fr)' },
         gap: dense ? space.tight : space.related,
         p: dense ? space.tight : space.related,
-        bgcolor: m3.surfaceContainerLow,
+        bgcolor: m3.surfaceContainerLowest,
         border: `1px solid ${PANEL_BORDER}`,
         borderRadius: `${shape.sm}px`,
       }}
