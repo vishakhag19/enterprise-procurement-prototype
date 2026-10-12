@@ -619,7 +619,6 @@ function MapPane({
   onFarmHover,
   onFarmSelect,
   onViewEvidence,
-  footer,
   title,
   expanded,
   onExpandedChange,
@@ -634,7 +633,6 @@ function MapPane({
   onFarmHover?: (id: string | null) => void
   onFarmSelect?: (id: string) => void
   onViewEvidence?: (id: string) => void
-  footer?: React.ReactNode
   /** Unique expanded-dialog title for this screen (required; no shared default). */
   title: string
   expanded?: boolean
@@ -660,20 +658,7 @@ function MapPane({
           bgcolor: PAPER,
         }}
       >
-        <Box
-          sx={{
-            px: space.related,
-            py: space.tight,
-            borderBottom: `1px solid ${PANEL_BORDER}`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <ExpandMapButton onClick={() => setMapExpanded(true)} />
-        </Box>
-
-        <Box sx={{ flex: 1, minHeight: 0 }}>
+        <Box sx={{ flex: 1, minHeight: 0, position: 'relative' }}>
           <RegionMap
             fullscreen
             variant={variant}
@@ -686,17 +671,24 @@ function MapPane({
             onFarmSelect={onFarmSelect}
             onViewEvidence={onViewEvidence}
           />
+          <Box
+            sx={{
+              position: 'absolute',
+              top: space.tight,
+              right: space.tight,
+              zIndex: 1,
+              bgcolor: m3.surfaceContainerLowest,
+              borderRadius: `${shape.sm}px`,
+              border: `1px solid ${PANEL_BORDER}`,
+            }}
+          >
+            <ExpandMapButton onClick={() => setMapExpanded(true)} />
+          </Box>
         </Box>
 
         {resolvedLegend.length > 0 && (
           <Box sx={{ p: space.related, borderTop: `1px solid ${PANEL_BORDER}` }}>
             <MapLegend items={resolvedLegend} />
-          </Box>
-        )}
-
-        {footer != null && (
-          <Box sx={{ p: space.related, borderTop: `1px solid ${PANEL_BORDER}` }}>
-            {footer}
           </Box>
         )}
       </Box>
@@ -909,11 +901,6 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             { role: 'needs-verification', label: 'Gap candidates' },
             { role: 'other', label: 'Background parcels' },
           ]}
-          footer={
-            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              Candidates highlighted for investigation
-            </Typography>
-          }
         />
       }
     >
@@ -1262,11 +1249,6 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               { role: 'recommended', label: 'Strong candidate' },
               { role: 'other', label: 'Eligible pool' },
             ]}
-            footer={
-              <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-                Map mirrors selection and hover
-              </Typography>
-            }
           />
         }
       >
@@ -1564,13 +1546,6 @@ function CompareScreen({
                   { role: 'selected', label: 'Compared farm' },
                   { role: 'needs-verification', label: 'Visit before commit' },
                 ]
-          }
-          footer={
-            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              {recovery
-                ? 'Candidates vs 110 t threshold gap'
-                : 'Map mirrors the compared set'}
-            </Typography>
           }
         />
       }
@@ -1940,41 +1915,6 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                   { role: 'other', label: 'Outside mix' },
                 ]
           }
-          footer={selected && selectedStrategy ? (
-            <Box>
-              <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.tight, fontWeight: 650 }}>
-                {selectedStrategy.name}
-              </Typography>
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: space.tight }}>
-                {[
-                  { label: 'Coverage', value: `${isModified ? selectedStrategy.wk3Modified : selectedStrategy.wk3Default}%` },
-                  {
-                    label: 'Total supply',
-                    value: selectedStrategy.key === 'coverage-first' && !isModified
-                      ? '1,150 t'
-                      : `${(isModified ? selectedStrategy.wk3Modified : selectedStrategy.wk3Default) * 12} t`,
-                  },
-                  {
-                    label: 'Supply added',
-                    value: selectedStrategy.key === 'coverage-first' && !isModified
-                      ? '570 t'
-                      : `${(isModified ? selectedStrategy.farmsModified : selectedStrategy.farmsDefault)
-                        .reduce((sum, farm) => sum + Number(farm.match(/(\d+) t/)?.[1] ?? 0), 0)} t`,
-                  },
-                  { label: 'Visits', value: String(isModified ? selectedStrategy.verifModified : selectedStrategy.verifDefault) },
-                ].map(({ label, value }) => (
-                  <Box key={label}>
-                    <Typography variant="caption" sx={{ display: 'block', mb: space.xs }}>{label}</Typography>
-                    <Typography variant="subtitle2" sx={{ fontVariantNumeric: 'tabular-nums' }}>{value}</Typography>
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-          ) : (
-            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              Select a strategy to preview the mix
-            </Typography>
-          )}
         />
       }
     >
@@ -2370,11 +2310,6 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
             { role: 'needs-verification', label: 'Assigned for visit' },
             { role: 'selected', label: 'Already evidenced' },
           ]}
-          footer={
-            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              Sites assigned next
-            </Typography>
-          }
         />
       }
     >
@@ -2845,11 +2780,6 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           legend={[
             { role: 'selected', label: 'Verified today' },
           ]}
-          footer={
-            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              Ready for plan activation
-            </Typography>
-          }
         />
       }
     >
@@ -2989,11 +2919,6 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             { role: 'committed', label: 'Risk-flagged' },
             { role: 'other', label: 'Outside plan' },
           ]}
-          footer={
-            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              Geographic distribution
-            </Typography>
-          }
         />
       }
     >
@@ -3166,11 +3091,6 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
             activeId={mapFocusId}
             expanded={mapExpanded}
             onExpandedChange={setMapExpanded}
-            footer={
-              <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-                Threshold restored
-              </Typography>
-            }
           />
         }
       >
@@ -3233,11 +3153,6 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
           activeId={mapFocusId}
           expanded={mapExpanded}
           onExpandedChange={setMapExpanded}
-          footer={
-            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
-              Recovery candidates
-            </Typography>
-          }
         />
       }
     >
