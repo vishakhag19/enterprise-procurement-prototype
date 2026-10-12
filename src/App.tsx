@@ -1192,10 +1192,9 @@ function FarmCard({
             justifyContent: 'flex-start',
             fontWeight: 650,
             lineHeight: 1.4,
-            textDecoration: 'underline',
-            textUnderlineOffset: 2,
+            textDecoration: 'none',
             '&:hover': {
-              textDecoration: 'underline',
+              textDecoration: 'none',
               bgcolor: 'transparent',
               borderColor: 'transparent',
             },
