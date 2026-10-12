@@ -1,0 +1,4 @@
+{
+  "install": "pnpm install --frozen-lockfile",
+  "start": "export PORT=\"${PORT:-8443}\"\nexec pnpm run dev"
+}
