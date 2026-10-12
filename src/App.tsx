@@ -866,11 +866,7 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     <MainPane
       header={
         <Box>
-          <SectionLabel>Procurement Command Centre</SectionLabel>
           <PaneTitle>4,000 t Eucalyptus</PaneTitle>
-          <Typography variant="body2" sx={{ mt: space.xs }}>
-            4-week procurement window · AP Region · Satellite + field evidence
-          </Typography>
         </Box>
       }
       footer={
@@ -1210,7 +1206,6 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         header={
           <Box>
             <PaneTitle>620 t still needed</PaneTitle>
-            <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>1,200 t required · 580 t committed</Typography>
           </Box>
         }
         footer={
@@ -1473,15 +1468,9 @@ function CompareScreen({
     <MainPane
       header={
         <Box>
-          <SectionLabel>{recovery ? 'Recovery Comparison' : 'Candidate Comparison'}</SectionLabel>
           <PaneTitle>
             {recovery ? `${farms.length} recovery candidates` : '4 farms compared'}
           </PaneTitle>
-          <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>
-            {recovery
-              ? 'Compare substitutes after Godavari was revised to 80 t (base 1,030 t · 86%).'
-              : 'Scenario planning can add or substitute farms from the full eligible pool.'}
-          </Typography>
         </Box>
       }
       footer={
@@ -1840,11 +1829,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     <MainPane
       header={
         <Box>
-          <SectionLabel>Scenario Planning</SectionLabel>
           <PaneTitle>Choose a strategy</PaneTitle>
-          <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>
-            Set constraints, then select a feasible strategy.
-          </Typography>
         </Box>
       }
       footer={
@@ -2276,11 +2261,7 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
     <MainPane
       header={
         <Box>
-          <SectionLabel>Selective Field Verification</SectionLabel>
           <PaneTitle>Farms requiring verification</PaneTitle>
-          <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>
-            Only farms with missing, insufficient, or conflicting evidence appear here.
-          </Typography>
         </Box>
       }
       footer={
@@ -2744,9 +2725,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     <MainPane
       header={
         <Box>
-          <SectionLabel>Field Officer Findings</SectionLabel>
           <PaneTitle>Review evidence</PaneTitle>
-          <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>Ravi has submitted findings for 2 farms.</Typography>
         </Box>
       }
       footer={
@@ -2877,9 +2856,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     <MainPane
       header={
         <Box>
-          <SectionLabel>Active Procurement Plan</SectionLabel>
           <PaneTitle>Coverage-First</PaneTitle>
-          <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>Godavari exception open in plan</Typography>
         </Box>
       }
       footer={
@@ -3059,9 +3036,7 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
       <MainPane
         header={
           <Box>
-            <Typography variant="caption" sx={{ fontWeight: 650, color: m3.success, mb: space.xs }}>Recovery accepted · Monitoring resumed</Typography>
             <PaneTitle>Rajahmundry Block added to recovery plan</PaneTitle>
-            <Typography variant="caption" sx={{ color: 'text.secondary', mt: space.xs }}>Monitoring exception resolved at 95%.</Typography>
           </Box>
         }
         footer={
@@ -3110,14 +3085,7 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
       }}
       header={
         <Box>
-          <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center', mb: space.tight }}>
-            <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: m3.error }} />
-            <Typography variant="overline" sx={{ color: m3.onErrorContainer }}>Severity · Week 3 below 95% threshold</Typography>
-          </Stack>
           <PaneTitle sx={{ color: m3.onErrorContainer }}>Godavari Combined Block: supply revised</PaneTitle>
-          <Typography variant="body2" sx={{ mt: space.xs, color: m3.onErrorContainer, fontWeight: 600 }}>
-            Cause: new satellite NDVI · Impact: −120 t · Recovery required
-          </Typography>
         </Box>
       }
       footer={
