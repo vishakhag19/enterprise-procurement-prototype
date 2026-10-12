@@ -1166,14 +1166,60 @@ function FarmCard({
       {farm.missing && (
         <Typography variant="body2" color="text.primary"><Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>Missing:</Box> {farm.missing}</Typography>
       )}
-      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mt: space.related }}>
-        <GhostBtn onClick={() => onViewEvidence(farm.id)}>View evidence</GhostBtn>
+      <Stack
+        direction="row"
+        sx={{
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mt: space.related,
+          gap: space.tight,
+        }}
+      >
+        <GhostBtn
+          onClick={e => {
+            e.stopPropagation()
+            onViewEvidence(farm.id)
+          }}
+          sx={{
+            // Link control: not the 40dp Ghost button box; flush with left card content
+            height: 'auto',
+            minHeight: 0,
+            maxHeight: 'none',
+            px: 0,
+            py: 0,
+            borderWidth: 0,
+            borderColor: 'transparent',
+            justifyContent: 'flex-start',
+            fontWeight: 650,
+            lineHeight: 1.4,
+            textDecoration: 'underline',
+            textUnderlineOffset: 2,
+            '&:hover': {
+              textDecoration: 'underline',
+              bgcolor: 'transparent',
+              borderColor: 'transparent',
+            },
+          }}
+        >
+          View evidence
+        </GhostBtn>
         {inComparison ? (
-          <PrimaryBtn onClick={() => onToggle(farm.id)} startIcon={<CheckIcon sx={{ fontSize: 18 }} />}>
+          <PrimaryBtn
+            onClick={e => {
+              e.stopPropagation()
+              onToggle(farm.id)
+            }}
+            startIcon={<CheckIcon sx={{ fontSize: 18 }} />}
+          >
             Added to comparison
           </PrimaryBtn>
         ) : (
-          <SecondaryBtn onClick={() => onToggle(farm.id)}>
+          <SecondaryBtn
+            onClick={e => {
+              e.stopPropagation()
+              onToggle(farm.id)
+            }}
+          >
             Add to comparison
           </SecondaryBtn>
         )}
