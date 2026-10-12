@@ -32,19 +32,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import type { SvgIconComponent } from '@mui/icons-material'
-import AgricultureOutlinedIcon from '@mui/icons-material/AgricultureOutlined'
-import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined'
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
-import CompareArrowsOutlinedIcon from '@mui/icons-material/CompareArrowsOutlined'
-import DonutLargeOutlinedIcon from '@mui/icons-material/DonutLargeOutlined'
-import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined'
-import NotificationImportantOutlinedIcon from '@mui/icons-material/NotificationImportantOutlined'
 import OpenInFullIcon from '@mui/icons-material/OpenInFull'
-import PersonPinCircleOutlinedIcon from '@mui/icons-material/PersonPinCircleOutlined'
-import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined'
 import { alpha } from '@mui/material/styles'
 import { space, semantic, m3 } from './theme'
 import {
@@ -3348,28 +3338,28 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
   )
 }
 
-// ─── SIDEBAR (MD3 standard Navigation Drawer, 360dp) ─────────────────────────
+// ─── SIDEBAR (numbered flow steppers) ─────────────────────────────────────────
 
 type NavItem = {
   screen: Screen
   label: string
-  Icon: SvgIconComponent
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { screen: 'coverage',     label: 'Coverage',          Icon: DonutLargeOutlinedIcon },
-  { screen: 'farms',        label: 'Farms',             Icon: AgricultureOutlinedIcon },
-  { screen: 'compare',      label: 'Compare',           Icon: CompareArrowsOutlinedIcon },
-  { screen: 'scenarios',    label: 'Scenarios',         Icon: TuneOutlinedIcon },
-  { screen: 'verification', label: 'Verification',      Icon: FactCheckOutlinedIcon },
-  { screen: 'field',        label: 'Field',             Icon: PersonPinCircleOutlinedIcon },
-  { screen: 'findings',     label: 'Findings',          Icon: AssignmentTurnedInOutlinedIcon },
-  { screen: 'plan',         label: 'Plan',              Icon: CalendarMonthOutlinedIcon },
-  { screen: 'alert',        label: 'Monitoring alert',  Icon: NotificationImportantOutlinedIcon },
+  { screen: 'coverage',     label: 'Coverage' },
+  { screen: 'farms',        label: 'Farms' },
+  { screen: 'compare',      label: 'Compare' },
+  { screen: 'scenarios',    label: 'Scenarios' },
+  { screen: 'verification', label: 'Verification' },
+  { screen: 'field',        label: 'Field' },
+  { screen: 'findings',     label: 'Findings' },
+  { screen: 'plan',         label: 'Plan' },
+  { screen: 'alert',        label: 'Monitoring alert' },
 ]
 
 const FLOW_ORDER: Screen[] = ['coverage', 'farms', 'compare', 'scenarios', 'verification', 'field', 'findings', 'plan', 'alert']
 const DRAWER_WIDTH = 240
+const STEP_SIZE = 28
 
 function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Screen) => void }) {
   const currentIdx = FLOW_ORDER.indexOf(current)
@@ -3393,7 +3383,6 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
         },
       }}
     >
-      {/* MD3 drawer header */}
       <Box sx={{ px: space.related, pt: space.section, pb: space.related }}>
         <Typography variant="h6" sx={{ color: m3.onSurface, lineHeight: 1.25 }}>
           ITC Procurement
@@ -3411,22 +3400,62 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
           '&::-webkit-scrollbar': { display: 'none' },
         }}
       >
-        {NAV_ITEMS.map(({ screen, label, Icon }) => {
+        {NAV_ITEMS.map(({ screen, label }, index) => {
           const itemIdx = FLOW_ORDER.indexOf(screen)
+          const stepNum = index + 1
           const isActive = current === screen
+          const isComplete = itemIdx < currentIdx
           const isAccessible = itemIdx <= currentIdx + 1
           const isDisabled = !isAccessible
-          const iconEl = <Icon fontSize="small" />
+          const isLast = index === NAV_ITEMS.length - 1
           const labelColor = isDisabled
             ? m3.outline
             : isActive
               ? m3.onSurface
               : m3.onSurfaceVariant
-          const iconColor = isDisabled
-            ? m3.outlineVariant
+          const stepBg = isDisabled
+            ? 'transparent'
             : isActive
-              ? m3.primaryInk
-              : m3.onSurfaceVariant
+              ? m3.primary
+              : isComplete
+                ? m3.primaryContainer
+                : m3.surfaceContainerLowest
+          const stepFg = isDisabled
+            ? m3.outline
+            : isActive
+              ? m3.onPrimary
+              : isComplete
+                ? m3.onPrimaryContainer
+                : m3.onSurfaceVariant
+          const stepBorder = isDisabled
+            ? m3.outlineVariant
+            : isActive || isComplete
+              ? 'transparent'
+              : m3.outlineVariant
+
+          const stepEl = (
+            <Box
+              aria-hidden
+              sx={{
+                width: STEP_SIZE,
+                height: STEP_SIZE,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                fontWeight: 700,
+                fontSize: 13,
+                fontVariantNumeric: 'tabular-nums',
+                bgcolor: stepBg,
+                color: stepFg,
+                border: `2px solid ${stepBorder}`,
+                boxSizing: 'border-box',
+              }}
+            >
+              {stepNum}
+            </Box>
+          )
 
           return (
             <ListItemButton
@@ -3435,8 +3464,10 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
               disabled={isDisabled}
               onClick={() => isAccessible && onNavigate(screen)}
               aria-disabled={isDisabled}
+              aria-current={isActive ? 'step' : undefined}
               sx={{
-                // Explicit state surfaces so disabled never matches enabled/active
+                alignItems: 'flex-start',
+                py: space.tight,
                 ...(isDisabled && {
                   bgcolor: 'transparent',
                   opacity: 1,
@@ -3448,7 +3479,26 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
                 }),
               }}
             >
-              <ListItemIcon sx={{ color: iconColor }}>
+              <ListItemIcon
+                sx={{
+                  minWidth: 44,
+                  mt: 0.25,
+                  position: 'relative',
+                  color: 'inherit',
+                  ...(!isLast && {
+                    '&::after': {
+                      content: '""',
+                      position: 'absolute',
+                      left: STEP_SIZE / 2 - 1,
+                      top: STEP_SIZE + 4,
+                      bottom: -(space.tight * 8 + 4),
+                      width: 2,
+                      bgcolor: itemIdx < currentIdx ? m3.primary : m3.outlineVariant,
+                      opacity: itemIdx < currentIdx ? 0.55 : 1,
+                    },
+                  }),
+                }}
+              >
                 {screen === 'alert' ? (
                   <Badge
                     color="error"
@@ -3456,16 +3506,16 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
                     overlap="circular"
                     sx={{
                       '& .MuiBadge-badge': {
-                        top: 4,
-                        right: 4,
+                        top: 2,
+                        right: 2,
                         ...(isDisabled && { opacity: 0.35 }),
                       },
                     }}
                   >
-                    {iconEl}
+                    {stepEl}
                   </Badge>
                 ) : (
-                  iconEl
+                  stepEl
                 )}
               </ListItemIcon>
               <ListItemText
@@ -3476,6 +3526,7 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
                     sx: {
                       fontWeight: isActive ? 700 : 500,
                       color: labelColor,
+                      pt: 0.35,
                     },
                   },
                 }}
