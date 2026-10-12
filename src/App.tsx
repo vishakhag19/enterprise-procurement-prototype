@@ -507,55 +507,37 @@ const PARCEL_SWATCH: Record<FarmRole, React.CSSProperties> = {
   alert: { background: alpha(m3.error, 0.2), border: `2px solid ${m3.error}` },
 }
 
-const GEO_LAYER_LEGEND: { key: string; label: string; swatch: React.CSSProperties }[] = [
-  { key: 'healthy', label: 'Canopy healthy', swatch: { background: CANOPY_FILL.healthy, border: `1px solid ${CANOPY_STROKE.healthy}` } },
-  { key: 'moderate', label: 'Canopy moderate', swatch: { background: CANOPY_FILL.moderate, border: `1px solid ${CANOPY_STROKE.moderate}` } },
-  { key: 'weak', label: 'Canopy weak', swatch: { background: CANOPY_FILL.weak, border: `1px solid ${CANOPY_STROKE.weak}` } },
-  { key: 'inconclusive', label: 'Satellite inconclusive', swatch: { background: CANOPY_FILL.inconclusive, border: `1px dashed ${CANOPY_STROKE.inconclusive}` } },
-  { key: 'evidence', label: 'Evidence age (days)', swatch: { background: m3.surfaceContainerLowest, border: `2px solid ${semantic.evidenceAging}`, borderRadius: '50%' } },
-  { key: 'harvest', label: 'Harvest window (W3)', swatch: { background: m3.surfaceContainerLowest, border: `1px solid ${m3.outlineVariant}` } },
-]
+/** Role → short label. Prefer screen-specific legends; this is the fallback vocabulary. */
+const ROLE_LEGEND_LABEL: Record<FarmRole, string> = {
+  selected: 'Selected',
+  committed: 'Committed',
+  'needs-verification': 'Needs visit',
+  recommended: 'Recommended',
+  other: 'Other',
+  alert: 'Alert',
+}
 
+/** Legend entries for roles actually present on this map (no shared full checklist). */
+function legendFromRoles(farmRoles?: Record<string, FarmRole>): LegendItem[] {
+  const roles = new Set<FarmRole>(Object.values({ ...DEFAULT_FARM_ROLES, ...farmRoles }))
+  const order: FarmRole[] = ['selected', 'committed', 'needs-verification', 'recommended', 'alert', 'other']
+  return order.filter(r => roles.has(r)).map(role => ({ role, label: ROLE_LEGEND_LABEL[role] }))
+}
+
+/** Parcel-role legend only — geospatial cue labels are not repeated on every tab. */
 function MapLegend({ items }: { items: LegendItem[] }) {
+  if (items.length === 0) return null
   return (
-    <Stack spacing={space.related}>
-      <Box>
-        <Typography variant="caption" sx={{ display: 'block', mb: space.xs, fontWeight: 700, color: m3.onSurfaceVariant, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-          Geospatial layers
-        </Typography>
-        <Stack spacing={space.tight}>
-          {GEO_LAYER_LEGEND.map(({ key, label, swatch }) => (
-            <Stack key={key} direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
-              <Box style={swatch} sx={{ width: 12, height: 12, flexShrink: 0, borderRadius: `${shape.xs}px` }} />
-              <Typography variant="caption">{label}</Typography>
-            </Stack>
-          ))}
+    <Stack spacing={space.tight}>
+      {items.map(({ role, label }) => (
+        <Stack key={`${role}-${label}`} direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
+          <Box style={PARCEL_SWATCH[role]} sx={{ width: 12, height: 12, flexShrink: 0, borderRadius: `${shape.xs}px` }} />
+          <Typography variant="caption">{label}</Typography>
         </Stack>
-      </Box>
-      <Box>
-        <Typography variant="caption" sx={{ display: 'block', mb: space.xs, fontWeight: 700, color: m3.onSurfaceVariant, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-          Parcel status
-        </Typography>
-        <Stack spacing={space.tight}>
-          {items.map(({ role, label }) => (
-            <Stack key={label} direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
-              <Box style={PARCEL_SWATCH[role]} sx={{ width: 12, height: 12, flexShrink: 0, borderRadius: `${shape.xs}px` }} />
-              <Typography variant="caption">{label}</Typography>
-            </Stack>
-          ))}
-        </Stack>
-      </Box>
+      ))}
     </Stack>
   )
 }
-
-const DEFAULT_LEGEND: LegendItem[] = [
-  { role: 'selected',           label: 'Selected parcel' },
-  { role: 'committed',          label: 'Committed parcel' },
-  { role: 'needs-verification', label: 'Needs verification' },
-  { role: 'recommended',        label: 'Recommended' },
-  { role: 'other',              label: 'Other eligible' },
-]
 
 function ExpandMapButton({ onClick }: { onClick: () => void }) {
   return (
@@ -628,7 +610,7 @@ function ExpandedMap({
  */
 function MapPane({
   variant = 'coverage',
-  legend = DEFAULT_LEGEND,
+  legend,
   farmRoles,
   addedIds,
   removedIds,
@@ -664,6 +646,7 @@ function MapPane({
     onExpandedChange?.(open)
     if (expanded === undefined) setInternalExpanded(open)
   }
+  const resolvedLegend = legend ?? legendFromRoles(farmRoles)
 
   return (
     <>
@@ -705,9 +688,11 @@ function MapPane({
           />
         </Box>
 
-        <Box sx={{ p: space.related, borderTop: `1px solid ${PANEL_BORDER}` }}>
-          <MapLegend items={legend} />
-        </Box>
+        {resolvedLegend.length > 0 && (
+          <Box sx={{ p: space.related, borderTop: `1px solid ${PANEL_BORDER}` }}>
+            <MapLegend items={resolvedLegend} />
+          </Box>
+        )}
 
         {footer != null && (
           <Box sx={{ p: space.related, borderTop: `1px solid ${PANEL_BORDER}` }}>
@@ -724,7 +709,7 @@ function MapPane({
           addedIds={addedIds}
           removedIds={removedIds}
           activeId={activeId}
-          legend={legend}
+          legend={resolvedLegend}
           onClose={() => setMapExpanded(false)}
         />
       )}
@@ -918,6 +903,12 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         <MapPane
           variant="coverage"
           title="Coverage geography"
+          legend={[
+            { role: 'selected', label: 'Firm candidates' },
+            { role: 'committed', label: 'Committed supply' },
+            { role: 'needs-verification', label: 'Gap candidates' },
+            { role: 'other', label: 'Background parcels' },
+          ]}
           footer={
             <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
               Candidates highlighted for investigation
@@ -1265,6 +1256,12 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             onFarmHover={setHoverId}
             onFarmSelect={setFocusedId}
             onViewEvidence={setEvidenceFarm}
+            legend={[
+              { role: 'selected', label: 'In comparison' },
+              { role: 'needs-verification', label: 'Needs field visit' },
+              { role: 'recommended', label: 'Strong candidate' },
+              { role: 'other', label: 'Eligible pool' },
+            ]}
             footer={
               <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
                 Map mirrors selection and hover
@@ -1563,7 +1560,10 @@ function CompareScreen({
                   { role: 'committed', label: 'Risk-flagged parcel' },
                   { role: 'other', label: 'Not in view' },
                 ]
-              : undefined
+              : [
+                  { role: 'selected', label: 'Compared farm' },
+                  { role: 'needs-verification', label: 'Visit before commit' },
+                ]
           }
           footer={
             <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
@@ -1928,6 +1928,18 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           activeId={mapFocusId}
           expanded={mapExpanded}
           onExpandedChange={setMapExpanded}
+          legend={
+            isModified
+              ? [
+                  { role: 'selected', label: 'In strategy mix' },
+                  { role: 'needs-verification', label: 'Requires visit' },
+                  { role: 'other', label: 'Dropped from mix' },
+                ]
+              : [
+                  { role: 'selected', label: 'Strategy parcel' },
+                  { role: 'other', label: 'Outside mix' },
+                ]
+          }
           footer={selected && selectedStrategy ? (
             <Box>
               <Typography variant="caption" sx={{ color: m3.onSurfaceVariant, display: 'block', mb: space.tight, fontWeight: 650 }}>
@@ -2354,6 +2366,10 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
           variant="investigation"
           title="Verification sites"
           farmRoles={{ bhim: 'needs-verification', tanuku: 'needs-verification', mach: 'selected', reddy: 'selected' }}
+          legend={[
+            { role: 'needs-verification', label: 'Assigned for visit' },
+            { role: 'selected', label: 'Already evidenced' },
+          ]}
           footer={
             <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
               Sites assigned next
@@ -2826,6 +2842,9 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           variant="investigation"
           title="Verified farms"
           farmRoles={{ bhim: 'selected', tanuku: 'selected', mach: 'selected', reddy: 'selected' }}
+          legend={[
+            { role: 'selected', label: 'Verified today' },
+          ]}
           footer={
             <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>
               Ready for plan activation
