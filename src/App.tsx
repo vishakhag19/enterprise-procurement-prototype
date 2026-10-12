@@ -3407,7 +3407,6 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
           const isComplete = itemIdx < currentIdx
           const isAccessible = itemIdx <= currentIdx + 1
           const isDisabled = !isAccessible
-          const isLast = index === NAV_ITEMS.length - 1
           const labelColor = isDisabled
             ? m3.outline
             : isActive
@@ -3418,20 +3417,22 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
             : isActive
               ? m3.primary
               : isComplete
-                ? m3.primaryContainer
+                ? alpha(m3.primary, 0.32)
                 : m3.surfaceContainerLowest
           const stepFg = isDisabled
             ? m3.outline
             : isActive
               ? m3.onPrimary
               : isComplete
-                ? m3.onPrimaryContainer
+                ? m3.primaryInk
                 : m3.onSurfaceVariant
           const stepBorder = isDisabled
             ? m3.outlineVariant
-            : isActive || isComplete
+            : isActive
               ? 'transparent'
-              : m3.outlineVariant
+              : isComplete
+                ? alpha(m3.primary, 0.42)
+                : m3.outlineVariant
 
           const stepEl = (
             <Box
@@ -3483,20 +3484,7 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
                 sx={{
                   minWidth: 44,
                   mt: 0.25,
-                  position: 'relative',
                   color: 'inherit',
-                  ...(!isLast && {
-                    '&::after': {
-                      content: '""',
-                      position: 'absolute',
-                      left: STEP_SIZE / 2 - 1,
-                      top: STEP_SIZE + 2,
-                      height: 'calc(100% + 10px)',
-                      width: 2,
-                      bgcolor: itemIdx < currentIdx ? m3.primary : m3.outlineVariant,
-                      opacity: itemIdx < currentIdx ? 0.55 : 1,
-                    },
-                  }),
                 }}
               >
                 {screen === 'alert' ? (
