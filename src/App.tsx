@@ -864,11 +864,6 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   return (
     <MainPane
-      header={
-        <Box>
-          <PaneTitle>4,000 t Eucalyptus</PaneTitle>
-        </Box>
-      }
       footer={
         <>
           <Typography variant="caption" sx={{ color: 'text.secondary', flex: 1 }}>
@@ -892,11 +887,12 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
         <DashKpiStrip
+          title="Investigate the gap"
           items={[
+            { label: 'Season target', value: '4,000 t', sub: 'Eucalyptus' },
             { label: 'Week 3 gap', value: '620 t', sub: '1,200 needed · 580 committed', danger: true },
-            { label: 'Firm supply', value: '2,568 t', sub: '64% of 4,000 t target' },
+            { label: 'Firm supply', value: '2,568 t', sub: '64% of target' },
             { label: 'Supply at risk', value: '570 t', sub: 'Narsapur + Avanigadda' },
-            { label: 'Open gap', value: '862 t', sub: '78% committed overall' },
           ]}
         />
 
@@ -1203,11 +1199,6 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
     <>
       <MainPane
-        header={
-          <Box>
-            <PaneTitle>620 t still needed</PaneTitle>
-          </Box>
-        }
         footer={
           <>
             <Typography variant="caption" sx={{ color: 'text.secondary', flex: 1 }}>
@@ -1239,7 +1230,9 @@ function FarmsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
           <DashKpiStrip
+            title="Select farms to compare"
             items={[
+              { label: 'Still needed', value: '620 t', sub: '1,200 required · 580 committed', danger: true },
               { label: 'Selected', value: String(comparison.length), sub: 'Farms in comparison' },
               { label: 'Recommended supply', value: '570 t', sub: '4 candidate farms' },
               { label: 'Field visits needed', value: '2', sub: 'Bhimavaram + Tanuku' },
@@ -1466,13 +1459,6 @@ function CompareScreen({
 
   return (
     <MainPane
-      header={
-        <Box>
-          <PaneTitle>
-            {recovery ? `${farms.length} recovery candidates` : '4 farms compared'}
-          </PaneTitle>
-        </Box>
-      }
       footer={
         recovery ? (
           <>
@@ -1531,18 +1517,19 @@ function CompareScreen({
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
         <DashKpiStrip
+          title={recovery ? 'Compare recovery options' : 'Compare candidates'}
           items={
             recovery
               ? [
+                  { label: 'Candidates', value: String(farms.length), sub: 'Recovery set' },
                   { label: 'Recovery gap', value: `${RECOVERY_GAP_T} t`, sub: 'To restore 95%', danger: true },
                   { label: 'Full-close options', value: String(closesGapCount), sub: 'Single-farm close' },
                   { label: 'Best coverage', value: '95%', sub: 'With Rajahmundry' },
-                  { label: 'Visits required', value: String(verifCount), sub: 'Of candidates shown' },
                 ]
               : [
+                  { label: 'Farms compared', value: '4', sub: 'In this set' },
                   { label: 'Combined supply', value: '570 t', sub: '4 farms in set' },
                   { label: 'Gap coverage', value: '92%', sub: 'Of remaining gap' },
-                  { label: 'High confidence', value: '2', sub: 'Current evidence' },
                   { label: 'Visits required', value: '2', sub: 'Before commit' },
                 ]
           }
@@ -1827,11 +1814,6 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
     <>
     <MainPane
-      header={
-        <Box>
-          <PaneTitle>Choose a strategy</PaneTitle>
-        </Box>
-      }
       footer={
         selected ? (
           canProceed ? (
@@ -1895,6 +1877,7 @@ function ScenariosScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
           <DashKpiStrip
+            title="Choose a strategy"
             items={[
               { label: 'Min. coverage', value: `${minCoverage}%`, sub: 'Week 3 threshold' },
               { label: 'Max. visits', value: String(maxVisits), sub: isModified ? 'Modified' : 'Default limit' },
@@ -2259,11 +2242,6 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
 
   return (
     <MainPane
-      header={
-        <Box>
-          <PaneTitle>Farms requiring verification</PaneTitle>
-        </Box>
-      }
       footer={
         <>
           <Typography variant="caption" sx={{ color: 'text.secondary', flex: 1 }}>
@@ -2286,6 +2264,7 @@ function VerificationScreen({ onNavigate }: { onNavigate: (s: Screen) => void })
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
         <DashKpiStrip
+          title="Assign field visits"
           items={[
             { label: 'Farms to verify', value: '2', sub: 'Assigned to Ravi' },
             { label: 'Supply at stake', value: '410 t', sub: '250 t + 160 t' },
@@ -2723,11 +2702,6 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   return (
     <MainPane
-      header={
-        <Box>
-          <PaneTitle>Review evidence</PaneTitle>
-        </Box>
-      }
       footer={
         <>
           <Box sx={{ flex: 1, textAlign: 'left' }}>
@@ -2754,6 +2728,7 @@ function FindingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
         <DashKpiStrip
+          title="Review field evidence"
           items={[
             { label: 'Findings in', value: '2', sub: 'Farms verified today' },
             { label: 'Supply unlocked', value: '410 t', sub: 'Now HIGH confidence' },
@@ -2854,11 +2829,6 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   return (
     <MainPane
-      header={
-        <Box>
-          <PaneTitle>Coverage-First</PaneTitle>
-        </Box>
-      }
       footer={
         <>
           <Typography variant="caption" sx={{ color: 'text.secondary', flex: 1 }}>
@@ -2889,10 +2859,19 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         />
       }
     >
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section }}>
+      <DashKpiStrip
+        title="Review the active plan"
+        items={[
+          { label: 'Strategy', value: 'Coverage-First', sub: 'Week 3 active' },
+          { label: 'High-confidence', value: '83%', sub: 'Of planned supply' },
+          { label: 'Farms in plan', value: '8', sub: 'Active mix' },
+          { label: 'Max district', value: '36%', sub: '1 exception open', danger: true },
+        ]}
+      />
       <DashPaper
         sx={{
           p: space.related,
-          mb: space.section,
           bgcolor: m3.errorContainer,
           color: m3.onErrorContainer,
           border: `1px solid ${alpha(m3.error, 0.35)}`,
@@ -2954,21 +2933,6 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         </Box>
       </DashPaper>
 
-      {/* Stats row */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderTop: 1, borderBottom: 1, borderColor: 'divider', py: space.related, mb: space.section }}>
-        {[
-          { label: 'High-confidence supply', value: '83%' },
-          { label: 'Farms in plan', value: '8' },
-          { label: 'Max district concentration', value: '36%' },
-          { label: 'Monitoring status', value: '1 exception' },
-        ].map(({ label, value }) => (
-          <Box sx={{ px: space.related, borderRight: 1, borderColor: 'divider' }} key={label}>
-            <MetaCaption sx={{ fontWeight: 500, mb: space.xs }}>{label}</MetaCaption>
-            <Typography variant="h6" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: label === 'Monitoring status' ? m3.error : 'text.primary' }}>{value}</Typography>
-          </Box>
-        ))}
-      </Box>
-
       {/* Farm table */}
       <Box sx={{ mb: space.section }} id="active-farm-mix">
         <SectionLabel>Active farm mix</SectionLabel>
@@ -3004,6 +2968,7 @@ function PlanScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           </Table>
         </TableContainer>
       </Box>
+      </Box>
     </MainPane>
   )
 }
@@ -3034,11 +2999,6 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
   if (recovering) {
     return (
       <MainPane
-        header={
-          <Box>
-            <PaneTitle>Rajahmundry Block added to recovery plan</PaneTitle>
-          </Box>
-        }
         footer={
           <>
             <Typography variant="caption" sx={{ color: 'text.secondary', flex: 1 }}>
@@ -3059,7 +3019,16 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
           />
         }
       >
-        <Box sx={{ maxWidth: 768 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section, maxWidth: 768 }}>
+          <DashKpiStrip
+            title="Confirm recovery"
+            items={[
+              { label: 'Added farm', value: 'Rajahmundry', sub: 'Recovery plan' },
+              { label: 'Coverage', value: '95%', sub: 'Threshold restored' },
+              { label: 'Supply', value: '1,140 t', sub: 'Week 3 position' },
+              { label: 'Next', value: 'Verify', sub: 'Assigned to Ravi' },
+            ]}
+          />
           <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: space.tight }}>Next steps</Typography>
@@ -3078,16 +3047,6 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
   return (
     <>
     <MainPane
-      headerSx={{
-        bgcolor: m3.errorContainer,
-        color: m3.onErrorContainer,
-        borderBottom: `3px solid ${m3.error}`,
-      }}
-      header={
-        <Box>
-          <PaneTitle sx={{ color: m3.onErrorContainer }}>Godavari Combined Block: supply revised</PaneTitle>
-        </Box>
-      }
       footer={
         <>
           <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center', flexWrap: 'wrap', flex: 1, minWidth: 0 }}>
@@ -3116,11 +3075,16 @@ function AlertScreen({ onNavigate }: { onNavigate: NavigateFn }) {
     >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: space.section, maxWidth: 800 }}>
           <DashKpiStrip
+            title={<PaneTitle sx={{ color: m3.onErrorContainer }}>Resolve the revision</PaneTitle>}
+            titleSx={{
+              bgcolor: m3.errorContainer,
+              borderBottom: `3px solid ${m3.error}`,
+            }}
             items={[
+              { label: 'Farm', value: 'Godavari', sub: 'Combined Block' },
               { label: 'Supply revised', value: '−120 t', sub: '200 t → 80 t', danger: true },
               { label: 'Coverage now', value: '86%', sub: 'Was 96%', danger: true },
-              { label: 'Threshold gap', value: '110 t', sub: 'Below 95% target', danger: true },
-              { label: 'Recovery path', value: '+110 t', sub: 'Rajahmundry Block' },
+              { label: 'Threshold gap', value: '110 t', sub: 'Below 95%', danger: true },
             ]}
           />
 

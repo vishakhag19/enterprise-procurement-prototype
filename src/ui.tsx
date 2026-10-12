@@ -56,7 +56,7 @@ export function MainPane({
   headerSx,
   footerSx,
 }: {
-  header: React.ReactNode
+  header?: React.ReactNode
   footer?: React.ReactNode
   children: React.ReactNode
   map?: React.ReactNode
@@ -93,9 +93,11 @@ export function MainPane({
           bgcolor: m3.surfaceContainerLowest,
         }}
       >
-        <Box sx={{ ...barSx, borderBottom: `1px solid ${PANEL_BORDER}`, ...headerSx }}>
-          <Box sx={barInnerSx}>{header}</Box>
-        </Box>
+        {header != null && (
+          <Box sx={{ ...barSx, borderBottom: `1px solid ${PANEL_BORDER}`, ...headerSx }}>
+            <Box sx={barInnerSx}>{header}</Box>
+          </Box>
+        )}
 
         <Box
           sx={{
@@ -543,63 +545,84 @@ export type DashKpi = {
   danger?: boolean
 }
 
-/** Shared dashboard KPI strip for tab center panes */
-export function DashKpiStrip({ items }: { items: DashKpi[] }) {
+/** Shared dashboard KPI strip for tab center panes; optional action title sits with the metrics. */
+export function DashKpiStrip({
+  title,
+  titleSx,
+  items,
+}: {
+  title?: React.ReactNode
+  titleSx?: Record<string, unknown>
+  items: DashKpi[]
+}) {
   const cols = Math.min(Math.max(items.length, 1), 4)
   return (
-    <Box
-      sx={{
-        ...panelSurface,
-        display: 'grid',
-        gridTemplateColumns: { xs: '1fr 1fr', md: `repeat(${cols}, 1fr)` },
-        overflow: 'hidden',
-      }}
-    >
-      {items.map((kpi, i) => (
+    <Box sx={{ ...panelSurface, overflow: 'hidden' }}>
+      {title != null && (
         <Box
-          key={kpi.label}
           sx={{
-            p: space.related,
+            px: space.related,
+            py: space.related,
+            borderBottom: `1px solid ${PANEL_BORDER}`,
             bgcolor: m3.surfaceContainerLowest,
-            borderRight: {
-              md: (i + 1) % cols !== 0 ? `1px solid ${PANEL_BORDER}` : 'none',
-            },
-            borderBottom: {
-              xs: i < items.length - (items.length % 2 === 0 ? 2 : 1) ? `1px solid ${PANEL_BORDER}` : 'none',
-              md: 'none',
-            },
+            ...titleSx,
           }}
         >
-          <Typography
-            variant="caption"
-            sx={{
-              display: 'block',
-              mb: space.xs,
-              color: m3.onSurfaceVariant,
-              fontWeight: 650,
-            }}
-          >
-            {kpi.label}
-          </Typography>
-          <Typography
-            sx={{
-              fontVariantNumeric: 'tabular-nums',
-              fontSize: typographyScale.dataLg.size,
-              fontWeight: typographyScale.dataLg.weight,
-              letterSpacing: typographyScale.dataLg.tracking,
-              color: kpi.danger ? m3.error : INK,
-              lineHeight: typographyScale.dataLg.line,
-            }}
-          >
-            {kpi.value}
-          </Typography>
-          {kpi.sub != null && (
-            <Typography variant="caption" sx={{ display: 'block', mt: space.tight, color: m3.onSurfaceVariant }}>
-              {kpi.sub}
-            </Typography>
-          )}
+          {typeof title === 'string' ? <PaneTitle>{title}</PaneTitle> : title}
         </Box>
-      ))}
+      )}
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr 1fr', md: `repeat(${cols}, 1fr)` },
+        }}
+      >
+        {items.map((kpi, i) => (
+          <Box
+            key={kpi.label}
+            sx={{
+              p: space.related,
+              bgcolor: m3.surfaceContainerLowest,
+              borderRight: {
+                md: (i + 1) % cols !== 0 ? `1px solid ${PANEL_BORDER}` : 'none',
+              },
+              borderBottom: {
+                xs: i < items.length - (items.length % 2 === 0 ? 2 : 1) ? `1px solid ${PANEL_BORDER}` : 'none',
+                md: 'none',
+              },
+            }}
+          >
+            <Typography
+              variant="caption"
+              sx={{
+                display: 'block',
+                mb: space.xs,
+                color: m3.onSurfaceVariant,
+                fontWeight: 650,
+              }}
+            >
+              {kpi.label}
+            </Typography>
+            <Typography
+              sx={{
+                fontVariantNumeric: 'tabular-nums',
+                fontSize: typographyScale.dataLg.size,
+                fontWeight: typographyScale.dataLg.weight,
+                letterSpacing: typographyScale.dataLg.tracking,
+                color: kpi.danger ? m3.error : INK,
+                lineHeight: typographyScale.dataLg.line,
+              }}
+            >
+              {kpi.value}
+            </Typography>
+            {kpi.sub != null && (
+              <Typography variant="caption" sx={{ display: 'block', mt: space.tight, color: m3.onSurfaceVariant }}>
+                {kpi.sub}
+              </Typography>
+            )}
+          </Box>
+        ))}
+      </Box>
     </Box>
   )
 }
