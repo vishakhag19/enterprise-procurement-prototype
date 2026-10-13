@@ -32,7 +32,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import OpenInFullIcon from '@mui/icons-material/OpenInFull'
 import { alpha } from '@mui/material/styles'
@@ -1159,30 +1158,37 @@ function FarmCard({
         >
           View evidence
         </GhostBtn>
-        {/* Filter chip: same 40dp height as Primary/Secondary; fully rounded pill */}
-        <Chip
-          clickable
-          color={inComparison ? 'primary' : 'default'}
-          variant={inComparison ? 'filled' : 'outlined'}
-          icon={inComparison ? <CheckIcon sx={{ fontSize: 18 }} /> : undefined}
-          label={inComparison ? 'In comparison' : 'Add to comparison'}
-          onClick={e => {
-            e.stopPropagation()
-            onToggle(farm.id)
-          }}
-          aria-pressed={inComparison}
+        {/* Checkbox keeps a tick box visible in both selected and deselected states */}
+        <FormControlLabel
+          onClick={e => e.stopPropagation()}
           sx={{
+            m: 0,
             ml: 'auto',
-            boxSizing: 'border-box',
-            height: 40,
-            minHeight: 40,
-            borderRadius: 9999,
-            fontWeight: 600,
-            fontSize: '0.875rem',
-            px: 0.5,
-            '& .MuiChip-label': { px: 1.5, lineHeight: '24px' },
-            '& .MuiChip-icon': { ml: 1, mr: -0.5, fontSize: 18 },
+            gap: space.tight,
+            alignItems: 'center',
+            userSelect: 'none',
+            '& .MuiCheckbox-root': { p: 0.5 },
+            '& .MuiFormControlLabel-label': { typography: 'body2' },
           }}
+          control={
+            <Checkbox
+              checked={inComparison}
+              onChange={() => onToggle(farm.id)}
+              color="primary"
+              size="small"
+              inputProps={{
+                'aria-label': inComparison ? 'Remove from comparison' : 'Add to comparison',
+              }}
+            />
+          }
+          label={
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: inComparison ? 600 : 500, color: inComparison ? m3.primaryInk : 'text.primary' }}
+            >
+              {inComparison ? 'In comparison' : 'Add to comparison'}
+            </Typography>
+          }
         />
       </Stack>
     </DashPaper>
