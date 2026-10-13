@@ -905,7 +905,16 @@ function CoverageScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             <Typography variant="h6" sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: INK }}>4,000 t target</Typography>
           </Stack>
           <SupplyBar firm={2568} atRisk={570} total={4000} />
-          <Stack direction="row" spacing={space.related} sx={{ mt: space.related, flexWrap: 'wrap', alignItems: 'center' }}>
+          <Stack
+            direction="row"
+            sx={{
+              mt: space.related,
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              columnGap: space.gutter,
+              rowGap: space.related,
+            }}
+          >
             <Stack direction="row" spacing={space.tight} sx={{ alignItems: 'center' }}>
               <Box sx={{ width: 10, height: 10, borderRadius: `${shape.xs}px`, bgcolor: semantic.firm, flexShrink: 0 }} />
               <Typography variant="caption">Firm</Typography>
