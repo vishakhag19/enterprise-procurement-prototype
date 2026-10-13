@@ -32,8 +32,10 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CloseIcon from '@mui/icons-material/Close'
 import OpenInFullIcon from '@mui/icons-material/OpenInFull'
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import { alpha } from '@mui/material/styles'
 import { space, semantic, m3 } from './theme'
 import {
@@ -1098,12 +1100,34 @@ function FarmCard({
         border: `1px solid ${PANEL_BORDER}`,
       }}
     >
-      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: space.tight }}>
-        <Box>
-          <Typography variant="subtitle2" sx={{ color: m3.onSurface }}>{farm.name}</Typography>
-          <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>{farm.district}</Typography>
-        </Box>
-        <Box sx={{ textAlign: 'right' }}>
+      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: space.tight, gap: space.tight }}>
+        <Stack direction="row" sx={{ alignItems: 'flex-start', gap: space.tight, minWidth: 0, flex: 1 }}>
+          {/* Circular check: empty ring when off, tick when on — top-left of card */}
+          <Checkbox
+            checked={inComparison}
+            onChange={() => onToggle(farm.id)}
+            onClick={e => e.stopPropagation()}
+            color="primary"
+            size="small"
+            icon={<RadioButtonUncheckedIcon />}
+            checkedIcon={<CheckCircleIcon />}
+            inputProps={{
+              'aria-label': inComparison ? 'Remove from comparison' : 'Add to comparison',
+            }}
+            sx={{
+              p: 0,
+              mt: 0.25,
+              flexShrink: 0,
+              color: m3.onSurfaceVariant,
+              '&.Mui-checked': { color: 'primary.main' },
+            }}
+          />
+          <Box sx={{ minWidth: 0 }}>
+            <Typography variant="subtitle2" sx={{ color: m3.onSurface }}>{farm.name}</Typography>
+            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>{farm.district}</Typography>
+          </Box>
+        </Stack>
+        <Box sx={{ textAlign: 'right', flexShrink: 0 }}>
           <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }} variant="h6">{farm.supply} t</Typography>
           <Typography variant="caption">{farm.harvest}</Typography>
         </Box>
@@ -1122,15 +1146,7 @@ function FarmCard({
       {farm.missing && (
         <Typography variant="body2" color="text.primary"><Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>Missing:</Box> {farm.missing}</Typography>
       )}
-      <Stack
-        direction="row"
-        sx={{
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          mt: space.related,
-          gap: space.tight,
-        }}
-      >
+      <Box sx={{ mt: space.related }}>
         <GhostBtn
           onClick={e => {
             e.stopPropagation()
@@ -1158,39 +1174,7 @@ function FarmCard({
         >
           View evidence
         </GhostBtn>
-        {/* Checkbox keeps a tick box visible in both selected and deselected states */}
-        <FormControlLabel
-          onClick={e => e.stopPropagation()}
-          sx={{
-            m: 0,
-            ml: 'auto',
-            gap: space.tight,
-            alignItems: 'center',
-            userSelect: 'none',
-            '& .MuiCheckbox-root': { p: 0.5 },
-            '& .MuiFormControlLabel-label': { typography: 'body2' },
-          }}
-          control={
-            <Checkbox
-              checked={inComparison}
-              onChange={() => onToggle(farm.id)}
-              color="primary"
-              size="small"
-              inputProps={{
-                'aria-label': inComparison ? 'Remove from comparison' : 'Add to comparison',
-              }}
-            />
-          }
-          label={
-            <Typography
-              variant="body2"
-              sx={{ fontWeight: inComparison ? 600 : 500, color: inComparison ? m3.primaryInk : 'text.primary' }}
-            >
-              {inComparison ? 'In comparison' : 'Add to comparison'}
-            </Typography>
-          }
-        />
-      </Stack>
+      </Box>
     </DashPaper>
   )
 }
