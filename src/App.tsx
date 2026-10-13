@@ -1100,81 +1100,83 @@ function FarmCard({
         border: `1px solid ${PANEL_BORDER}`,
       }}
     >
-      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: space.tight, gap: space.tight }}>
-        <Stack direction="row" sx={{ alignItems: 'flex-start', gap: space.tight, minWidth: 0, flex: 1 }}>
-          {/* Circular check: empty ring when off, tick when on — top-left of card */}
-          <Checkbox
-            checked={inComparison}
-            onChange={() => onToggle(farm.id)}
-            onClick={e => e.stopPropagation()}
-            color="primary"
-            size="small"
-            icon={<RadioButtonUncheckedIcon />}
-            checkedIcon={<CheckCircleIcon />}
-            inputProps={{
-              'aria-label': inComparison ? 'Remove from comparison' : 'Add to comparison',
-            }}
-            sx={{
-              p: 0,
-              mt: 0.25,
-              flexShrink: 0,
-              color: m3.onSurfaceVariant,
-              '&.Mui-checked': { color: 'primary.main' },
-            }}
-          />
-          <Box sx={{ minWidth: 0 }}>
-            <Typography variant="subtitle2" sx={{ color: m3.onSurface }}>{farm.name}</Typography>
-            <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>{farm.district}</Typography>
-          </Box>
-        </Stack>
-        <Box sx={{ textAlign: 'right', flexShrink: 0 }}>
-          <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }} variant="h6">{farm.supply} t</Typography>
-          <Typography variant="caption">{farm.harvest}</Typography>
-        </Box>
-      </Stack>
-      <Stack direction="row" sx={{ flexWrap: 'wrap', gap: space.tight, mb: space.tight }}>
-        <ConfBadge level={farm.confidence} />
-        {farm.signals.map(s => <SignalBadge key={s} type={s} />)}
-      </Stack>
-      {farm.evidenceStatus && farm.evidenceNote && (
-        <Typography variant="caption" sx={{ display: 'block', mb: space.tight }}>
-          <Box component="strong" sx={{ color: 'text.primary' }}>{farm.evidenceStatus}</Box> · {farm.evidenceNote}
-        </Typography>
-      )}
-      <Typography variant="overline" color="text.secondary" sx={{ display: 'block', mb: space.xs }}>Why recommended</Typography>
-      <Typography variant="body2" sx={{ mb: space.xs }}>{farm.why}</Typography>
-      {farm.missing && (
-        <Typography variant="body2" color="text.primary"><Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>Missing:</Box> {farm.missing}</Typography>
-      )}
-      <Box sx={{ mt: space.related }}>
-        <GhostBtn
-          onClick={e => {
-            e.stopPropagation()
-            onViewEvidence(farm.id)
+      {/* Leading checkbox + one left-aligned content column (title, chips, body, action) */}
+      <Stack direction="row" sx={{ alignItems: 'flex-start', gap: space.tight }}>
+        <Checkbox
+          checked={inComparison}
+          onChange={() => onToggle(farm.id)}
+          onClick={e => e.stopPropagation()}
+          color="primary"
+          size="small"
+          icon={<RadioButtonUncheckedIcon />}
+          checkedIcon={<CheckCircleIcon />}
+          inputProps={{
+            'aria-label': inComparison ? 'Remove from comparison' : 'Add to comparison',
           }}
           sx={{
-            // Link control: not the 40dp Ghost button box; flush with left card content
-            height: 'auto',
-            minHeight: 0,
-            maxHeight: 'none',
-            px: 0,
-            py: 0,
-            borderWidth: 0,
-            borderColor: 'transparent',
-            justifyContent: 'flex-start',
-            fontWeight: 650,
-            lineHeight: 1.4,
-            textDecoration: 'none',
-            '&:hover': {
-              textDecoration: 'none',
-              bgcolor: 'transparent',
-              borderColor: 'transparent',
-            },
+            p: 0,
+            mt: 0.25,
+            flexShrink: 0,
+            color: m3.onSurfaceVariant,
+            '&.Mui-checked': { color: 'primary.main' },
           }}
-        >
-          View evidence
-        </GhostBtn>
-      </Box>
+        />
+        <Box sx={{ minWidth: 0, flex: 1, textAlign: 'left' }}>
+          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: space.tight, gap: space.tight }}>
+            <Box sx={{ minWidth: 0 }}>
+              <Typography variant="subtitle2" sx={{ color: m3.onSurface }}>{farm.name}</Typography>
+              <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>{farm.district}</Typography>
+            </Box>
+            <Box sx={{ textAlign: 'right', flexShrink: 0 }}>
+              <Typography sx={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }} variant="h6">{farm.supply} t</Typography>
+              <Typography variant="caption">{farm.harvest}</Typography>
+            </Box>
+          </Stack>
+          <Stack direction="row" sx={{ flexWrap: 'wrap', gap: space.tight, mb: space.tight }}>
+            <ConfBadge level={farm.confidence} />
+            {farm.signals.map(s => <SignalBadge key={s} type={s} />)}
+          </Stack>
+          {farm.evidenceStatus && farm.evidenceNote && (
+            <Typography variant="caption" sx={{ display: 'block', mb: space.tight }}>
+              <Box component="strong" sx={{ color: 'text.primary' }}>{farm.evidenceStatus}</Box> · {farm.evidenceNote}
+            </Typography>
+          )}
+          <Typography variant="overline" color="text.secondary" sx={{ display: 'block', mb: space.xs }}>Why recommended</Typography>
+          <Typography variant="body2" sx={{ mb: space.xs }}>{farm.why}</Typography>
+          {farm.missing && (
+            <Typography variant="body2" color="text.primary"><Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>Missing:</Box> {farm.missing}</Typography>
+          )}
+          <Box sx={{ mt: space.related }}>
+            <GhostBtn
+              onClick={e => {
+                e.stopPropagation()
+                onViewEvidence(farm.id)
+              }}
+              sx={{
+                // Link control: not the 40dp Ghost button box; flush with left content column
+                height: 'auto',
+                minHeight: 0,
+                maxHeight: 'none',
+                px: 0,
+                py: 0,
+                borderWidth: 0,
+                borderColor: 'transparent',
+                justifyContent: 'flex-start',
+                fontWeight: 650,
+                lineHeight: 1.4,
+                textDecoration: 'none',
+                '&:hover': {
+                  textDecoration: 'none',
+                  bgcolor: 'transparent',
+                  borderColor: 'transparent',
+                },
+              }}
+            >
+              View evidence
+            </GhostBtn>
+          </Box>
+        </Box>
+      </Stack>
     </DashPaper>
   )
 }
