@@ -3326,7 +3326,7 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
         },
       }}
     >
-      <Box sx={{ px: space.related, pt: space.section, pb: space.related }}>
+      <Box sx={{ px: space.related, pt: space.section, pb: space.gutter }}>
         <Box
           component="img"
           src={itcSatsureLogo}
@@ -3350,7 +3350,8 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
         sx={{
           flex: 1,
           overflowY: 'auto',
-          py: space.tight,
+          pt: space.related,
+          pb: space.tight,
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
           '&::-webkit-scrollbar': { display: 'none' },
