@@ -475,6 +475,8 @@ export function PercentBar({
   label,
   display,
   markerPct,
+  /** Theme spacing between label row and bar (default compact / 12dp) */
+  labelGap = space.compact,
   sx,
 }: {
   /** 0-100 completion */
@@ -484,6 +486,7 @@ export function PercentBar({
   display?: string
   /** Optional threshold marker, 0-100 */
   markerPct?: number
+  labelGap?: number
   sx?: object
 }) {
   const pct = Math.max(0, Math.min(value, 100))
@@ -491,7 +494,7 @@ export function PercentBar({
   return (
     <Box sx={sx}>
       {(label != null || display != null) && (
-        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: space.compact, alignItems: 'baseline' }}>
+        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: labelGap, alignItems: 'baseline' }}>
           {label != null && (
             <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>{label}</Typography>
           )}
@@ -835,6 +838,7 @@ export function TradeoffBars({
   bars.sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key))
 
   return (
+    // Keep related gaps between meter groups; pull label tight to its bar
     <Stack spacing={space.related} sx={{ mt: 0 }}>
       {bars.map(bar => (
         <PercentBar
@@ -844,6 +848,7 @@ export function TradeoffBars({
           value={bar.value}
           tone={bar.tone}
           markerPct={bar.markerPct}
+          labelGap={space.xs}
         />
       ))}
     </Stack>
