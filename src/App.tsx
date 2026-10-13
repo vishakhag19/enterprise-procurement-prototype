@@ -32,6 +32,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import OpenInFullIcon from '@mui/icons-material/OpenInFull'
 import { alpha } from '@mui/material/styles'
@@ -1158,31 +1159,24 @@ function FarmCard({
         >
           View evidence
         </GhostBtn>
-        {/* Multi-select toggle: MUI Checkbox, not Primary/Secondary buttons */}
-        <FormControlLabel
-          onClick={e => e.stopPropagation()}
-          sx={{
-            m: 0,
-            ml: 'auto',
-            gap: space.tight,
-            alignItems: 'center',
-            '& .MuiCheckbox-root': { p: 0.5 },
-            '& .MuiFormControlLabel-label': { userSelect: 'none' },
+        {/* Filter chip toggle — fits card chip language better than checkbox/buttons */}
+        <Chip
+          clickable
+          size="small"
+          color={inComparison ? 'primary' : 'default'}
+          variant={inComparison ? 'filled' : 'outlined'}
+          icon={inComparison ? <CheckIcon sx={{ fontSize: 16 }} /> : undefined}
+          label={inComparison ? 'In comparison' : 'Add to comparison'}
+          onClick={e => {
+            e.stopPropagation()
+            onToggle(farm.id)
           }}
-          control={
-            <Checkbox
-              checked={inComparison}
-              onChange={() => onToggle(farm.id)}
-              color="primary"
-              size="small"
-              inputProps={{ 'aria-label': inComparison ? 'Remove from comparison' : 'Add to comparison' }}
-            />
-          }
-          label={
-            <Typography variant="body2" sx={{ fontWeight: inComparison ? 600 : 400 }}>
-              {inComparison ? 'In comparison' : 'Add to comparison'}
-            </Typography>
-          }
+          aria-pressed={inComparison}
+          sx={{
+            ml: 'auto',
+            fontWeight: 600,
+            '& .MuiChip-icon': { ml: 0.75, mr: -0.25 },
+          }}
         />
       </Stack>
     </DashPaper>
