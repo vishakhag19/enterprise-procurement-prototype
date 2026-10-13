@@ -3335,9 +3335,9 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
           height={108}
           sx={{
             display: 'block',
-            // 378×108 source shown at ~1/2 CSS size for crisp retina
-            width: 189,
-            height: 54,
+            // 378×108 source; ~1/2 CSS for retina, then 2/3 of that display size
+            width: 126,
+            height: 36,
             maxWidth: '100%',
             objectFit: 'contain',
             borderRadius: `${shape.sm}px`,
