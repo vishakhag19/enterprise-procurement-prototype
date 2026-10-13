@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import bhimavaramFieldPhoto from './assets/bhimavaram-field.jpg'
+import itcSatsureLogo from './assets/itc-satsure-logo.png'
 import tanukuFieldPhoto from './assets/tanuku-field.jpg'
 import {
   Avatar,
@@ -3317,9 +3318,18 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
       }}
     >
       <Box sx={{ px: space.related, pt: space.section, pb: space.related }}>
-        <Typography variant="h6" sx={{ color: m3.onSurface, lineHeight: 1.25 }}>
-          ITC Procurement
-        </Typography>
+        <Box
+          component="img"
+          src={itcSatsureLogo}
+          alt="ITC · SatSure"
+          sx={{
+            display: 'block',
+            width: '100%',
+            maxWidth: 168,
+            height: 'auto',
+            borderRadius: `${shape.sm}px`,
+          }}
+        />
       </Box>
 
       <List
