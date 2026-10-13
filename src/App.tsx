@@ -3335,9 +3335,9 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
           height={108}
           sx={{
             display: 'block',
-            // 378×108 source; display at 32px height (aspect preserved)
-            width: 112,
-            height: 32,
+            // 378×108 source; display at 36px height (aspect preserved)
+            width: 126,
+            height: 36,
             maxWidth: '100%',
             objectFit: 'contain',
             borderRadius: `${shape.sm}px`,
