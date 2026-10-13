@@ -848,7 +848,7 @@ export function TradeoffBars({
           value={bar.value}
           tone={bar.tone}
           markerPct={bar.markerPct}
-          labelGap={space.xs}
+          labelGap={space.tight}
         />
       ))}
     </Stack>
