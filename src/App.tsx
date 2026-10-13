@@ -1159,13 +1159,12 @@ function FarmCard({
         >
           View evidence
         </GhostBtn>
-        {/* Filter chip toggle — fits card chip language better than checkbox/buttons */}
+        {/* Filter chip: same 40dp height as Primary/Secondary; fully rounded pill */}
         <Chip
           clickable
-          size="small"
           color={inComparison ? 'primary' : 'default'}
           variant={inComparison ? 'filled' : 'outlined'}
-          icon={inComparison ? <CheckIcon sx={{ fontSize: 16 }} /> : undefined}
+          icon={inComparison ? <CheckIcon sx={{ fontSize: 18 }} /> : undefined}
           label={inComparison ? 'In comparison' : 'Add to comparison'}
           onClick={e => {
             e.stopPropagation()
@@ -1174,8 +1173,15 @@ function FarmCard({
           aria-pressed={inComparison}
           sx={{
             ml: 'auto',
+            boxSizing: 'border-box',
+            height: 40,
+            minHeight: 40,
+            borderRadius: 9999,
             fontWeight: 600,
-            '& .MuiChip-icon': { ml: 0.75, mr: -0.25 },
+            fontSize: '0.875rem',
+            px: 0.5,
+            '& .MuiChip-label': { px: 1.5, lineHeight: '24px' },
+            '& .MuiChip-icon': { ml: 1, mr: -0.5, fontSize: 18 },
           }}
         />
       </Stack>
