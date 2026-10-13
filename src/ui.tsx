@@ -245,7 +245,7 @@ export function EvidenceCueBar({
 }) {
   return (
     <Box sx={{ minWidth: 0, flex: 1 }}>
-      <Stack direction="row" sx={{ justifyContent: 'space-between', mb: space.xs, alignItems: 'baseline', gap: space.xs }}>
+      <Stack direction="row" sx={{ justifyContent: 'space-between', mb: space.compact, alignItems: 'baseline', gap: space.xs }}>
         <Typography variant="caption" sx={{ fontWeight: 650, color: m3.onSurfaceVariant }}>{label}</Typography>
         <Typography variant="caption" sx={{ fontWeight: 700, color: m3.onSurface, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
           {valueLabel}
@@ -491,7 +491,7 @@ export function PercentBar({
   return (
     <Box sx={sx}>
       {(label != null || display != null) && (
-        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: space.tight, alignItems: 'baseline' }}>
+        <Stack direction="row" sx={{ justifyContent: 'space-between', mb: space.compact, alignItems: 'baseline' }}>
           {label != null && (
             <Typography variant="caption" sx={{ color: m3.onSurfaceVariant }}>{label}</Typography>
           )}

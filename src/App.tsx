@@ -1562,13 +1562,15 @@ function CompareScreen({
                 <DashPaper
                   key={f.id}
                   sx={{
-                    p: space.related,
+                    // Extra vertical room so meter labels/bars don't feel stacked
+                    px: space.related,
+                    py: space.section,
                     ...(recoveryFarm?.recommended
                       ? { border: `2px solid ${m3.primary}`, bgcolor: m3.surfaceContainerLowest }
                       : {}),
                   }}
                 >
-                  <Stack spacing={space.related}>
+                  <Stack spacing={space.section}>
                     <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
                       <Box>
                         {recoveryFarm?.recommended && (
