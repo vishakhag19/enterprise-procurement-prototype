@@ -3331,11 +3331,15 @@ function Sidebar({ current, onNavigate }: { current: Screen; onNavigate: (s: Scr
           component="img"
           src={itcSatsureLogo}
           alt="ITC · SatSure"
+          width={126}
+          height={36}
           sx={{
             display: 'block',
-            width: '100%',
-            maxWidth: 168,
-            height: 'auto',
+            // Native 126×36 asset — do not upscale (that was causing blur)
+            width: 126,
+            height: 36,
+            maxWidth: '100%',
+            objectFit: 'contain',
             borderRadius: `${shape.sm}px`,
           }}
         />
