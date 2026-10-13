@@ -1141,8 +1141,12 @@ function FarmCard({
               <Box component="strong" sx={{ color: 'text.primary' }}>{farm.evidenceStatus}</Box> · {farm.evidenceNote}
             </Typography>
           )}
-          <Typography variant="overline" color="text.secondary" sx={{ display: 'block', mb: space.xs }}>Why recommended</Typography>
-          <Typography variant="body2" sx={{ mb: space.xs }}>{farm.why}</Typography>
+          {/* Same compact lead-in pattern as evidence / Missing — no overline section label */}
+          <Typography variant="body2" sx={{ mb: space.xs, color: 'text.secondary' }}>
+            <Box component="strong" sx={{ fontWeight: 700, color: 'text.primary' }}>Why</Box>
+            {' · '}
+            {farm.why}
+          </Typography>
           {farm.missing && (
             <Typography variant="body2" color="text.primary"><Box component="strong" sx={{ fontWeight: 700, display: 'inline' }}>Missing:</Box> {farm.missing}</Typography>
           )}
